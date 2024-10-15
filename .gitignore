@@ -1,5 +1,5 @@
-mysite/localSettings.py
-mysite/__pycache__/
+UnWrapped/localSettings.py
+UnWrapped/__pycache__/
 *.pyc
 db.sqlite3
 .idea
