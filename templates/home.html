@@ -81,6 +81,12 @@
             margin-top: 20px;
         }
 
+        p2 {
+            font-size: 1.3em;
+            color: #f3dd96;
+            margin-top: 20px;
+        }
+
         .cta-button {
             display: inline-block;
             background-color: #5e482a; /* Brown button */
@@ -136,15 +142,15 @@
                     {% endfor %}
                 </ul>
             </div>
-            <!-- Top 5 Songs Column -->
+            <!-- Top Artist of Month Column -->
             <div class="column">
                 <h2>Top Artist This Month</h2>
-                <p>{{ top_artist_month }}</p>
+                <p2>{{ top_artist_month }}</p2>
             </div>
         </div>
 
         <div class="cta" style="text-align: center;">
-            <a href="#" class="cta-button">View Full Stats</a>
+            <a href="{% url 'stats' %}" class="cta-button">View My Spotify UnWrapped</a>
         </div>
     </div>
 </body>
