@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4; /* Light background for contrast */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .welcome {
+            text-align: center;
+            padding: 40px;
+            background-color: #354f2a; /* Dark green for header */
+            color: #fff; /* White text for contrast */
+            border-radius: 10px;
+            margin-bottom: 40px;
+        }
+
+        .welcome h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .welcome p {
+            font-size: 1.2em;
+            font-weight: 300;
+        }
+
+        .columns {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .column {
+            flex: 1;
+            background-color: #fff; /* White cards for modern look */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            text-align: center;
+            transition: transform 0.3s ease; /* Smooth animation on hover */
+        }
+
+        .column:hover {
+            transform: translateY(-10px); /* Slight lift effect */
+        }
+
+        h2 {
+            font-size: 1.5em;
+            color: #354f2a; /* Dark green for headings */
+            margin-bottom: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            font-size: 1.1em;
+            color: #5e482a; /* Brown text for list items */
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.3em;
+            color: #f4e7d3;
+            margin-top: 20px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: #5e482a; /* Brown button */
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            margin-top: 30px;
+        }
+
+        .cta-button:hover {
+            background-color: #354f2a; /* Change to green on hover */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .columns {
+                flex-direction: column;
+            }
+
+            .column {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="welcome">
+            <h1>Welcome to Your Spotify UnWrapped</h1>
+            <p>Discover your top artists, songs, and the artist of the month!</p>
+        </div>
+
+        <div class="columns">
+            <!-- Top 5 Artists Column -->
+            <div class="column">
+                <h2>Top 5 Artists</h2>
+                <ul>
+                    {% for artist in top_artists %}
+                        <li>{{ artist }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Top 5 Songs Column -->
+            <div class="column">
+                <h2>Top 5 Songs</h2>
+                <ul>
+                    {% for song in top_songs %}
+                        <li>{{ song }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <!-- Top 5 Songs Column -->
+            <div class="column">
+                <h2>Top Artist This Month</h2>
+                <p>{{ top_artist_month }}</p>
+            </div>
+        </div>
+
+        <div class="cta" style="text-align: center;">
+            <a href="#" class="cta-button">View Full Stats</a>
+        </div>
+    </div>
+</body>
+</html>
