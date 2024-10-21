@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Your Website{% endblock %}</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #001f3f; /* Dark blue background */
+            color: white;
+            overflow: hidden;
+        }
+
+        /* Piano-style background */
+        .piano-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg,
+                black 10%,
+                white 10%, white 20%,
+                black 20%, black 30%,
+                white 30%, white 40%,
+                black 40%, black 50%,
+                white 50%, white 60%,
+                black 60%, black 70%,
+                white 70%, white 80%,
+                black 80%, black 90%,
+                white 90%);
+            opacity: 0.3; /* Transparency for better readability */
+            z-index: 1;
+        }
+
+        /* General content styling */
+        .content {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        header {
+            background-color: #001f3f; /* Dark blue */
+            padding: 1em;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 3;
+        }
+
+        header h1 {
+            margin: 0;
+            color: #f1f1f1;
+        }
+
+        footer {
+            background-color: #001f3f; /* Dark blue */
+            color: white;
+            text-align: center;
+            padding: 1em;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 3;
+        }
+
+        /* General container styling */
+        .container {
+            padding-top: 100px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    </style>
+    {% block extra_styles %}{% endblock %}
+</head>
+<body>
+    <!-- Piano-like background -->
+    <div class="piano-background"></div>
+
+    <header>
+        <h1>{% block header %}Welcome to Your Website{% endblock %}</h1>
+    </header>
+
+    <div class="content">
+        <div class="container">
+            {% block content %}
+            <!-- Main content goes here -->
+            {% endblock %}
+        </div>
+    </div>
+
+    <footer>
+        {% block footer %}Footer Content{% endblock %}
+    </footer>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
