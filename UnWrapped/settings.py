@@ -14,8 +14,13 @@ test push
 
 from pathlib import Path
 
+from .localSettings import CLIENT_ID, CLIENT_SECRET
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+SPOTIFY_CLIENT_ID = CLIENT_ID
+SPOTIFY_CLIENT_SECRET = CLIENT_SECRET
 
 
 # Quick-start development settings - unsuitable for production
@@ -122,6 +127,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'login'
+LOGIN_URL = '/login/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

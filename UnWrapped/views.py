@@ -17,6 +17,11 @@ def logout_view(request):
     messages.info(request, "You have successfully logged out.")
     return redirect('login')
 
+def song_view(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    return render(request, 'songView.html', {'accessToken': settings.SPOTIFY_CLIENT_SECRET})
+
 def register(request):
     if request.user.is_authenticated:
         return redirect('home')
