@@ -14,6 +14,8 @@ test push
 
 from pathlib import Path
 
+from django.conf.global_settings import LOGIN_REDIRECT_URL
+
 from .localSettings import CLIENT_ID, CLIENT_SECRET
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -21,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SPOTIFY_CLIENT_ID = CLIENT_ID
 SPOTIFY_CLIENT_SECRET = CLIENT_SECRET
-
+SPOTIFY_REDIRECT_URI = "http://localhost:8000/spotify_callback"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
