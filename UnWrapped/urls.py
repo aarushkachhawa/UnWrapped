@@ -18,8 +18,14 @@ from django.contrib import admin
 from django.urls import path
 from . import views
 
+
+app_name = 'UnWrapped'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('register/', views.register, name='register'),
+    path('logout/', views.logout_view, name='logout'),
+    path('login/', views.login_view, name='login'),
     path('home/', views.home, name='home'),
     path('stats/', views.stats, name='stats'),
 ]
