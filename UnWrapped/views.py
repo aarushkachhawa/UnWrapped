@@ -73,7 +73,10 @@ def get_spotify_tokens(code):
         'Content-Type': 'application/x-www-form-urlencoded'
     }
     response = requests.post(SPOTIFY_TOKEN_URL, data=data, headers=headers)
-    return response.json()
+    try:
+        return response.json()
+    except:
+        return {}
 
 
 # Helper function to refresh the Spotify token (if needed)
@@ -123,19 +126,29 @@ def home(request):
         response = requests.get(SPOTIFY_API_URL, headers=headers)
 
     # Extract and process top artist data
-    data = response.json()
-    top_artists = [artist['name'] for artist in data.get('items', [])]
+    try:
+        data = response.json()
+        # top_artists = [artist['name'] for artist in data.get('items', [])]
+        artists = data.get('items', [])
+        top_artists = [artists[i]['name'] for i in range(min(5, len(artists)))]
 
-    # Fetch top songs similarly (you would add this for top songs)
-    top_songs = []  # Placeholder for actual API call
+        # Fetch top songs similarly (you would add this for top songs)
+        top_songs = []  # Placeholder for actual API call
 
-    context = {
-        'top_artists': top_artists,
-        'top_songs': top_songs,  # Placeholder until added
-        'top_artist_month': top_artists[0] if top_artists else "Unknown",
-    }
+        context = {
+            'top_artists': top_artists,
+            'top_songs': top_songs,  # Placeholder until added
+            'top_artist_month': top_artists[0] if top_artists else "Unknown",
+        }
 
-    return render(request, 'home.html', context)
+        return render(request, 'home.html', context)
+    except: # PLACEHOLDER: PUT MESSAGE WHEN EXCEPT IS TRIGGERED IN THE FUTURE??
+        context = {
+            'top_artists': ["N/A"],
+            'top_songs': ["N/A"],  # Placeholder until added
+            'top_artist_month': "N/A",
+        }
+        return render(request, 'home.html', context)
 
 
 def spotify_callback(request):
@@ -144,8 +157,9 @@ def spotify_callback(request):
     tokens = get_spotify_tokens(code)
 
     # Store access and refresh tokens in the session
-    request.session['spotify_access_token'] = tokens.get('access_token')
-    request.session['spotify_refresh_token'] = tokens.get('refresh_token')
+    if tokens != {}:
+        request.session['spotify_access_token'] = tokens.get('access_token')
+        request.session['spotify_refresh_token'] = tokens.get('refresh_token')
 
     return redirect('home')
 

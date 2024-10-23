@@ -145,7 +145,11 @@
             <!-- Top Artist of Month Column -->
             <div class="column">
                 <h2>Top Artist This Month</h2>
-                <p2>{{ top_artist_month }}</p2>
+                {% if top_artist_month != "N/A" %}
+                    <p2>{{ top_artist_month }}</p2>
+                {% else %}
+                    <ul><li>{{ top_artist_month }}</li></ul>
+                {% endif %}
             </div>
         </div>
 
