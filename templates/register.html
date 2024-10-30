@@ -1,0 +1,61 @@
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <h2 class="text-center mb-4">Register</h2>
+
+        <!-- Display form errors -->
+        {% if form.errors %}
+            <div class="alert alert-danger mt-3">
+                <ul>
+                    {% for field, errors in form.errors.items %}
+                        <li>{{ errors|striptags }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+            </div>
+            <div class="mb-3">
+                {{ form.name.label_tag }}
+                {{ form.name }}
+            </div>
+            <div class="mb-3">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+            </div>
+            <div class="mb-3">
+                {{ form.password1.label_tag }}
+                {{ form.password1 }}
+            </div>
+            <div class="mb-3">
+                {{ form.password2.label_tag }}
+                {{ form.password2 }}
+            </div>
+            <div class="mb-3">
+                {{ form.address.label_tag }}
+                {{ form.address }}
+            </div>
+            <div class="mb-3">
+                {{ form.city.label_tag }}
+                {{ form.city }}
+            </div>
+            <div class="mb-3">
+                {{ form.zip_code.label_tag }}
+                {{ form.zip_code }}
+            </div>
+            <div class="mb-3">
+                {{ form.phone_number.label_tag }}
+                {{ form.phone_number }}
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Register</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
