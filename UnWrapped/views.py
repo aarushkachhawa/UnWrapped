@@ -116,7 +116,7 @@ def home(request):
 def getStats(request):
 
     if 'wrappedData' in request.session:
-        return request.session['wrappedData']
+        return request.session['wrappedData'] # the format for request.session['wrappedData'] is {'top_artists': list, 'top_songs': list, 'top_artist_year': string}
 
     access_token = request.session['spotify_access_token']
     headers = {
@@ -124,8 +124,8 @@ def getStats(request):
     }
 
     numTopTracks = 5 # change this to x top tracks you want
-    response = requests.get(SPOTIFY_API_URL, headers=headers)
-    trackResponse = requests.get(f"{SPOTIFY_TRACK_URL}?time_range=short_term&limit={numTopTracks}", headers=headers)
+    response = requests.get(f"{SPOTIFY_API_URL}?time_range=long_term&limit={numTopTracks}", headers=headers) # medium_term for 6 months, short_term for 1 month, long_term for 1 year
+    trackResponse = requests.get(f"{SPOTIFY_TRACK_URL}?time_range=long_term&limit={numTopTracks}", headers=headers)
     if response.status_code == 401 or trackResponse.status_code == 401:
         refresh_token = request.session.get('spotify_refresh_token')
         new_tokens = refresh_spotify_token(refresh_token)
@@ -137,7 +137,7 @@ def getStats(request):
     if response.status_code != 200 or trackResponse.status_code != 200:
         logger.error(f"Spotify API request failed: {response.status_code} - {response.text}")
         messages.error(request, "Failed to retrieve data from Spotify.")
-        return {'top_artists': ["N/A"], 'top_songs': ["N/A"], 'top_artist_month': "N/A"}
+        return {'top_artists': ["N/A"], 'top_songs': ["N/A"], 'top_artist_year': "N/A"}
 
     try:
         data = response.json()
@@ -150,14 +150,14 @@ def getStats(request):
         returnData = {
             'top_artists': top_artists,
             'top_songs': top_songs,
-            'top_artist_month': top_artists[0] if top_artists else "Unknown",
+            'top_artist_year': top_artists[0] if top_artists else "Unknown",
         }
         request.session['wrappedData'] = returnData
         return returnData
     except Exception as e:
         logger.error(f"Error processing Spotify data: {e}")
         messages.error(request, "An error occurred while processing Spotify data.")
-        return {'top_artists': ["N/A"], 'top_songs': ["N/A"], 'top_artist_month': "N/A"}
+        return {'top_artists': ["N/A"], 'top_songs': ["N/A"], 'top_artist_year': "N/A"}
 
 
 def spotify_callback(request):
@@ -192,8 +192,8 @@ def stats(request):
             'content': wrappedData['top_songs'],
         },
         {
-            'title': 'Top Artist This Month',
-            'content': [wrappedData['top_artist_month']], # top_artist_month is a single value and the slides expect a list
+            'title': 'Top Artist This Year',
+            'content': [wrappedData['top_artist_year']], # top_artist_year is a single value and the slides expect a list
         },
     ]
 
