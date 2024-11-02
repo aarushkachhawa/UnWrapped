@@ -1,160 +1,152 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Unwrapped</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Notable&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
+        /* CSS Styles */
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4; /* Light background for contrast */
+        }
+
+        body {
+            font-family: 'Notable', sans-serif;
+            background-image: url("{% static 'home/background.png' %}");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center top 100px;
         }
 
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             padding: 20px;
         }
 
-        .welcome {
-            text-align: center;
-            padding: 40px;
-            background-color: #354f2a; /* Dark green for header */
-            color: #fff; /* White text for contrast */
-            border-radius: 10px;
-            margin-bottom: 40px;
-        }
-
-        .welcome h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-
-        .welcome p {
-            font-size: 1.2em;
-            font-weight: 300;
-        }
-
-        .columns {
+        .header {
+            width: 100%; /* Full width of the viewport */
+            height: 100px;
+            background-color: #5AABF3;
             display: flex;
             justify-content: space-between;
-            gap: 20px;
+            align-items: center;
+            color: #ECD101;
+            padding: 0 40px; /* Padding on both sides */
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
 
-        .column {
-            flex: 1;
-            background-color: #fff; /* White cards for modern look */
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-            text-align: center;
-            transition: transform 0.3s ease; /* Smooth animation on hover */
+        .menu-icon {
+            color: #ECD101;
+            font-size: 65px;
+            padding: 0 40px;
+
         }
 
-        .column:hover {
-            transform: translateY(-10px); /* Slight lift effect */
-        }
-
-        h2 {
-            font-size: 1.5em;
-            color: #354f2a; /* Dark green for headings */
-            margin-bottom: 20px;
-        }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        li {
-            font-size: 1.1em;
-            color: #5e482a; /* Brown text for list items */
-            margin-bottom: 10px;
-        }
-
-        p {
-            font-size: 1.3em;
-            color: #f4e7d3;
-            margin-top: 20px;
-        }
-
-        p2 {
-            font-size: 1.3em;
-            color: #f3dd96;
-            margin-top: 20px;
-        }
-
-        .cta-button {
-            display: inline-block;
-            background-color: #5e482a; /* Brown button */
-            color: #fff;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
+        .title {
+            font-size: 36px;
             font-weight: bold;
-            transition: background-color 0.3s ease;
+            color: #ECD101;
+            text-shadow:
+                -1px -1px 0 #C64036,
+                1px -1px 0 #C64036,
+                -1px 1px 0 #C64036,
+                1px 1px 0 #C64036;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .profile {
+            color: #ECD101;
+            font-size: 20px;
+            padding: 0 30px;
             margin-top: 30px;
         }
 
-        .cta-button:hover {
-            background-color: #354f2a; /* Change to green on hover */
+        .note-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 150px;
+            margin-bottom: 20px;
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .columns {
-                flex-direction: column;
-            }
+        .note1, .note2 {
+            font-size: 64px;
+            text-shadow: 2px 2px 4px black;
+        }
 
-            .column {
-                margin-bottom: 20px;
-            }
+        .note1 {
+            color: #90c0ff;
+        }
+
+        .note2 {
+            color: #99A8E9;
+        }
+
+        .record-player {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .record-player img {
+            width: 500px;
+            height: auto;
+            display: block;
+        }
+
+        .button-wrapper {
+            margin-top: 50px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .view-unwrapped {
+            background-color: #c4b3ff;
+            color: #614f8d;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
         }
     </style>
 </head>
 <body>
+    <div class="header">
+        <div class="menu-icon">☰</div>
+        <div class="title">UNWRAPPED</div>
+        <div class="profile">PROFILE</div>
+    </div>
+
     <div class="container">
-        <div class="welcome">
-            <h1>Welcome to Your Spotify UnWrapped</h1>
-            <p>Discover your top artists, songs, and the artist of the month!</p>
+        <div class="note-icons">
+            <div class="note1">♪</div>
+            <div class="note2">♫</div>
         </div>
 
-        <div class="columns">
-            <!-- Top 5 Artists Column -->
-            <div class="column">
-                <h2>Top 5 Artists</h2>
-                <ul>
-                    {% for artist in top_artists %}
-                        <li>{{ artist }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-
-            <!-- Top 5 Songs Column -->
-            <div class="column">
-                <h2>Top 5 Songs</h2>
-                <ul>
-                    {% for song in top_songs %}
-                        <li>{{ song }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <!-- Top Artist of Month Column -->
-            <div class="column">
-                <h2>Top Artist This Month</h2>
-                {% if top_artist_month != "N/A" %}
-                    <p2>{{ top_artist_month }}</p2>
-                {% else %}
-                    <ul><li>{{ top_artist_month }}</li></ul>
-                {% endif %}
-            </div>
+        <div class="record-player">
+            <img src="{% static 'home/record_player.png' %}" alt="Record Player">
         </div>
 
-        <div class="cta" style="text-align: center;">
-            <a href="{% url 'stats' %}" class="cta-button">View My Spotify UnWrapped</a>
+        <div class="button-wrapper">
+            <a href="{% url 'stats' %}" class="view-unwrapped">VIEW UNWRAPPED</a>
         </div>
     </div>
 </body>
