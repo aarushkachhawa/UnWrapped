@@ -109,7 +109,11 @@ def spotify_auth_url():
 def home(request):
     if 'spotify_access_token' not in request.session:
         return redirect(spotify_auth_url())
+    context = getStats(request)
+    return render(request, 'home.html', context)
 
+@login_required
+def getStats(request):
     access_token = request.session['spotify_access_token']
     headers = {
         "Authorization": f"Bearer {access_token}"
@@ -129,8 +133,7 @@ def home(request):
     if response.status_code != 200 or trackResponse.status_code != 200:
         logger.error(f"Spotify API request failed: {response.status_code} - {response.text}")
         messages.error(request, "Failed to retrieve data from Spotify.")
-        return render(request, 'home.html', {'top_artists': ["N/A"], 'top_songs': ["N/A"], 'top_artist_month': "N/A"})
-
+        return {'top_artists': ["N/A"], 'top_songs': ["N/A"], 'top_artist_month': "N/A"}
 
     try:
         data = response.json()
@@ -140,17 +143,16 @@ def home(request):
         songs = top_songs_data.get('items', [])
         top_songs = [songs[i]['name'] for i in range(min(5, len(songs)))]
 
-        context = {
+        returnData = {
             'top_artists': top_artists,
             'top_songs': top_songs,
             'top_artist_month': top_artists[0] if top_artists else "Unknown",
         }
-        return render(request, 'home.html', context)
+        return returnData
     except Exception as e:
         logger.error(f"Error processing Spotify data: {e}")
         messages.error(request, "An error occurred while processing Spotify data.")
-        return render(request, 'home.html', {'top_artists': ["N/A"], 'top_songs': ["N/A"], 'top_artist_month': "N/A"})
-
+        return {'top_artists': ["N/A"], 'top_songs': ["N/A"], 'top_artist_month': "N/A"}
 
 
 def spotify_callback(request):
@@ -171,18 +173,22 @@ def stats(request):
     if 'spotify_access_token' not in request.session:
         return redirect(spotify_auth_url())
 
+    wrappedData = getStats(request)
+
     # Example Spotify data in the stats page
-    top_artists = request.session.get('spotify_top_artists', [])
-    top_songs = request.session.get('spotify_top_songs', [])
 
     slides = [
         {
             'title': 'Top Artists of the Year',
-            'content': top_artists,
+            'content': wrappedData['top_artists'],
         },
         {
             'title': 'Top Songs of the Year',
-            'content': top_songs,
+            'content': wrappedData['top_songs'],
+        },
+        {
+            'title': 'Top Artist This Month',
+            'content': [wrappedData['top_artist_month']], # top_artist_month is a single value and the slides expect a list
         },
     ]
 
