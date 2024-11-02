@@ -32,72 +32,82 @@
         }
 
         .header {
-            width: 100vw; /* Full width of the viewport */
-            height: 100px; /* Set height to 100px */
+            width: 100%; /* Full width of the viewport */
+            height: 100px;
             background-color: #5AABF3;
             display: flex;
-            justify-content: center; /* Centers title horizontally */
-            align-items: center; /* Center content vertically */
+            justify-content: space-between;
+            align-items: center;
             color: #ECD101;
-            position: fixed; /* Fixes the header to the top of the page */
+            padding: 0 40px; /* Padding on both sides */
+            position: fixed;
             top: 0;
             left: 0;
-            z-index: 1000; /* Ensures it stays above other content */
+            z-index: 1000;
         }
 
         .menu-icon {
             color: #ECD101;
-            font-size: 50px; /* Increased font size for menu icon */
-            position: absolute;
-            left: 20px; /* Position it to the left side */
+            font-size: 65px;
+            padding: 0 40px;
+
         }
 
         .title {
-            font-size: 36px; /* Increased font size for "UNWRAPPED" */
+            font-size: 36px;
             font-weight: bold;
             color: #ECD101;
             text-shadow:
-                -1px -1px 0 #FF5733,  /* Top left */
-                1px -1px 0 #FF5733,   /* Top right */
-                -1px 1px 0 #FF5733,   /* Bottom left */
-                1px 1px 0 #FF5733;    /* Bottom right */
+                -1px -1px 0 #C64036,
+                1px -1px 0 #C64036,
+                -1px 1px 0 #C64036,
+                1px 1px 0 #C64036;
+            text-align: center;
+            flex-grow: 1;
         }
 
         .profile {
             color: #ECD101;
-            font-size: 24px;
-            position: absolute;
-            right: 20px; /* Position it to the right side */
+            font-size: 20px;
+            padding: 0 30px;
+            margin-top: 30px;
         }
 
         .note-icons {
             display: flex;
             gap: 15px;
-            margin-top: 150px; /* Move notes 150px below the nav bar */
-            margin-bottom: 20px; /* Space between notes and record player */
+            margin-top: 150px;
+            margin-bottom: 20px;
         }
 
-        .note {
-            font-size: 64px; /* Increased font size for larger notes */
+        .note1, .note2 {
+            font-size: 64px;
+            text-shadow: 2px 2px 4px black;
+        }
+
+        .note1 {
             color: #90c0ff;
-            text-shadow: 2px 2px 4px black; /* Black drop shadow */
+        }
+
+        .note2 {
+            color: #99A8E9;
         }
 
         .record-player {
-            margin-top: 20px; /* Reduced margin-top since note-icons now has a top margin */
+            margin-top: 20px;
             display: flex;
-            justify-content: center; /* Center the image */
+            justify-content: center;
             width: 100%;
         }
 
         .record-player img {
-            width: 500px; /* Increased width for larger image */
+            width: 500px;
             height: auto;
             display: block;
         }
 
         .button-wrapper {
-            margin-top: 50px; /* Space between record player and button */
+            margin-top: 50px;
             display: flex;
             justify-content: center;
             width: 100%;
@@ -112,7 +122,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            text-decoration: none; /* Remove underline for link styling */
+            text-decoration: none;
             text-align: center;
             display: inline-block;
         }
@@ -127,8 +137,8 @@
 
     <div class="container">
         <div class="note-icons">
-            <div class="note">♪</div>
-            <div class="note">♫</div>
+            <div class="note1">♪</div>
+            <div class="note2">♫</div>
         </div>
 
         <div class="record-player">
