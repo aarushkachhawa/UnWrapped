@@ -6,6 +6,9 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from .forms import CustomUserCreationForm
 from django.contrib.auth.decorators import login_required
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Spotify credentials from settings.py
 SPOTIFY_CLIENT_ID = settings.SPOTIFY_CLIENT_ID
@@ -102,10 +105,8 @@ def spotify_auth_url():
     )
     return auth_url
 
-
 @login_required
 def home(request):
-    # Redirect user to Spotify authorization if no access token
     if 'spotify_access_token' not in request.session:
         return redirect(spotify_auth_url())
 
@@ -114,10 +115,8 @@ def home(request):
         "Authorization": f"Bearer {access_token}"
     }
 
-    # Fetch top artists
     response = requests.get(SPOTIFY_API_URL, headers=headers)
     if response.status_code == 401:
-        # Token expired or invalid, refresh it
         refresh_token = request.session.get('spotify_refresh_token')
         new_tokens = refresh_spotify_token(refresh_token)
         access_token = new_tokens.get('access_token')
@@ -125,30 +124,28 @@ def home(request):
         headers["Authorization"] = f"Bearer {access_token}"
         response = requests.get(SPOTIFY_API_URL, headers=headers)
 
-    # Extract and process top artist data
+    if response.status_code != 200:
+        logger.error(f"Spotify API request failed: {response.status_code} - {response.text}")
+        messages.error(request, "Failed to retrieve data from Spotify.")
+        return render(request, 'home.html', {'top_artists': ["N/A"], 'top_songs': ["N/A"], 'top_artist_month': "N/A"})
+
     try:
         data = response.json()
-        # top_artists = [artist['name'] for artist in data.get('items', [])]
         artists = data.get('items', [])
         top_artists = [artists[i]['name'] for i in range(min(5, len(artists)))]
-
-        # Fetch top songs similarly (you would add this for top songs)
         top_songs = []  # Placeholder for actual API call
 
         context = {
             'top_artists': top_artists,
-            'top_songs': top_songs,  # Placeholder until added
+            'top_songs': top_songs,
             'top_artist_month': top_artists[0] if top_artists else "Unknown",
         }
+        return render(request, 'home.html', context)
+    except Exception as e:
+        logger.error(f"Error processing Spotify data: {e}")
+        messages.error(request, "An error occurred while processing Spotify data.")
+        return render(request, 'home.html', {'top_artists': ["N/A"], 'top_songs': ["N/A"], 'top_artist_month': "N/A"})
 
-        return render(request, 'home.html', context)
-    except: # PLACEHOLDER: PUT MESSAGE WHEN EXCEPT IS TRIGGERED IN THE FUTURE??
-        context = {
-            'top_artists': ["N/A"],
-            'top_songs': ["N/A"],  # Placeholder until added
-            'top_artist_month': "N/A",
-        }
-        return render(request, 'home.html', context)
 
 
 def spotify_callback(request):
