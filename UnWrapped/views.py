@@ -114,6 +114,10 @@ def home(request):
 
 @login_required
 def getStats(request):
+
+    if 'wrappedData' in request.session:
+        return request.session['wrappedData']
+
     access_token = request.session['spotify_access_token']
     headers = {
         "Authorization": f"Bearer {access_token}"
@@ -148,6 +152,7 @@ def getStats(request):
             'top_songs': top_songs,
             'top_artist_month': top_artists[0] if top_artists else "Unknown",
         }
+        request.session['wrappedData'] = returnData
         return returnData
     except Exception as e:
         logger.error(f"Error processing Spotify data: {e}")
