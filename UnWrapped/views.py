@@ -255,5 +255,120 @@ def calculate_ads(request):
     print(ads_minutes)
     return redirect('home')
 
+def get_most_popular_artists(request):
+    access_token = request.session.get('spotify_access_token')
 
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
 
+    parameters = {
+        "limit": 3,
+        "time_range": "long_term"
+    }
+
+    top_3_artists = {}
+    response = requests.get(f"{SPOTIFY_BASE_URL}/top/artists", headers=headers, params=parameters)
+
+    if response.status_code == 401:
+        refresh_token = request.session.get('spotify_refresh_token')
+        new_tokens = refresh_spotify_token(refresh_token)
+        access_token = new_tokens.get('access_token')
+        request.session['spotify_access_token'] = access_token
+        headers = {
+            "Authorization": f"Bearer {access_token}"
+        }
+        response = requests.get(f"{SPOTIFY_BASE_URL}/top/artists", headers=headers, params=parameters)
+
+    if response.status_code != 200:
+        print(response.text, "Error: Couldn't get top artists from Spotify & some statistics will be impacted.")
+        return redirect('home')
+
+    response_json = response.json()
+    count = 1
+    for artist in response_json['items']:
+        top_3_artists[artist["name"]] = [count]
+        count += 1
+
+    # get the top 3 overall artists' positions in the last ~6 months
+    num_found = 0
+    parameters["time_range"] = "medium_term"
+    parameters["limit"] = 50
+    medium_url = f"{SPOTIFY_BASE_URL}/top/artists"
+
+    while num_found < 3 and medium_url is not None:
+        response = requests.get(medium_url, headers=headers, params=parameters)
+
+        if response.status_code == 401:
+            refresh_token = request.session.get('spotify_refresh_token')
+            new_tokens = refresh_spotify_token(refresh_token)
+            access_token = new_tokens.get('access_token')
+            request.session['spotify_access_token'] = access_token
+            headers = {
+                "Authorization": f"Bearer {access_token}"
+            }
+            response = requests.get(medium_url, headers=headers, params=parameters)
+
+        if response.status_code != 200:
+            print(response.text, "Error: Couldn't get top artists from Spotify & some statistics will be impacted.")
+            return redirect('home')
+
+        response_json = response.json()
+        count = 1
+        for artist in response_json['items']:
+            if artist['name'] in top_3_artists.keys():
+                top_3_artists[artist['name']].append(count)
+                num_found += 1
+            count += 1
+
+            if num_found == 3:
+                break
+
+        medium_url = response_json["next"]
+
+    for artist in top_3_artists:
+        if len(top_3_artists[artist]) != 2:
+            top_3_artists[artist].append(None) # artist wasn't in the top artists during this time period
+
+    # get the rankings of the artists in the last ~1 month
+    num_found = 0
+    parameters["time_range"] = "short_term"
+    parameters["limit"] = 50
+    short_url = f"{SPOTIFY_BASE_URL}/top/artists"
+
+    while num_found < 3 and short_url is not None:
+        response = requests.get(short_url, headers=headers, params=parameters)
+
+        if response.status_code == 401:
+            refresh_token = request.session.get('spotify_refresh_token')
+            new_tokens = refresh_spotify_token(refresh_token)
+            access_token = new_tokens.get('access_token')
+            request.session['spotify_access_token'] = access_token
+            headers = {
+                "Authorization": f"Bearer {access_token}"
+            }
+            response = requests.get(short_url, headers=headers, params=parameters)
+
+        if response.status_code != 200:
+            print(response.text, "Error: Couldn't get top artists from Spotify & some statistics will be impacted.")
+            return redirect('home')
+
+        response_json = response.json()
+        count = 1
+        for artist in response_json['items']:
+            if artist['name'] in top_3_artists.keys():
+                top_3_artists[artist['name']].append(count)
+                num_found += 1
+            count += 1
+
+            if num_found == 3:
+                break
+
+        short_url = response_json["next"]
+
+    for artist in top_3_artists:
+        if len(top_3_artists[artist]) != 3:
+            top_3_artists[artist].append(None)  # artist wasn't in the top artists during this time period
+
+    print(top_3_artists)
+    return JsonResponse(top_3_artists)
