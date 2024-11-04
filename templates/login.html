@@ -209,12 +209,18 @@
                 <span class="music-note">♪</span>
                 <span class="music-note">♫</span>
             </div>
-            <div class="vinyl-record">
+            <div class="vinyl-record" onclick="redirectToHome()">
                 <div class="record-base"></div>
                 <div class="record-grooves"></div>
                 <div class="record-label">ENTER</div>
             </div>
         </form>
     </div>
+
+    <script>
+        function redirectToHome() {
+            window.location.href = "home.html";  // Replace "home.html" with your actual home page URL
+        }
+    </script>
 </body>
 </html>
