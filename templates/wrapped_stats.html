@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wrapped Stats</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 16px;
+            background: white;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .title {
+            font-family: Impact, sans-serif;
+            font-size: 22px;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .blue-container {
+            background: #7CB9E8;
+            padding: 16px;
+            border-radius: 12px;
+        }
+
+        .unwrapped-text {
+            color: white;
+            font-family: Impact, sans-serif;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .white-container {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rainbow-corner {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            opacity: 0.2;
+        }
+
+        .top-left {
+            top: -15px;
+            left: -15px;
+        }
+
+        .bottom-right {
+            bottom: -15px;
+            right: -15px;
+            transform: rotate(180deg);
+        }
+
+        .subtitle {
+            color: #FF4B4B;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 32px;
+        }
+
+        .artist-section {
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .album-art {
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .album-shadow {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 25%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .artist-name {
+            font-family: Impact, sans-serif;
+            color: #4169E1;
+            font-size: 28px;
+            position: absolute;
+            left: 160px;
+            bottom: 0;
+        }
+
+        .songs-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .song-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .record-disk {
+            width: 20px;
+            height: 20px;
+            background: black;
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .record-center {
+            width: 10px;
+            height: 10px;
+            border: 1px solid #333;
+            border-radius: 50%;
+        }
+
+        .record-hole {
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .song-title {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .song-artist {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #ddd;
+        }
+
+        .dot.active {
+            background: black;
+        }
+
+        .nav-arrow {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Title -->
+        <h1 class="title">SLIDE #1: TOP ARTIST & TOP 5 SONGS</h1>
+
+        <!-- Main blue container -->
+        <div class="blue-container">
+            <!-- Unwrapped text -->
+            <div class="unwrapped-text">UNWRAPPED</div>
+
+            <!-- White container -->
+            <div class="white-container">
+                <!-- Rainbow corners -->
+                <svg class="rainbow-corner top-left">
+                    <path d="M0 35 A 35 35 0 0 1 35 0" stroke="#FF0000" fill="none" stroke-width="6"/>
+                    <path d="M0 25 A 25 25 0 0 1 25 0" stroke="#FFA500" fill="none" stroke-width="6"/>
+                    <path d="M0 15 A 15 15 0 0 1 15 0" stroke="#FFFF00" fill="none" stroke-width="6"/>
+                    <path d="M0 45 A 45 45 0 0 1 45 0" stroke="#4B0082" fill="none" stroke-width="6"/>
+                </svg>
+                <svg class="rainbow-corner bottom-right">
+                    <path d="M0 35 A 35 35 0 0 1 35 0" stroke="#FF0000" fill="none" stroke-width="6"/>
+                    <path d="M0 25 A 25 25 0 0 1 25 0" stroke="#FFA500" fill="none" stroke-width="6"/>
+                    <path d="M0 15 A 15 15 0 0 1 15 0" stroke="#FFFF00" fill="none" stroke-width="6"/>
+                    <path d="M0 45 A 45 45 0 0 1 45 0" stroke="#4B0082" fill="none" stroke-width="6"/>
+                </svg>
+
+                <!-- Subtitle -->
+                <h2 class="subtitle">YOUR TOP ARTIST & TOP 5 SONGS</h2>
+
+                <!-- Artist section -->
+                <div class="artist-section">
+                    <div class="album-art">
+                        <div class="album-shadow"></div>
+                    </div>
+                    <div class="artist-name">BRUNO MARS</div>
+                </div>
+
+                <!-- Songs list -->
+                <div class="songs-list">
+                    <div class="song-item">
+                        <div class="record-disk">
+                            <div class="record-center"></div>
+                            <div class="record-hole"></div>
+                        </div>
+                        <span class="song-title" style="color: #1E90FF;">TELEPATIA</span>
+                        <span class="song-artist">Kali Uchis</span>
+                    </div>
+
+                    <div class="song-item">
+                        <div class="record-disk">
+                            <div class="record-center"></div>
+                            <div class="record-hole"></div>
+                        </div>
+                        <span class="song-title" style="color: #FF69B4;">WHITE HORSE</span>
+                        <span class="song-artist">Chris Stapleton</span>
+                    </div>
+
+                    <div class="song-item">
+                        <div class="record-disk">
+                            <div class="record-center"></div>
+                            <div class="record-hole"></div>
+                        </div>
+                        <span class="song-title" style="color: #32CD32;">FEATHER</span>
+                        <span class="song-artist">Sabrina Carpenter</span>
+                    </div>
+
+                    <div class="song-item">
+                        <div class="record-disk">
+                            <div class="record-center"></div>
+                            <div class="record-hole"></div>
+                        </div>
+                        <span class="song-title" style="color: #FF4500;">MEAN IT</span>
+                        <span class="song-artist">Charlie Abrams</span>
+                    </div>
+
+                    <div class="song-item">
+                        <div class="record-disk">
+                            <div class="record-center"></div>
+                            <div class="record-hole"></div>
+                        </div>
+                        <span class="song-title" style="color: #9370DB;">APL</span>
+                        <span class="song-artist">ROSE, Bruno Mars</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M15 18l-6-6 6-6"/>
+            </svg>
+            <div class="dots">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 18l6-6-6-6"/>
+            </svg>
+        </div>
+    </div>
+</body>
+</html>
