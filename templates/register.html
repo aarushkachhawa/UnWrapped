@@ -102,63 +102,29 @@
             background-color: #e3f2fd;
         }
 
-        .vinyl-record {
-            width: 120px;
-            height: 120px;
-            margin: 2rem auto;
-            position: relative;
+        .join-button {
+            width: 100%;
+            padding: 1rem;
+            background-color: #FF0000;
+            color: #FFD700;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            font-weight: bold;
             cursor: pointer;
+            text-transform: uppercase;
             transition: transform 0.3s ease;
         }
 
-        .vinyl-record:hover {
-            transform: scale(1.1);
-        }
-
-        .record-base {
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            border-radius: 50%;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        .record-grooves {
-            position: absolute;
-            top: 5%;
-            left: 5%;
-            width: 90%;
-            height: 90%;
-            border-radius: 50%;
-            background: repeating-radial-gradient(
-                circle at center,
-                #000000,
-                #000000 2px,
-                #222222 2px,
-                #222222 4px
-            );
-        }
-
-        .record-label {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 40%;
-            height: 40%;
-            background-color: #FF0000;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            color: #FFD700;
-            font-size: 1.2rem;
-            text-transform: uppercase;
+        .join-button:hover {
+            transform: scale(1.05);
         }
     </style>
+    <script>
+        function redirectToHome() {
+            window.location.href = "/home";  // Redirect to the home page
+        }
+    </script>
 </head>
 <body>
     <div class="container">
@@ -166,7 +132,7 @@
         <div class="rainbow-corner bottom-left"></div>
         <div class="header">UNWRAPPED</div>
         <h1>REGISTER!</h1>
-        <form>
+        <form onsubmit="redirectToHome(); return false;">
             <div class="form-group">
                 <label>USERNAME:</label>
                 <input type="text" required>
@@ -183,11 +149,7 @@
                 <label>CONFIRM:</label>
                 <input type="password" class="confirm" required>
             </div>
-            <div class="vinyl-record">
-                <div class="record-base"></div>
-                <div class="record-grooves"></div>
-                <div class="record-label">JOIN</div>
-            </div>
+            <button type="submit" class="join-button">JOIN</button>
         </form>
     </div>
 </body>
