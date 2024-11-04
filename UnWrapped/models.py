@@ -36,3 +36,26 @@ class CustomWrap(models.Model): # there can only be one wrap per day
 
     def __str__(self):
         return f"Wrap for {self.year} by {self.user.name}"
+    
+
+# top_songs_data = [
+#     {"song_title": "Song Title 1", "artist": "Artist 1"},
+#     {"song_title": "Song Title 2", "artist": "Artist 2"},
+#     {"song_title": "Song Title 3", "artist": "Artist 3"},
+#     {"song_title": "Song Title 4", "artist": "Artist 4"},
+#     {"song_title": "Song Title 5", "artist": "Artist 5"},
+# ]
+
+# wrap_instance = CustomWrap(user=user_instance, year=2024, top_songs=top_songs_data)
+# wrap_instance.save()  # This will create a new wrap
+
+# # If you call save again on the same date, it will update the existing wrap
+# wrap_instance.top_songs = [
+#     {"song_title": "Updated Song Title 1", "artist": "Updated Artist 1"},
+#     {"song_title": "Updated Song Title 2", "artist": "Updated Artist 2"},
+#     {"song_title": "Updated Song Title 3", "artist": "Updated Artist 3"},
+#     {"song_title": "Updated Song Title 4", "artist": "Updated Artist 4"},
+#     {"song_title": "Updated Song Title 5", "artist": "Updated Artist 5"},
+# ]
+
+# wrap_instance.save()  # This will update the existing wrap only if called on the same date
