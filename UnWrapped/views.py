@@ -24,7 +24,6 @@ def logout_view(request):
     messages.info(request, "You have successfully logged out.")
     return redirect('login')
 
-
 def register(request):
     if request.user.is_authenticated:
         return redirect('home')
