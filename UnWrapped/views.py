@@ -52,7 +52,7 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, "Successfully logged in")
-                return redirect('home')
+                return redirect('unwrapped: home')
             else:
                 messages.error(request, 'Invalid username or password.')
         else:
