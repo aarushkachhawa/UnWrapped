@@ -1,4 +1,5 @@
 import requests
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.contrib.auth import login, authenticate, logout
@@ -7,6 +8,7 @@ from django.contrib import messages
 from .forms import CustomUserCreationForm
 from django.contrib.auth.decorators import login_required
 import logging
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -14,10 +16,11 @@ logger = logging.getLogger(__name__)
 SPOTIFY_CLIENT_ID = settings.SPOTIFY_CLIENT_ID
 SPOTIFY_CLIENT_SECRET = settings.SPOTIFY_CLIENT_SECRET
 SPOTIFY_REDIRECT_URI = settings.SPOTIFY_REDIRECT_URI
-SPOTIFY_SCOPE = 'user-top-read'  # Add more scopes if needed
+SPOTIFY_SCOPE = 'user-top-read user-read-recently-played'  # Add more scopes if needed
 SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token"
 SPOTIFY_API_URL = "https://api.spotify.com/v1/me/top/artists"
 SPOTIFY_TRACK_URL = "https://api.spotify.com/v1/me/top/tracks"
+SPOTIFY_BASE_URL = "https://api.spotify.com/v1/me"
 
 def logout_view(request):
     logout(request)
@@ -191,3 +194,66 @@ def stats(request):
     }
 
     return render(request, 'stats.html', context)
+
+
+@login_required
+def get_last_50_songs(request):
+    access_token = request.session.get('spotify_access_token')
+
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+
+    parameters = {
+        "limit": 50
+    }
+
+    songs_list = []
+    response = requests.get(f"{SPOTIFY_BASE_URL}/player/recently-played", headers=headers, params=parameters)
+
+    if response.status_code == 401:
+        refresh_token = request.session.get('spotify_refresh_token')
+        new_tokens = refresh_spotify_token(refresh_token)
+        access_token = new_tokens.get('access_token')
+        request.session['spotify_access_token'] = access_token
+        headers = {
+            "Authorization": f"Bearer {access_token}"
+        }
+        response = requests.get(f"{SPOTIFY_BASE_URL}/player/recently-played", headers=headers, params=parameters)
+
+    if response.status_code != 200:
+        print(response.text, "Error: Couldn't get last 50 songs played from Spotify & some statistics will be impacted.")
+        return redirect('home')
+
+    response_json = response.json()
+    for track in response_json['items']:
+        songs_list.append(track)
+
+    return songs_list
+
+
+def calculate_ads(request):
+    seconds_in_a_month = 2.628e+6
+
+    last_50_songs = get_last_50_songs(request) # we should make this only get called once when stats are calculated, for now tho we'll call it again here
+    oldest_time = datetime.fromisoformat(last_50_songs[-1]['played_at'][:-1])
+    newest_time = datetime.fromisoformat(last_50_songs[0]['played_at'][:-1])
+    time_dif = newest_time - oldest_time
+    print(oldest_time, newest_time)
+    multiplier = seconds_in_a_month / time_dif.total_seconds()
+
+    total_listening_time = 0
+    for song in last_50_songs:
+        total_listening_time += song['track']['duration_ms']
+
+    print(total_listening_time)
+
+    total_listening_hours = total_listening_time / 3.6e+6
+    listening_hours_for_a_month = total_listening_hours * multiplier
+    ads_minutes = listening_hours_for_a_month * 3
+
+    print(ads_minutes)
+    return redirect('home')
+
+
+
