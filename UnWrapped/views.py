@@ -372,3 +372,54 @@ def get_most_popular_artists(request):
 
     print(top_3_artists)
     return JsonResponse(top_3_artists)
+
+# used for your seasonal mood (get top 100 songs in the last ~1 month), gets top 100 songs and the artists
+def get_recent_top_songs(request):
+    tracks_url = f"{SPOTIFY_BASE_URL}/top/tracks"
+    access_token = request.session.get('spotify_access_token')
+
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+
+    parameters = {
+        "limit": 50
+    }
+
+    songs_list = []
+
+    for i in range(2):
+        response = requests.get(tracks_url, headers=headers, params=parameters)
+
+        if response.status_code == 401:
+            refresh_token = request.session.get('spotify_refresh_token')
+            new_tokens = refresh_spotify_token(refresh_token)
+            access_token = new_tokens.get('access_token')
+            request.session['spotify_access_token'] = access_token
+            headers = {
+                "Authorization": f"Bearer {access_token}"
+            }
+            response = requests.get(tracks_url, headers=headers, params=parameters)
+
+        if response.status_code != 200:
+            print(response.text,
+                  "Error: Couldn't get top 100 songs from Spotify & some statistics will be impacted.")
+            return redirect('home')
+
+        response_json = response.json()
+        for track in response_json['items']:
+            artists_list = []
+            for artist in track["artists"]:
+                artists_list.append(artist["name"])
+            songs_list.append({
+                "song_name": track["name"],
+                "artists": artists_list,
+            })
+
+        if response_json['next'] is None:
+            break
+
+        tracks_url = response_json['next']
+
+    return JsonResponse(songs_list, safe=False)
+
