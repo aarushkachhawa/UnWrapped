@@ -1,5 +1,5 @@
 import requests
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.contrib.auth import login, authenticate, logout
@@ -9,6 +9,8 @@ from .forms import CustomUserCreationForm
 from django.contrib.auth.decorators import login_required
 import logging
 from datetime import datetime
+from openai import OpenAI
+from .localSettings import OPENAI_API_KEY
 
 logger = logging.getLogger(__name__)
 
@@ -421,5 +423,24 @@ def get_recent_top_songs(request):
 
         tracks_url = response_json['next']
 
-    return JsonResponse(songs_list, safe=False)
+    return songs_list
 
+def analyze_seasonal_mood(request):
+    client = OpenAI(api_key=OPENAI_API_KEY)
+    songs = str(get_recent_top_songs(request))
+    print(songs)
+    print('\n\n\n\n\n')
+
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a music analyst."},
+            {"role": "user", "content": "The following 100 songs are the songs a user listened to most frequently this season. Describe the music they listened to using 6 adjectives and give an example song for each adjective from their top 100 songs. Follow this format for all 6 adjectives/moods: Mood: Song Title by Artist"},
+            {"role": "user", "content": songs}
+        ]
+    )
+    
+    description = response.choices[0].message
+    print(description)
+
+    return HttpResponse(description)
