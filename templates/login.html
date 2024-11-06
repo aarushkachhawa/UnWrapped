@@ -187,40 +187,43 @@
         <div class="rainbow-corner top-right"></div>
         <div class="rainbow-corner bottom-left"></div>
         <div class="header">UNWRAPPED</div>
-        <h1>LOGIN</h1>
-        <form>
-            <div class="form-group">
-                <label>USERNAME:</label>
-                <input type="text" required>
-            </div>
-            <div class="form-group">
-                <label>PASSWORD:</label>
-                <input type="password" required>
-            </div>
-            <div class="music-notes">
-                <span class="music-note">♪</span>
-                <span class="music-note">♫</span>
-                <span class="music-note">♪</span>
-                <span class="music-note">♫</span>
-                <span class="music-note">♪</span>
-                <span class="music-note">♫</span>
-                <span class="music-note">♪</span>
-                <span class="music-note">♫</span>
-                <span class="music-note">♪</span>
-                <span class="music-note">♫</span>
-            </div>
-            <div class="vinyl-record" onclick="redirectToHome()">
-                <div class="record-base"></div>
-                <div class="record-grooves"></div>
-                <div class="record-label">ENTER</div>
-            </div>
+        <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+            <h1>LOGIN</h1>
+                    <div class="form-group">
+                        {{ form.username.label_tag }}
+                        {{ form.username }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.password.label_tag }}
+                        {{ form.password }}
+                    </div>
+                <div class="music-notes">
+                    <span class="music-note">♪</span>
+                    <span class="music-note">♫</span>
+                    <span class="music-note">♪</span>
+                    <span class="music-note">♫</span>
+                    <span class="music-note">♪</span>
+                    <span class="music-note">♫</span>
+                    <span class="music-note">♪</span>
+                    <span class="music-note">♫</span>
+                    <span class="music-note">♪</span>
+                    <span class="music-note">♫</span>
+                </div>
+                <div class="vinyl-record" onclick="document.forms[0].submit();">
+                    <div class="record-base"></div>
+                    <div class="record-grooves"></div>
+                    <div class="record-label">ENTER</div>
+                </div>
         </form>
     </div>
-
-    <script>
-        function redirectToHome() {
-            window.location.href = "home.html";  // Replace "home.html" with your actual home page URL
-        }
-    </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
