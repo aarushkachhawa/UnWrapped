@@ -22,6 +22,7 @@
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center top 100px;
+            transition: background-color 0.3s ease, color 0.3s ease, background-image 0.3s ease;
         }
 
         .container {
@@ -32,14 +33,14 @@
         }
 
         .header {
-            width: 100%; /* Full width of the viewport */
+            width: 100%;
             height: 100px;
             background-color: #5AABF3;
             display: flex;
             justify-content: space-between;
             align-items: center;
             color: #ECD101;
-            padding: 0 40px; /* Padding on both sides */
+            padding: 0 40px;
             position: fixed;
             top: 0;
             left: 0;
@@ -50,7 +51,6 @@
             color: #ECD101;
             font-size: 65px;
             padding: 0 40px;
-
         }
 
         .title {
@@ -126,9 +126,58 @@
             text-align: center;
             display: inline-block;
         }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #121212;
+            color: #E0E0E0;
+            background-image: url("{% static 'home/background_dark.png' %}");
+        }
+
+        .dark-mode .header {
+            background-color: #333;
+            color: #FDD835;
+        }
+
+        .dark-mode .title {
+            color: #FDD835;
+            text-shadow: none;
+        }
+
+        .dark-mode .menu-icon, .dark-mode .profile, .dark-mode .note1, .dark-mode .note2 {
+            color: #FDD835;
+        }
+
+        .dark-mode .view-unwrapped {
+            background-color: #673AB7;
+            color: #FFFFFF;
+        }
+
+        /* Neon Blue Style for Toggle Button in Dark Mode */
+        .dark-mode .toggle-button {
+            background-color: #1e90ff; /* Neon blue */
+            color: #ffffff;
+            box-shadow: 0 0 10px #1e90ff, 0 0 20px #1e90ff, 0 0 30px #1e90ff;
+        }
+
+        /* Toggle Button Styles */
+        .toggle-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1001;
+        }
     </style>
 </head>
 <body>
+    <button class="toggle-button" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+
     <div class="header">
         <div class="menu-icon">☰</div>
         <div class="title">UNWRAPPED</div>
@@ -149,5 +198,12 @@
             <a href="{% url 'stats' %}" class="view-unwrapped">VIEW UNWRAPPED</a>
         </div>
     </div>
+
+    <script>
+        // Function to toggle dark mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+    </script>
 </body>
 </html>
