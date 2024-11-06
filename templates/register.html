@@ -102,6 +102,15 @@
             background-color: #e3f2fd;
         }
 
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #d32f2f;
+        }
+
         .vinyl-record {
             width: 120px;
             height: 120px;
@@ -159,11 +168,6 @@
             text-transform: uppercase;
         }
     </style>
-    <script>
-        function redirectToHome() {
-            window.location.href = "/home";  // Redirect to the home page
-        }
-    </script>
 </head>
 <body>
     <div class="container">
@@ -171,25 +175,26 @@
         <div class="rainbow-corner bottom-left"></div>
         <div class="header">UNWRAPPED</div>
         <h1>REGISTER!</h1>
-        <form>
+        <form method="POST" action="{% url 'register' %}">
+            {% csrf_token %}
             <div class="form-group">
-                <label>USERNAME:</label>
-                <input type="text" required>
+                {{ form.username.label_tag }}
+                {{ form.username }}
             </div>
             <div class="form-group">
-                <label>EMAIL:</label>
-                <input type="email" required>
+                {{ form.name.label_tag }}
+                {{ form.name }}
             </div>
             <div class="form-group">
-                <label>PASSWORD:</label>
-                <input type="password" required>
+                {{ form.password1.label_tag }}
+                {{ form.password1 }}
             </div>
             <div class="form-group">
-                <label>CONFIRM:</label>
-                <input type="password" class="confirm" required>
+                {{ form.password2.label_tag }}
+                {{ form.password2 }}
             </div>
             <!-- Vinyl record button -->
-            <div class="vinyl-record" onclick="redirectToHome()">
+            <div class="vinyl-record" onclick="document.forms[0].submit();">
                 <div class="record-base"></div>
                 <div class="record-grooves"></div>
                 <div class="record-label">JOIN</div>
