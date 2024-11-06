@@ -1,0 +1,17 @@
+.alert ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Style error messages in red */
+.alert-danger {
+    color: #d32f2f;
+    font-weight: bold;
+}
+
+/* Style success messages in green */
+.alert-success {
+    color: #388e3c;
+    font-weight: bold;
+}
