@@ -1,4 +1,5 @@
 import requests
+from django.db.models.functions import NullIf
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.conf import settings
@@ -8,7 +9,7 @@ from django.contrib import messages
 from .forms import CustomUserCreationForm
 from django.contrib.auth.decorators import login_required
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 from openai import OpenAI
 from .localSettings import OPENAI_API_KEY
 
@@ -254,8 +255,9 @@ def calculate_ads(request):
     listening_hours_for_a_month = total_listening_hours * multiplier
     ads_minutes = listening_hours_for_a_month * 3
 
-    print(ads_minutes)
-    return redirect('home')
+    if ads_minutes > 360:
+        ads_minutes = "over 360"
+    return HttpResponse(ads_minutes)
 
 def get_most_popular_artists(request):
     access_token = request.session.get('spotify_access_token')
@@ -444,3 +446,77 @@ def analyze_seasonal_mood(request):
     print(description)
 
     return HttpResponse(description)
+
+
+def analyze_clothing(request):
+    client = OpenAI(api_key=OPENAI_API_KEY)
+    songs = str(get_recent_top_songs(request))
+    print(songs)
+    print('\n\n\n\n\n')
+
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a style analyst."},
+            {"role": "user",
+             "content": "The following 100 songs are the songs a user listened to most frequently recently. Describe their style in the following format: Mood: description, Relationship Status: description, Favorite Color: description, Favorite Emoji: description. Here is an example of output: `Mood: Black/Dark Scheme, Relationship Status: Heartbroken, Favorite Color: Black, Favorite Emoji: Skull`"},
+            {"role": "user", "content": songs}
+        ]
+    )
+
+    description = response.choices[0].message
+    print(description)
+
+    return HttpResponse(description.content)
+
+def night_owl(request): # combine this into one calculate stats method so we don't need to call get last 50 songs multiple times
+    last_50_songs = get_last_50_songs(request)
+
+    time_list = []
+    for song in last_50_songs:
+        listening_time = song['played_at']
+        datetime_obj = datetime.fromisoformat(listening_time)
+        datetime_obj = datetime_obj - timedelta(hours=5) # convert from GMT to EST
+        time_list.append({
+            "hour": (datetime_obj.hour - 5) % 24, # latest hour is 5 AM
+            "minute": datetime_obj.minute,
+            "track_length": song["track"]["duration_ms"]
+        })
+
+    latest_time = time_list[0]
+    for song in time_list:
+        if (song["hour"] > latest_time["hour"]) or (song["hour"] == latest_time["hour"] and song["minute"] > latest_time["minute"]):
+            latest_time = song
+
+    time_ranges = {
+        "0-5": 0,
+        "6-11": 0,
+        "12-17": 0,
+        "18-23": 0
+    }
+
+    total_time = 0
+
+    for song in time_list:
+        hour = song["hour"]
+        total_time += song["track_length"]
+
+        if hour >= 0 and hour <= 5:
+            time_ranges["0-5"] += (song["track_length"])
+        elif hour >= 6 and hour <= 11:
+            time_ranges["6-11"] += (song["track_length"])
+        elif hour >= 12 and hour <= 17:
+            time_ranges["12-17"] += (song["track_length"])
+        else:
+            time_ranges["18-23"] += (song["track_length"])
+
+    latest_time["hour"] = (latest_time["hour"] + 5) % 24
+    print("latest", latest_time)
+
+    for key in time_ranges:
+        time_ranges[key] = round(time_ranges[key] / 60000)
+    print("time per hour range:", time_ranges)
+
+    total_time = round(total_time / 60000)
+    print("total minutes:", total_time)
+    return HttpResponse(latest_time)
