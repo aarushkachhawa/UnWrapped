@@ -17,7 +17,13 @@ class CustomWrap(models.Model): # there can only be one wrap per day
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='wraps')  # Establishing the relationship
     wrapDate = models.DateTimeField(auto_now_add=True)  # Automatically set the field to now when the object is first created
     year = models.IntegerField(default=datetime.now().year)  # Default to the current year
-    top_songs = models.JSONField()  # Field to store top 5 songs and artists as a JSON object
+    top_songs_month = models.JSONField(default=dict())  # Field to store top 5 songs and artists as a JSON object
+    top_songs_6_month = models.JSONField(default=dict())
+    top_songs_year = models.JSONField(default=dict())
+    top_artist_year = models.CharField(max_length=500, default="Unknown")
+    top_artist_month = models.CharField(max_length=500, default="Unknown")
+    llm_insights = models.JSONField(default=dict())
+    ad_time = models.IntegerField(default=0)
 
     def save(self, *args, **kwargs):
         # Check if a wrap for the same user and year exists
@@ -37,6 +43,14 @@ class CustomWrap(models.Model): # there can only be one wrap per day
     def __str__(self):
         return f"Wrap for {self.year} by {self.user.name}"
     
+# llm_insights_data = [
+#     {"Mood": "Something"},
+#     {"Relationship Status": "Something"},
+#     {"Favorite Color": "Something"},
+#     {"Favorite Emoji", "Something"},
+#     {"Description": "You are a very dark person..."},
+# ]
+
 
 # top_songs_data = [
 #     {"song_title": "Song Title 1", "artist": "Artist 1"},
