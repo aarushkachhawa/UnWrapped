@@ -105,9 +105,15 @@
             height: 200px;
         }
 
+        .artist-vinyl {
+            width: 160px;
+            height: 400px;
+        }
+
         .top-artist-section h2 {
             font-size: 32px;
-            color: #3E3E3E;
+            color: #5AABF3;
+            text-shadow: 2px 2px 4px rgba(199, 58, 68, 1);
             margin-top: 10px;
         }
 
@@ -125,16 +131,16 @@
         }
 
         .songs-column:nth-child(2) {
-            margin-top: 80px; /* Offset for the right column */
+            margin-top: 130px; /* Offset for the right column */
             margin-left: 80px; /* Offset for the right column */
         }
 
         .song {
-            display: flex;
+            /*display: flex;*/
             align-items: center;
             gap: 15px;
             background-color: #FCF8F1;
-            padding: 45px 15px;
+            padding: 20px 15px;
             width: 100%;
         }
 
@@ -174,6 +180,8 @@
             color: #000000;
             margin: 0;
         }
+
+
     </style>
 </head>
 <body>
@@ -194,7 +202,7 @@
         <!-- Top Artist Section on the Left -->
         <div class="top-artist-section">
             <div class="artist-info">
-                <img src="{% static 'topArtist/album_cover_record.png' %}" class="artist-image">
+                <img src="{% static 'topArtist/album_cover_record.png' %}" class="artist-vinyl">
                 <h2>Bruno Mars</h2>
             </div>
         </div>
