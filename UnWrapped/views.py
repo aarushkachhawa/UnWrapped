@@ -171,7 +171,7 @@ def spotify_callback(request):
 
     return redirect('home')
 
-
+"""
 @login_required
 def stats(request):
     if 'spotify_access_token' not in request.session:
@@ -201,3 +201,23 @@ def stats(request):
     }
 
     return render(request, 'stats.html', context)
+"""
+
+@login_required
+def top_artist_and_songs_slide(request):
+    # Fetch Spotify data (top artists and top songs)
+    wrapped_data = getStats(request)
+
+    # Prepare context with both top artist and top songs
+    context = {
+        'title': 'Top Artist and Top Songs of the Year',
+        'top_artist': wrapped_data['top_artist_year'],
+        'top_songs': wrapped_data['top_songs']
+    }
+
+    # Render a single template with both top artist and top songs
+    return render(request, 'topArtistAndSongs.html', context)
+
+
+
+
