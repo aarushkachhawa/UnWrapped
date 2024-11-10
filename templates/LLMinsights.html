@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div style="margin-top: 250px">
+    {% for line in content %}
+        <p> {{ line }} </p>
+    {% endfor %}
+    </div>
+{% endblock %}
