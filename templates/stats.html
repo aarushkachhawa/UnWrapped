@@ -1,4 +1,3 @@
-<!-- templates/stats.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,6 +54,29 @@
         .content-list li {
             font-size: 1.3rem;
             margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .audio-controls {
+            margin-left: 10px;
+        }
+
+        .play-btn, .stop-btn {
+            padding: 5px 10px;
+            margin-left: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #4a773c;
+            color: white;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .play-btn:hover, .stop-btn:hover {
+            background-color: #3a5a2c;
         }
 
         /* Navigation */
@@ -93,20 +115,33 @@
                 <div class="slide">
                     <h2 class="slide-title">{{ slide.title }}</h2>
                     <ul class="content-list">
+                    {% if slide.additionalData == None %}
                         {% for item in slide.content %}
                             <li>{{ item }}</li>
                         {% endfor %}
+                    {% else %}
+                        {% for item in slide.content %}
+                            <li>
+                                <span class="audio-title">{{ item.0 }}</span>
+                                <div class="audio-controls">
+                                    <button class="play-btn" onclick="toggleAudio(this)">Play</button>
+                                    <button class="stop-btn" onclick="stopAudio(this)">Reset</button>
+                                </div>
+                                <audio id="audio-{{ loop.index }}" src="{{ item.1 }}" preload="none"></audio>
+                            </li>
+                        {% endfor %}
+                    {% endif %}
                     </ul>
                 </div>
             {% endfor %}
 
             <!-- Navigation buttons -->
-            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-            <a class="next" onclick="plusSlides(1)">&#10095;</a>
+            <a class="prev" onclick="plusSlides(-1)">❮</a>
+            <a class="next" onclick="plusSlides(1)">❯</a>
         </div>
     </div>
 
-    <!-- JavaScript for slideshow -->
+    <!-- JavaScript for slideshow and audio control -->
     <script>
         let slideIndex = 1;
         showSlides(slideIndex);
@@ -123,6 +158,42 @@
                 slides[i].style.display = "none";
             }
             slides[slideIndex - 1].style.display = "block";
+        }
+
+        function toggleAudio(button) {
+            const audio = button.parentElement.nextElementSibling;
+
+            // Stop all other audio
+            const allAudios = document.querySelectorAll('audio');
+            allAudios.forEach(a => {
+                if (a !== audio) {
+                    a.pause();
+                    a.currentTime = 0; // Reset other audio
+                    const playBtn = a.parentElement.querySelector('.play-btn');
+                    playBtn.innerText = "Play"; // Reset play button text
+                }
+            });
+
+            // Play or pause the selected audio
+            if (audio.paused) {
+                audio.play();
+                button.innerText = "Pause";
+            } else {
+                audio.pause();
+                button.innerText = "Play";
+            }
+
+            // Reset button text when audio ends
+            audio.onended = function() {
+                button.innerText = "Play";
+            };
+        }
+
+        function stopAudio(button) {
+            const audio = button.parentElement.nextElementSibling;
+            audio.pause();
+            audio.currentTime = 0;
+            button.previousElementSibling.innerText = "Play"; // Reset play button text
         }
     </script>
 </body>
