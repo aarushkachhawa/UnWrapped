@@ -12,6 +12,7 @@ import logging
 from datetime import datetime, timedelta
 from openai import OpenAI
 from .localSettings import OPENAI_API_KEY
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -463,7 +464,15 @@ def analyze_seasonal_mood(request):
     description = response.choices[0].message
     print(description)
 
-    return HttpResponse(description)
+    return json.dumps(description)
+
+@login_required
+def llm_insights_page(request):
+    contentArr = analyze_clothing(request)
+    context = {
+        'content': contentArr
+    }
+    return render(request, 'LLMinsights.html', context)
 
 
 def analyze_clothing(request):
@@ -477,15 +486,15 @@ def analyze_clothing(request):
         messages=[
             {"role": "system", "content": "You are a style analyst."},
             {"role": "user",
-             "content": "The following 100 songs are the songs a user listened to most frequently recently. Describe their style in the following format: Mood: description, Relationship Status: description, Favorite Color: description, Favorite Emoji: description. Here is an example of output: `Mood: Black/Dark Scheme, Relationship Status: Heartbroken, Favorite Color: Black, Favorite Emoji: Skull`"},
+             "content": "The following 100 songs are the songs a user listened to most frequently recently. Describe their style in the following format: Mood: description; Relationship Status: description; Favorite Color: description; Favorite Emoji: description. Here is an example of output (make sure not to include ANY other descriptive text or any spaces after the semicolon): Mood: Black/Dark Scheme;Relationship Status: Heartbroken;Favorite Color: Black;Favorite Emoji: Skull"},
             {"role": "user", "content": songs}
         ]
     )
 
     description = response.choices[0].message
-    print(description)
+    print(description.content.split(";"))
 
-    return HttpResponse(description.content)
+    return description.content.split(";")
 
 def night_owl(request): # combine this into one calculate stats method so we don't need to call get last 50 songs multiple times
     last_50_songs = get_last_50_songs(request)
