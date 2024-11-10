@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Unwrapped{% endblock %}</title>
+    <title>Unwrapped</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Notable&display=swap" rel="stylesheet">
     <style>
-        /* CSS Styles for base layout */
-        * {
+        /* CSS Styles */
+         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -18,20 +18,27 @@
 
         body {
             font-family: 'Notable', sans-serif;
-            background-image: url("{% static 'home/background.png' %}");
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center top 100px;
         }
 
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
         .header {
-            width: 100vw;
+            width: 100%;
             height: 100px;
             background-color: #5AABF3;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
             color: #ECD101;
+            padding: 0 40px;
             position: fixed;
             top: 0;
             left: 0;
@@ -40,9 +47,8 @@
 
         .menu-icon {
             color: #ECD101;
-            font-size: 50px;
-            position: absolute;
-            left: 20px;
+            font-size: 65px;
+            padding: 0 40px;
         }
 
         .title {
@@ -50,18 +56,21 @@
             font-weight: bold;
             color: #ECD101;
             text-shadow:
-                -1px -1px 0 #FF5733,
-                1px -1px 0 #FF5733,
-                -1px 1px 0 #FF5733,
-                1px 1px 0 #FF5733;
+            -1px -1px 0 #C64036,
+            1px -1px 0 #C64036,
+            -1px 1px 0 #C64036,
+            1px 1px 0 #C64036;
+            text-align: center;
+            flex-grow: 1;
         }
 
         .profile {
             color: #ECD101;
-            font-size: 24px;
-            position: absolute;
-            right: 20px;
+            font-size: 20px;
+            padding: 0 30px;
+            margin-top: 30px;
         }
+
     </style>
 </head>
 <body>
@@ -73,7 +82,7 @@
 
     <div class="container">
         {% block content %}
-        <!-- Page-specific content goes here -->
+        <!-- Page-specific content -->
         {% endblock %}
     </div>
 </body>

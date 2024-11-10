@@ -112,6 +112,12 @@ def home(request):
     return render(request, 'home.html', context)
 
 @login_required
+def slide_2(request):
+    if 'spotify_access_token' not in request.session:
+        return redirect(spotify_auth_url())
+    return render(request, 'slide_2.html')
+
+@login_required
 def getStats(request):
 
     if 'wrappedData' in request.session:
