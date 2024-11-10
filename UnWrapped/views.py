@@ -180,7 +180,6 @@ def spotify_callback(request):
 
     return redirect('home')
 
-"""
 @login_required
 def stats(request):
     if 'spotify_access_token' not in request.session:
