@@ -19,5 +19,6 @@ urlpatterns = [
     path('analyze_seasonal_mood/', views.analyze_seasonal_mood, name="analyze_seasonal_mood"),
     path('analyze_clothing/', views.analyze_clothing, name="analyze_clothing"),
     path('night_owl/', views.night_owl, name="night_owl"),
-    path('llm_insights_page/', views.llm_insights_page, name="llm_insights_page")
+    path('llm_insights_page/', views.llm_insights_page, name="llm_insights_page"),
+    path('transition_one/', views.transition_one, name="transition_one"),
 ]

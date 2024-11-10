@@ -561,3 +561,20 @@ def night_owl(request): # combine this into one calculate stats method so we don
     total_time = round(total_time / 60000)
     print("total minutes:", total_time)
     return HttpResponse(latest_time)
+
+
+@login_required
+def transition_one(request):
+    """
+    Renders the transition page with music player animation.
+    """
+    if 'spotify_access_token' not in request.session:
+        return redirect(spotify_auth_url())
+
+    try:
+        return render(request, 'transitionOne.html')
+
+    except Exception as e:
+        logger.error(f"Error in transition view: {e}")
+        messages.error(request, "An error occurred while loading the transition page.")
+        return redirect('home')
