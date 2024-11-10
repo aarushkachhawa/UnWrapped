@@ -5,14 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Unwrapped{% endblock %}</title>
-
-    <!-- Google Fonts and other Head Resources -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Notable&display=swap" rel="stylesheet">
-
     <style>
-        /* Global Styles */
+        /* CSS Styles */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -21,18 +18,25 @@
 
         body {
             font-family: 'Notable', sans-serif;
+            background-image: url("{% static 'home/background.png' %}");
             background-repeat: no-repeat;
             background-size: cover;
-            background-position: center top;
+            background-position: center top 100px;
+            transition: background-color 0.3s ease, color 0.3s ease, background-image 0.3s ease;
         }
 
-        /* Fixed Header */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
         .header {
             width: 100%;
             height: 100px;
             background-color: #5AABF3;
             display: flex;
-            justify-content: space-between;
             align-items: center;
             color: #ECD101;
             padding: 0 40px;
@@ -45,9 +49,20 @@
         .menu-icon {
             color: #ECD101;
             font-size: 65px;
+            padding: 0 40px;
+            position: fixed;
+            top: 0px;
+            left: 20px;
+            color: #ECD101;
+            font-size: 65px;
+            cursor: pointer;
+            z-index: 1001; /* Higher than the sidebar */
         }
 
         .title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
             font-size: 36px;
             font-weight: bold;
             color: #ECD101;
@@ -57,37 +72,182 @@
                 -1px 1px 0 #C64036,
                 1px 1px 0 #C64036;
             text-align: center;
-            flex-grow: 1;
         }
 
         .profile {
+            margin-left: auto;
             color: #ECD101;
             font-size: 20px;
+            padding: 0 30px;
         }
 
-        /* Main Container for Page Content */
-        .container {
-            padding: 20px;
+        .note-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 150px;
+            margin-bottom: 20px;
+        }
+
+        .note1, .note2 {
+            font-size: 64px;
+            text-shadow: 2px 2px 4px black;
+        }
+
+        .note1 {
+            color: #90c0ff;
+        }
+
+        .note2 {
+            color: #99A8E9;
+        }
+
+        .record-player {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .record-player img {
+            width: 500px;
+            height: auto;
+            display: block;
+        }
+
+        .button-wrapper {
+            margin-top: 50px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .view-unwrapped {
+            background-color: #c4b3ff;
+            color: #614f8d;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #121212;
+            color: #E0E0E0;
+            background-image: url("{% static 'home/background_dark.png' %}");
+        }
+
+        .dark-mode .header {
+            background-color: #333;
+            color: #FDD835;
+        }
+
+        .dark-mode .title {
+            color: #FDD835;
+            text-shadow: none;
+        }
+
+        .dark-mode .menu-icon, .dark-mode .profile, .dark-mode .note1, .dark-mode .note2 {
+            color: #FDD835;
+        }
+
+        .dark-mode .view-unwrapped {
+            background-color: #673AB7;
+            color: #FFFFFF;
+        }
+
+        /* Neon Blue Style for Toggle Button in Dark Mode */
+        .dark-mode .toggle-button {
+            background-color: #1e90ff; /* Neon blue */
+            color: #ffffff;
+            box-shadow: 0 0 10px #1e90ff, 0 0 20px #1e90ff, 0 0 30px #1e90ff;
+        }
+
+        /* Toggle Button Styles */
+        .toggle-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background-color: #333;
+            color: #FDD835;
+            padding-top: 120px; /* Add padding to push links below the header */
+            transition: 0.3s;
+            z-index: 900;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            {% block container_style %}{% endblock %}  /* Allow custom styles for child templates */
+            gap: 20px;
+            padding-left: 20px;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: #FDD835;
+            font-size: 18px;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .container {
+            margin-left: 20px;
+            transition: margin-left 0.3s;
+        }
+        
+        .container.sidebar-active {
+            margin-left: 270px; /* Adjust to sidebar width */
         }
     </style>
-
-    {% block head %}
-    <!-- Additional CSS or JavaScript for specific pages can go here -->
-    {% endblock %}
 </head>
 <body>
-    <!-- Navigation Header -->
+    <button class="toggle-button" onclick="toggleDarkMode()">Toggle Dark Mode</button>
     <div class="header">
-        <div class="menu-icon">☰</div>
+        <div class="menu-icon" onclick="toggleSidebar()">☰</div>
         <div class="title">UNWRAPPED</div>
         <div class="profile">PROFILE</div>
     </div>
 
-    <!-- Main Content Area -->
+    <div class="sidebar" id="sidebar">
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Services</a>
+        <a href="#">Contact</a>
+    </div>
+
+    <script>
+        // Function to toggle dark mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const container = document.getElementById('main-container');
+            sidebar.classList.toggle('active');
+            container.classList.toggle('sidebar-active');
+        }
+    </script>
+
     <div class="container">
         {% block content %}
         <!-- Page-specific content goes here -->
