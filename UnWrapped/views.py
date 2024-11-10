@@ -136,7 +136,7 @@ def getStats(request):
     if response.status_code != 200 or trackResponse.status_code != 200:
         logger.error(f"Spotify API request failed: {response.status_code} - {response.text}")
         messages.error(request, "Failed to retrieve data from Spotify.")
-        return {'top_artists': ["N/A"], 'top_songs': ["N/A"], 'top_artist_year': "N/A"}
+        return {'top_artists': ["N/A"], 'top_songs': ["N/A"], 'top_artist_year': "N/A", 'top_songs_urls': ["N/A"]}
 
     try:
         data = response.json()
@@ -145,18 +145,20 @@ def getStats(request):
         top_songs_data = trackResponse.json()
         songs = top_songs_data.get('items', [])
         top_songs = [songs[i]['name'] for i in range(min(5, len(songs)))]
+        top_songs_urls = [songs[i]['preview_url'] for i in range(min(5, len(songs)))]
 
         returnData = {
             'top_artists': top_artists,
             'top_songs': top_songs,
             'top_artist_year': top_artists[0] if top_artists else "Unknown",
+            'top_songs_urls': top_songs_urls
         }
         request.session['wrappedData'] = returnData
         return returnData
     except Exception as e:
         logger.error(f"Error processing Spotify data: {e}")
         messages.error(request, "An error occurred while processing Spotify data.")
-        return {'top_artists': ["N/A"], 'top_songs': ["N/A"], 'top_artist_year': "N/A"}
+        return {'top_artists': ["N/A"], 'top_songs': ["N/A"], 'top_artist_year': "N/A", 'top_songs_urls': ["N/A"]}
 
 
 def spotify_callback(request):
@@ -180,19 +182,25 @@ def stats(request):
     wrappedData = getStats(request)
 
     # Example Spotify data in the stats page
+    songContent = list(zip(wrappedData['top_songs'], wrappedData['top_songs_urls']))
+
+    print(songContent)
 
     slides = [
         {
             'title': 'Top Artists of the Year',
             'content': wrappedData['top_artists'],
+            'additionalData': None
         },
         {
             'title': 'Top Songs of the Year',
-            'content': wrappedData['top_songs'],
+            'content': songContent,
+            'additionalData': True
         },
         {
             'title': 'Top Artist This Year',
             'content': [wrappedData['top_artist_year']], # top_artist_year is a single value and the slides expect a list
+            'additionalData': None
         },
     ]
 
