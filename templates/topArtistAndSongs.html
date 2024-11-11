@@ -1,3 +1,4 @@
+{% extends 'base.html' %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -10,6 +11,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Notable&family=Radio+Canada:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    {% block content %}
 
     <style>
         /* Global Styles */
@@ -216,14 +220,6 @@
 
 
     </style>
-</head>
-<body>
-    <!-- Navigation Header -->
-    <div class="header">
-        <div class="menu-icon">☰</div>
-        <div class="title">UNWRAPPED</div>
-        <div class="profile">PROFILE</div>
-    </div>
 
     <img src="{% static 'topArtist/top_left_corner_rainbow.png' %}" class="top-corner-rainbow">
 
@@ -296,6 +292,6 @@
 
     <img src="{% static 'topArtist/top_left_corner_rainbow.png' %}" class="bottom-corner-rainbow">
 
-
+    {% endblock %}
 </body>
 </html>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Unwrapped{% endblock %}</title>
+    <title>Unwrapped</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Notable&display=swap" rel="stylesheet">
@@ -18,11 +18,17 @@
 
         body {
             font-family: 'Notable', sans-serif;
-            /* background-image: url("{% static 'home/background.png' %}"); */
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center top 100px;
             transition: background-color 0.3s ease, color 0.3s ease, background-image 0.3s ease;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
         }
 
         .container {
@@ -37,6 +43,7 @@
             height: 100px;
             background-color: #5AABF3;
             display: flex;
+            justify-content: space-between;
             align-items: center;
             color: #ECD101;
             padding: 0 40px;
@@ -67,11 +74,12 @@
             font-weight: bold;
             color: #ECD101;
             text-shadow:
-                -1px -1px 0 #C64036,
-                1px -1px 0 #C64036,
-                -1px 1px 0 #C64036,
-                1px 1px 0 #C64036;
+            -1px -1px 0 #C64036,
+            1px -1px 0 #C64036,
+            -1px 1px 0 #C64036,
+            1px 1px 0 #C64036;
             text-align: center;
+            flex-grow: 1;
         }
 
         .profile {
@@ -79,6 +87,7 @@
             color: #ECD101;
             font-size: 20px;
             padding: 0 30px;
+            margin-top: 30px;
         }
 
         .note-icons {
@@ -213,10 +222,11 @@
             margin-left: 20px;
             transition: margin-left 0.3s;
         }
-        
+
         .container.sidebar-active {
             margin-left: 270px; /* Adjust to sidebar width */
         }
+
     </style>
 </head>
 <body>
@@ -250,7 +260,7 @@
 
     <div class="container">
         {% block content %}
-        <!-- Page-specific content goes here -->
+        <!-- Page-specific content -->
         {% endblock %}
     </div>
 </body>
