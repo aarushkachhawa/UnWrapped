@@ -14,6 +14,7 @@ urlpatterns = [
     path('home/', views.home, name='home'),
     path('top_artist/', views.top_artist_and_songs_slide, name='top_artist'),
     path('spotify_callback/', views.spotify_callback, name='spotify_callback'),  # Spotify OAuth callback
+    path('slide_2/', views.get_most_popular_artists, name="slide_2"),
     path('calculate_ads/', views.calculate_ads, name='calculate_ads'),
     path('top_artists/', views.get_most_popular_artists, name="top_artists"),
     path('analyze_seasonal_mood/', views.analyze_seasonal_mood, name="analyze_seasonal_mood"),

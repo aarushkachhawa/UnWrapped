@@ -118,6 +118,7 @@ def home(request):
     context = getStats(request)
     return render(request, 'home.html', context)
 
+
 @login_required
 def getStats(request):
 
@@ -293,6 +294,9 @@ def calculate_ads(request):
     return HttpResponse(ads_minutes)
 
 def get_most_popular_artists(request):
+    if 'spotify_access_token' not in request.session:
+        return redirect(spotify_auth_url())
+
     access_token = request.session.get('spotify_access_token')
 
     headers = {
@@ -403,12 +407,30 @@ def get_most_popular_artists(request):
 
         short_url = response_json["next"]
 
+    artist1 = None
+    artist2 = None
+    artist3 = None
+    count = 1
     for artist in top_3_artists:
         if len(top_3_artists[artist]) != 3:
             top_3_artists[artist].append(None)  # artist wasn't in the top artists during this time period
+        if count == 1:
+            artist1 = artist
+        elif count == 2:
+            artist2 = artist
+        else:
+            artist3 = artist
+        count += 1
 
-    print(top_3_artists)
-    return JsonResponse(top_3_artists)
+    #print(top_3_artists)
+    
+    context = {
+        'top_3_artists': json.dumps(top_3_artists),
+        'artist1': artist1,
+        'artist2': artist2,
+        'artist3': artist3,
+    }
+    return render(request, 'slide_2.html', context)
 
 # used for your seasonal mood (get top 100 songs in the last ~1 month), gets top 100 songs and the artists
 def get_recent_top_songs(request):
