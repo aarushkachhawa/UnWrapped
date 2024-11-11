@@ -181,7 +181,6 @@ def spotify_callback(request):
 
     return redirect('home')
 
-
 @login_required
 def stats(request):
     if 'spotify_access_token' not in request.session:
@@ -217,6 +216,21 @@ def stats(request):
     }
 
     return render(request, 'stats.html', context)
+    
+@login_required
+def top_artist_and_songs_slide(request):
+    # Fetch Spotify data (top artists and top songs)
+    wrapped_data = getStats(request)
+
+    # Prepare context with both top artist and top songs
+    context = {
+        'title': 'Top Artist and Top Songs of the Year',
+        'top_artist': wrapped_data['top_artist_year'],
+        'top_songs': wrapped_data['top_songs']
+    }
+
+    # Render a single template with both top artist and top songs
+    return render(request, 'topArtistAndSongs.html', context)
 
 
 @login_required
@@ -486,7 +500,15 @@ def analyze_seasonal_mood(request):
     description = response.choices[0].message
     print(description)
 
-    return HttpResponse(description)
+    return json.dumps(description)
+
+@login_required
+def llm_insights_page(request):
+    contentArr = analyze_clothing(request)
+    context = {
+        'content': contentArr
+    }
+    return render(request, 'LLMinsights.html', context)
 
 
 def analyze_clothing(request):
@@ -500,15 +522,15 @@ def analyze_clothing(request):
         messages=[
             {"role": "system", "content": "You are a style analyst."},
             {"role": "user",
-             "content": "The following 100 songs are the songs a user listened to most frequently recently. Describe their style in the following format: Mood: description, Relationship Status: description, Favorite Color: description, Favorite Emoji: description. Here is an example of output: `Mood: Black/Dark Scheme, Relationship Status: Heartbroken, Favorite Color: Black, Favorite Emoji: Skull`"},
+             "content": "The following 100 songs are the songs a user listened to most frequently recently. Describe their style in the following format: Mood: description; Relationship Status: description; Favorite Color: description; Favorite Emoji: description. Here is an example of output (make sure not to include ANY other descriptive text or any spaces after the semicolon): Mood: Black/Dark Scheme;Relationship Status: Heartbroken;Favorite Color: Black;Favorite Emoji: Skull"},
             {"role": "user", "content": songs}
         ]
     )
 
     description = response.choices[0].message
-    print(description)
+    print(description.content.split(";"))
 
-    return HttpResponse(description.content)
+    return description.content.split(";")
 
 def night_owl(request): # combine this into one calculate stats method so we don't need to call get last 50 songs multiple times
     last_50_songs = get_last_50_songs(request)
@@ -561,3 +583,20 @@ def night_owl(request): # combine this into one calculate stats method so we don
     total_time = round(total_time / 60000)
     print("total minutes:", total_time)
     return HttpResponse(latest_time)
+
+
+@login_required
+def transition_one(request):
+    """
+    Renders the transition page with music player animation.
+    """
+    if 'spotify_access_token' not in request.session:
+        return redirect(spotify_auth_url())
+
+    try:
+        return render(request, 'transitionOne.html')
+
+    except Exception as e:
+        logger.error(f"Error in transition view: {e}")
+        messages.error(request, "An error occurred while loading the transition page.")
+        return redirect('home')

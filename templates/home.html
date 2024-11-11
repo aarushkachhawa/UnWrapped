@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+
+    <style>
+        body {
+            background-image: url("{% static 'home/background.png' %}");
+        }
+    </style>
+
     <div class="note-icons">
         <div class="note1">♪</div>
         <div class="note2">♫</div>
@@ -11,7 +18,7 @@
     </div>
 
     <div class="button-wrapper">
-        <a href="{% url 'stats' %}" class="view-unwrapped">VIEW UNWRAPPED</a>
+        <a class="view-unwrapped">VIEW UNWRAPPED</a>
     </div>
 </div>
 {% endblock %}

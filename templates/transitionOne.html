@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="main-container">
+    <div class="content-wrapper">
+        <div class="rainbow-container">
+            <!-- Single Full-Width Rainbow -->
+            <svg class="rainbow-animation" viewBox="0 0 100 200" preserveAspectRatio="none">
+                <path class="rainbow-path" d="M 0 30 L 100 30" stroke="#FF9AA2" stroke-width="25" fill="none"/>
+                <path class="rainbow-path" d="M 0 60 L 100 60" stroke="#FFB7B2" stroke-width="25" fill="none"/>
+                <path class="rainbow-path" d="M 0 90 L 100 90" stroke="#FFDAC1" stroke-width="25" fill="none"/>
+                <path class="rainbow-path" d="M 0 120 L 100 120" stroke="#E2F0CB" stroke-width="25" fill="none"/>
+                <path class="rainbow-path" d="M 0 150 L 100 150" stroke="#B5EAD7" stroke-width="25" fill="none"/>
+            </svg>
+
+            <!-- Record Player -->
+            <div class="record-player">
+                <div class="record-disc">
+                    <div class="disc-label"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Title Section -->
+        <div class="insights-section">
+            <h2 class="insights-title">MORE MUSICAL INSIGHTS >>></h2>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: #FFF;
+    }
+
+    .main-container {
+        background-color: #FFF;
+        min-height: calc(100vh - 64px);
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+        margin: 0;
+    }
+
+    .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3rem;
+        width: 100%;
+    }
+
+    .rainbow-container {
+        position: relative;
+        width: 100%;
+        height: 400px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    .rainbow-animation {
+        position: absolute;
+        width: 100%;
+        height: 200px;
+        top: 50%;
+        transform: translateY(-50%);
+        left: 0;
+    }
+
+    .rainbow-path {
+        stroke-dasharray: 100%;
+        stroke-dashoffset: 100%;
+        animation: drawHorizontalRainbow 2.5s ease-out forwards;
+    }
+
+    /* Rainbow timing */
+    .rainbow-path:nth-child(1) { animation-delay: 0s; }
+    .rainbow-path:nth-child(2) { animation-delay: 0.2s; }
+    .rainbow-path:nth-child(3) { animation-delay: 0.4s; }
+    .rainbow-path:nth-child(4) { animation-delay: 0.6s; }
+    .rainbow-path:nth-child(5) { animation-delay: 0.8s; }
+
+    @keyframes drawHorizontalRainbow {
+        from {
+            stroke-dashoffset: 100%;
+        }
+        to {
+            stroke-dashoffset: 0;
+        }
+    }
+
+    .record-player {
+        width: 300px;
+        height: 300px;
+        background-color: #FFF;
+        border-radius: 10px;
+        position: relative;
+        z-index: 3;
+    }
+
+    .record-disc {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 250px;
+        height: 250px;
+        background-color: #000;
+        border-radius: 50%;
+        animation: spin 2s linear infinite;
+        overflow: hidden;
+    }
+
+    .record-disc::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 240px;
+        height: 240px;
+        transform: translate(-50%, -50%);
+        border: 1px solid #333;
+        border-radius: 50%;
+        box-shadow:
+            0 0 0 5px #111,
+            0 0 0 10px #222,
+            0 0 0 15px #111,
+            0 0 0 20px #222,
+            0 0 0 25px #111,
+            0 0 0 30px #222,
+            0 0 0 35px #111,
+            0 0 0 40px #222;
+    }
+
+    .disc-label {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80px;
+        height: 80px;
+        background-color: #FFD700;
+        border-radius: 50%;
+        z-index: 2;
+    }
+
+    .disc-label::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 10px;
+        height: 10px;
+        background-color: #000;
+        border-radius: 50%;
+    }
+
+    .insights-title {
+        color: #FF6B6B;
+        font-size: 2.5rem;
+        text-transform: uppercase;
+        font-weight: bold;
+        margin: 0;
+        text-align: center;
+        opacity: 0;
+        animation: fadeIn 1s ease-in forwards;
+        animation-delay: 4s;
+    }
+
+    @keyframes spin {
+        from {
+            transform: translate(-50%, -50%) rotate(0deg);
+        }
+        to {
+            transform: translate(-50%, -50%) rotate(360deg);
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            window.location.href = '{% url "transition_one" %}';
+        }, 5000);
+    });
+</script>
+{% endblock %}
