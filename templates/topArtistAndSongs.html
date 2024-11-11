@@ -21,11 +21,27 @@
 
         body {
             font-family: 'Notable', sans-serif;
-            background-image: url("{% static 'topArtist/background.png' %}");
+            /*background-image: url("{% static 'topArtist/background.png' %}");*/
+            background-color: #FCF8F1;
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center top;
             padding-top: 100px;
+            overflow: hidden;
+
+        }
+
+        .top-corner-rainbow {
+            position: absolute;
+            top: -180px;
+            left: -250px
+        }
+
+        .bottom-corner-rainbow {
+            transform: rotate(180deg);
+            position: absolute;
+            bottom: -250px;
+            right: -275px
         }
 
         /* Fixed Header */
@@ -69,7 +85,7 @@
 
         /* Combined Title Styling */
         .page-title {
-            font-size: 24px;
+            font-size: 20px;
             color: #D24E0D;
             margin-bottom: 20px;
             text-align: center;
@@ -136,11 +152,11 @@
         }
 
         .song {
-            /*display: flex;*/
+            display: flex;
             align-items: center;
             gap: 15px;
             background-color: #FCF8F1;
-            padding: 20px 15px;
+            padding: 40px 15px;
             width: 100%;
         }
 
@@ -154,16 +170,16 @@
 
         .vinyl-icon-blue {
             background-image: url("{% static 'topArtist/blue_record.png' %}");
-            width: 115px;
-            height: 115px;
+            width: 100px;
+            height: 100px;
             background-size: cover;
             background-position: center;
         }
 
         .vinyl-icon-yellow {
             background-image: url("{% static 'topArtist/yellow_record.png' %}");
-            width: 105px;
-            height: 105px;
+            width: 100px;
+            height: 100px;
             background-size: cover;
             background-position: center;
         }
@@ -181,6 +197,23 @@
             margin: 0;
         }
 
+        .forward-triangle-button {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            bottom: 5%;
+            right: 45%;
+        }
+
+        .backward-triangle-button {
+            position: absolute;
+            transform: rotate(180deg);
+            width: 40px;
+            height: 40px;
+            bottom: 5%;
+            right: 55%;
+        }
+
 
     </style>
 </head>
@@ -192,10 +225,13 @@
         <div class="profile">PROFILE</div>
     </div>
 
+    <img src="{% static 'topArtist/top_left_corner_rainbow.png' %}" class="top-corner-rainbow">
+
     <!-- Page Title -->
     <div class="page-title">
         <h1>Your Top Artist & Top 5 Songs</h1>
     </div>
+
 
     <!-- Content Sections for Top Artist and Top Songs -->
     <div class="content-sections">
@@ -237,21 +273,29 @@
             <!-- Right Column for Songs 2 and 4 -->
             <div class="songs-column">
                 <div class="song">
-                    <div class="vinyl-icon-yellow"></div>
                     <div class="song-details">
                         <h3>White Horse</h3>
                         <p>Chris Stapleton</p>
                     </div>
+
+                    <div class="vinyl-icon-yellow"></div>
                 </div>
                 <div class="song">
-                    <div class="vinyl-icon-red"></div>
                     <div class="song-details">
                         <h3>Mean It</h3>
                         <p>Gracie Abrams</p>
                     </div>
+                    <div class="vinyl-icon-red"></div>
                 </div>
             </div>
         </div>
     </div>
+
+    <img src="{% static 'topArtist/triangle_button.png' %}" class="forward-triangle-button">
+    <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button">
+
+    <img src="{% static 'topArtist/top_left_corner_rainbow.png' %}" class="bottom-corner-rainbow">
+
+
 </body>
 </html>
