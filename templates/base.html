@@ -205,6 +205,7 @@
             flex-direction: column;
             gap: 20px;
             padding-left: 20px;
+            padding-right: 10px;
         }
 
         .sidebar a {
@@ -233,12 +234,12 @@
     <div class="header">
         <div class="menu-icon" onclick="toggleSidebar()">☰</div>
         <div class="title">UNWRAPPED</div>
-        <div class="profile">PROFILE</div>
     </div>
 
     <div class="sidebar" id="sidebar">
         <a href="{% url 'home' %}">Home</a>
-        <a href="{% url 'slide_2' %}">Most Popular Artists</a>
+        <a href="{% url 'top_artist' %}">Top Artists and Top Songs</a>
+        <a href="{% url 'slide_2' %}">Top Artist Graph</a>
         <a href="{% url 'llm_insights_page' %}">LLM Insights</a>
     </div>
 

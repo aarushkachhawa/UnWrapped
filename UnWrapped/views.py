@@ -31,6 +31,10 @@ def logout_view(request):
     messages.info(request, "You have successfully logged out.")
     return redirect('login')
 
+@login_required
+def profile(request):
+    return render(request, 'profile.html', {})
+
 def register(request):
     if request.user.is_authenticated:
         return redirect('home')
@@ -522,7 +526,7 @@ def analyze_clothing(request):
         messages=[
             {"role": "system", "content": "You are a style analyst."},
             {"role": "user",
-             "content": "The following 100 songs are the songs a user listened to most frequently recently. Describe their style in the following format: Mood: description; Relationship Status: description; Favorite Color: description; Favorite Emoji: description. Here is an example of output (make sure not to include ANY other descriptive text or any spaces after the semicolon): Mood: Black/Dark Scheme;Relationship Status: Heartbroken;Favorite Color: Black;Favorite Emoji: Skull"},
+             "content": "The following 100 songs are the songs a user listened to most frequently recently. Describe their style in the following format (make sure the description is only one word!): Mood: description; Relationship Status: description; Favorite Color: description; Favorite Emoji: description. Here is an example of output (make sure not to include ANY other descriptive text or any spaces after the semicolon): Mood: Black/Dark Scheme;Relationship Status: Heartbroken;Favorite Color: Black;Favorite Emoji: Skull"},
             {"role": "user", "content": songs}
         ]
     )

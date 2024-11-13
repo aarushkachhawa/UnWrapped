@@ -1,28 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Page - Unwrapped</title>
+</head>
+<body>
+
+    {% block content %}
+
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-        }
-
-        .container {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 800px;
-            position: relative;
         }
 
         .rainbow-corner {
@@ -44,18 +39,6 @@
             right: -20px;
             background: conic-gradient(from 180deg, violet, indigo, blue, green, yellow, orange, red);
             border-radius: 50%;
-        }
-
-        .header {
-            background-color: #4ba3e3;
-            color: #ffd700;
-            padding: 1rem;
-            text-align: center;
-            margin: -2rem -2rem 2rem -2rem;
-            border-radius: 10px 10px 0 0;
-            font-size: 2rem;
-            font-weight: bold;
-            letter-spacing: 2px;
         }
 
         .info-item {
@@ -245,12 +228,9 @@
             gap: 1.5rem;
         }
     </style>
-</head>
-<body>
-    <div class="container">
+
         <div class="rainbow-corner bottom-left"></div>
         <div class="rainbow-corner bottom-right"></div>
-        <div class="header">PROFILE</div>
 
         <div class="info-item">
             <label>USERNAME:</label>
@@ -325,6 +305,6 @@
                 </div>
             </div>
         </div>
-    </div>
+    {% endblock %}
 </body>
 </html>
