@@ -4,8 +4,16 @@
 
     <style>
         body {
-            background-image: url("{% static 'home/background.png' %}");
+            background-color: #FCF8F1;
+            background-image: url("{% static 'home/background_rainbow.png' %}");
         }
+
+        body.dark-mode {
+            background-color: #121212;
+            color: #E0E0E0;
+            background-image: url("{% static 'home/dark_background_rainbow.png' %}");
+        }
+
     </style>
 
     <div class="note-icons">
