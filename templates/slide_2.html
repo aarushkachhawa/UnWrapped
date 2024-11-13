@@ -1,144 +1,121 @@
+{% extends 'base.html' %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unwrapped</title>
+    <title>UnWrapped</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Notable&display=swap" rel="stylesheet">
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
-    </script>
-    <style>
-         * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Notable', sans-serif;
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-position: center top 100px;
-            background-color: #FCF8F1;
-            overflow: hidden;
-        }
-
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .header {
-            width: 100%;
-            height: 100px;
-            background-color: #5AABF3;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #ECD101;
-            padding: 0 40px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-        }
-
-        .menu-icon {
-            color: #ECD101;
-            font-size: 65px;
-            padding: 0 40px;
-        }
-
-        .title {
-            font-size: 36px;
-            font-weight: bold;
-            color: #ECD101;
-            text-shadow:
-            -1px -1px 0 #C64036,
-            1px -1px 0 #C64036,
-            -1px 1px 0 #C64036,
-            1px 1px 0 #C64036;
-            text-align: center;
-            flex-grow: 1;
-        }
-
-        .profile {
-            color: #ECD101;
-            font-size: 20px;
-            padding: 0 30px;
-            margin-top: 30px;
-        }
-
-        .top-left {
-            position: absolute;
-            top: 0px;
-            left: -100px;
-            width: 200px;
-            height: auto;
-        }
-
-        .bottom-right {
-            position: absolute;
-            bottom: -100px;
-            right: -100px;
-            width: 200px;
-            height: auto;
-            transform: rotate(180deg);
-        }
-
-        .slide-title {
-            color: #5AABF3;
-            font-size: 36px;
-            text-align: center;
-            margin-top: 115px;
-            padding-bottom: 25px;
-            flex-grow: 1;
-        }
-
-        .chart-and-artists {
-            display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            justify-content: center;
-            gap: 20px;
-        }
-
-        .artist-record {
-            width: 70px;
-            height: auto;
-            padding-right: 10px;
-        }
-
-        .artist-label {
-            font-size: 22px;
-            padding-right: 20px;
-        }
-
-        .artist {
-            display: flex;
-            align-items: center;
-            padding-bottom: 50px;
-        }
-
-        .chart-legend {
-            padding-top: 50px;
-        }
-    </style>
 </head>
 <body>
-    <div class="header">
-        <div class="menu-icon">☰</div>
-        <div class="title">UNWRAPPED</div>
-        <div class="profile">PROFILE</div>
-    </div>
 
-    <div class="container">
+    {% block content %}
+
+    <style>
+        * {
+           box-sizing: border-box;
+           margin: 0;
+           padding: 0;
+       }
+
+       body {
+           font-family: 'Notable', sans-serif;
+           background-repeat: no-repeat;
+           background-size: cover;
+           background-position: center top 100px;
+           background-color: #FCF8F1;
+           overflow: hidden;
+       }
+
+       .menu-icon {
+           color: #ECD101;
+           font-size: 65px;
+           padding: 0 40px;
+       }
+
+       .title {
+           font-size: 36px;
+           font-weight: bold;
+           color: #ECD101;
+           text-shadow:
+           -1px -1px 0 #C64036,
+           1px -1px 0 #C64036,
+           -1px 1px 0 #C64036,
+           1px 1px 0 #C64036;
+           text-align: center;
+           flex-grow: 1;
+       }
+
+       .profile {
+           color: #ECD101;
+           font-size: 20px;
+           padding: 0 30px;
+           margin-top: 30px;
+       }
+
+       .top-left {
+           position: absolute;
+           top: 0px;
+           left: -100px;
+           width: 200px;
+           height: auto;
+       }
+
+       .bottom-right {
+           position: absolute;
+           bottom: -100px;
+           right: -100px;
+           width: 200px;
+           height: auto;
+           transform: rotate(180deg);
+       }
+
+       .slide-title {
+           color: #5AABF3;
+           font-size: 36px;
+           text-align: center;
+           margin-top: 115px;
+           padding-bottom: 25px;
+           flex-grow: 1;
+       }
+
+       .chart-and-artists {
+           display: flex;
+           flex-direction: row;
+           align-items: flex-start;
+           justify-content: center;
+           gap: 20px;
+       }
+
+       .artist-record {
+           width: 70px;
+           height: auto;
+           padding-right: 10px;
+       }
+
+       .artist-label {
+           font-size: 22px;
+           padding-right: 20px;
+       }
+
+       .artist {
+           display: flex;
+           align-items: center;
+           padding-bottom: 50px;
+       }
+
+       .chart-legend {
+           padding-top: 50px;
+       }
+   </style>
+
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+        </script>
+
         <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="top-left">
         <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="bottom-right">
         <div class="slide-title">Your Top 3 Artists Over Time</div>
@@ -158,6 +135,7 @@
                     fill: false
                 }));
 
+                document.addEventListener("DOMContentLoaded", function() {
                 new Chart("artistRankings", {
                     type: "line",
                     data: {
@@ -202,6 +180,7 @@
                         }
                     }
                 });
+            })
             </script>
 
             <div class="chart-legend">
@@ -219,6 +198,6 @@
                 </div>
             </div>
         </div>
-    </div>
+    {% endblock %}
 </body>
 </html>
