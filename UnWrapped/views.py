@@ -39,6 +39,9 @@ def profile(request):
     }
     return render(request, 'profile.html', context)
 
+def contactDevs(request):
+    return render(request, 'contact.html', {})
+
 def register(request):
     if request.user.is_authenticated:
         return redirect('home')
