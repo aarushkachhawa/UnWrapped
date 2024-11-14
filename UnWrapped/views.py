@@ -33,7 +33,11 @@ def logout_view(request):
 
 @login_required
 def profile(request):
-    return render(request, 'profile.html', {})
+    context = {
+        'username': request.user.get_username(),
+        'email': request.user.email
+    }
+    return render(request, 'profile.html', context)
 
 def register(request):
     if request.user.is_authenticated:

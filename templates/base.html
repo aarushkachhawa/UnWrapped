@@ -88,6 +88,7 @@
             font-size: 20px;
             padding: 0 30px;
             margin-top: 30px;
+            cursor: pointer;
         }
 
         .note-icons {
@@ -234,7 +235,7 @@
     <div class="header">
         <div class="menu-icon" onclick="toggleSidebar()">☰</div>
         <div class="title">UNWRAPPED</div>
-        <div class="profile">PROFILE</div>
+        <div class="profile" id="profileDiv">PROFILE</div>
     </div>
 
     <div class="sidebar" id="sidebar">
@@ -256,6 +257,10 @@
             sidebar.classList.toggle('active');
             container.classList.toggle('sidebar-active');
         }
+
+        document.getElementById('profileDiv').onclick = function() {
+            window.location.href = "{% url 'profile' %}";
+        };
     </script>
 
     <div class="container">
