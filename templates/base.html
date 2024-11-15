@@ -68,7 +68,7 @@
 
         .title {
             position: absolute;
-            left: 50%;
+            left: calc(50% - 18px);
             transform: translateX(-50%);
             font-size: 36px;
             font-weight: bold;
@@ -189,6 +189,7 @@
             border-radius: 5px;
             cursor: pointer;
             z-index: 1001;
+
         }
 
         .sidebar {
@@ -228,6 +229,52 @@
             margin-left: 270px; /* Adjust to sidebar width */
         }
 
+        .forward-triangle-button {
+            position: absolute;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            bottom: 3%;
+            right: calc(50% - 175px);
+        }
+
+        .backward-triangle-button {
+            position: absolute;
+            align-items: center;
+            transform: rotate(180deg);
+            width: 40px;
+            height: 40px;
+            bottom: 3%;
+            right: calc(50% + 175px);
+        }
+
+        .circle-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: absolute;
+            bottom: calc(3% + 15px); /* Adjust to position correctly above the triangles */
+            left: calc(50% - 21px);
+            transform: translateX(-50%);
+            width: 250px; /* Adjust the width to space the circles evenly */
+        }
+
+
+        .small-circle {
+            width: 8px;
+            height: 8px;
+            background-color: #d3d3d3;
+            border-radius: 50%;
+        }
+
+        .darker-small-circle {
+            width: 8px;
+            height: 8px;
+            background-color: dimgray;
+            border-radius: 50%;
+        }
+
+
     </style>
 </head>
 <body>
@@ -245,6 +292,7 @@
         <a href="{% url 'llm_insights_page' %}">LLM Insights</a>
         <a href="{% url 'contact' %}">Contact</a>
     </div>
+
 
     <script>
         // Function to toggle dark mode

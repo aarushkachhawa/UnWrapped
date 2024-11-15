@@ -198,6 +198,25 @@
                 </div>
             </div>
         </div>
+
+    <img src="{% static 'topArtist/triangle_button.png' %}" class="forward-triangle-button" alt="Forward Button">
+
+    <div class="circle-container">
+        <div class="small-circle"></div>
+        <div class="darker-small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+    </div>
+    </div>
+
+    <a href="{% url 'top_artist' %}">
+        <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button" alt="Backward Button">
+    </a>
+
     {% endblock %}
 </body>
 </html>

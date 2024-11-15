@@ -209,24 +209,6 @@
             margin: 0;
         }
 
-        .forward-triangle-button {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            bottom: 3%;
-            right: calc(50% - 100px);
-        }
-
-        .backward-triangle-button {
-            position: absolute;
-            transform: rotate(180deg);
-            width: 40px;
-            height: 40px;
-            bottom: 3%;
-            right: calc(50% + 100px);
-        }
-
-
     </style>
 
     <img src="{% static 'topArtist/top_left_corner_rainbow.png' %}" class="top-corner-rainbow">
@@ -284,6 +266,7 @@
 
                     <div class="vinyl-icon-yellow"></div>
                 </div>
+
                 <div class="song">
                     <div class="song-details">
                         <h3>Mean It</h3>
@@ -299,7 +282,18 @@
         <img src="{% static 'topArtist/triangle_button.png' %}" class="forward-triangle-button" alt="Forward Button">
     </a>
 
-    <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button">
+    <div class="circle-container">
+        <div class="darker-small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+    </div>
+
+    <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button" alt="Forward Button">
 
     <img src="{% static 'topArtist/top_left_corner_rainbow.png' %}" class="bottom-corner-rainbow">
 
