@@ -511,7 +511,15 @@ def analyze_seasonal_mood(request):
     description = response.choices[0].message
     print(description)
 
-    return json.dumps(description)
+    #return json.dumps(description)
+
+    context = {
+
+    }
+
+    return render(request, 'seasonalMood.html', context)
+
+
 
 @login_required
 def llm_insights_page(request):

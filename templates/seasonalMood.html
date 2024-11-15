@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Seasonal Mood</title>
+
+</head>
+<body>
+    {% block content %}
+
+    <style>
+        /* Global Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Notable', sans-serif;
+            background-color: #FCF8F1;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center top 100px;
+            overflow: hidden;
+        }
+
+        .top-corner-rainbow {
+            width: 300px;
+            height: 300px;
+            position: absolute;
+            top: -50px;
+            left: -50px;
+        }
+
+        .bottom-corner-rainbow {
+            width: 300px;
+            height: 300px;
+            transform: rotate(180deg);
+            position: absolute;
+            bottom: -150px;
+            right: -50px;
+        }
+
+
+        .center-record {
+        position: absolute;
+        top: 25%;
+        left: 30%;
+        width: 500px;
+        height: 500px;
+        background-image: url("{% static 'seasonalMood/center_record.png' %}"); /* Replace with correct image path */
+        background-size: cover;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #FFF;
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+
+    }
+
+    /* Small Record Positions */
+    .small-record {
+        width: 100px;
+        height: 100px;
+        background-size: cover;
+        border-radius: 50%;
+        position: absolute;
+    }
+
+    /* Specific positions for small records */
+    .small-record1 {
+        background-image: url("{% static 'seasonalMood/red_record.png' %}");
+        top: 25%;
+        left: 15%;
+    }
+
+    .small-record2 {
+        background-image: url("{% static 'seasonalMood/yellow_record.png' %}");
+        top: 25%;
+        right: 15%;
+    }
+
+    .small-record3 {
+        background-image: url("{% static 'seasonalMood/blue_record.png' %}");
+        top: 50%;
+        left: 10%;
+    }
+
+    .small-record4 {
+        background-image: url("{% static 'seasonalMood/red_record.png' %}");
+        top: 50%;
+        right: 10%;
+    }
+
+    .small-record5 {
+        background-image: url("{% static 'seasonalMood/yellow_record.png' %}");
+        top: 75%;
+        left: 20%;
+    }
+
+    .small-record6 {
+        background-image: url("{% static 'seasonalMood/blue_record.png' %}");
+        top: 75%;
+        right: 20%;
+    }
+
+    </style>
+
+    <img src="{% static 'topArtist/top_left_corner_rainbow.png' %}" class="top-corner-rainbow">
+
+
+    <div class="center-record">
+        <svg width="400" height="400" viewBox="0 0 400 400">
+        <!-- Define a circular path for the text to follow -->
+        <defs>
+            <path id="textCircle" d="M 200, 200 m -150, 0 a 150,150 0 1,1 300,0 a 150,150 0 1,1 -300,0"/>
+            <path id="textCircleBottom" d="M 200, 200 m 150, 0 a 150,150 0 1,0 -300,0 a 150,150 0 1,0 300,0"/>
+        </defs>
+
+        <!-- Text along the circular path -->
+        <text fill="#C64036" font-size="36" font-weight="bold" transform="translate(8, 0)" style="text-shadow: 2px 2px 0 white;">
+            <textPath href="#textCircle" startOffset="0%">
+                YOUR WINTER MOOD
+            </textPath>
+        </text>
+
+        <!-- Text along bottom circular path-->
+        <text fill="#C64036" font-size="18" font-weight="bold" transform="translate(5, -4)">
+            <textPath href="#textCircleBottom" startOffset="60%">
+                & EXAMPLES OF SOME OF
+            </textPath>
+        </text>
+
+        <text fill="#C64036" font-size="18" font-weight="bold" transform="translate(5, 30)">
+            <textPath href="#textCircleBottom" startOffset="63%">
+                YOUR FAVORITE SONGS
+            </textPath>
+        </text>
+    </svg>
+    </div>
+
+    <!-- Small records surrounding the large record -->
+    <div class="small-record small-record1"></div>
+    <div class="small-record small-record2"></div>
+    <div class="small-record small-record3"></div>
+    <div class="small-record small-record4"></div>
+    <div class="small-record small-record5"></div>
+    <div class="small-record small-record6"></div>
+
+    <img src="{% static 'topArtist/triangle_button.png' %}" class="forward-triangle-button" alt="Forward Button">
+
+
+    <div class="circle-container">
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="darker-small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+    </div>
+
+    <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button" alt="Forward Button">
+
+    <img src="{% static 'topArtist/top_left_corner_rainbow.png' %}" class="bottom-corner-rainbow">
+
+    {% endblock %}
+</body>
+</html>
