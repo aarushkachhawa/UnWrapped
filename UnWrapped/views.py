@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 from openai import OpenAI
 from .localSettings import OPENAI_API_KEY
 import json
+import os, random
 
 logger = logging.getLogger(__name__)
 
@@ -516,8 +517,19 @@ def analyze_seasonal_mood(request):
 @login_required
 def llm_insights_page(request):
     contentArr = analyze_clothing(request)
-    context = {
-        'content': contentArr
+    mood = contentArr[0].split(": ")[1].lower()
+    if mood not in ["restless", "bitersweet", "introspective", "overjoyed", "pensive"]:
+        mood = "other"
+    rootDir = f"llmInsights/{mood}/"
+    try:
+        imageList = [file for file in os.listdir(f"/home/pkadekodi/UnWrapped/static/llmInsights/{mood}") if file[len(file) - 3:].lower() == "jpg"]
+        songPath = rootDir + random.choice(imageList)
+    except:
+        songPath = rootDir + "2014FHD.jpg"
+    context = { # send mood in separately because of how horrible django's template functionality is :)
+        'content': contentArr,
+        'mood': mood,
+        'songPath': songPath,
     }
     return render(request, 'LLMinsights.html', context)
 
@@ -533,7 +545,7 @@ def analyze_clothing(request):
         messages=[
             {"role": "system", "content": "You are a style analyst."},
             {"role": "user",
-             "content": "The following 100 songs are the songs a user listened to most frequently recently. Describe their style in the following format (make sure the description is only one word!): Mood: description; Relationship Status: description; Favorite Color: description; Favorite Emoji: description. Here is an example of output (make sure not to include ANY other descriptive text or any spaces after the semicolon): Mood: Black/Dark Scheme;Relationship Status: Heartbroken;Favorite Color: Black;Favorite Emoji: Skull"},
+             "content": "The following 100 songs are the songs a user listened to most frequently recently. Describe their style in the following format (make sure the description is only one word!, the mood can only be Bittersweet, Pensive, Restless, Overjoyed, or Introspective): Mood: description; Relationship Status: description; Favorite Color: description; Favorite Emoji: description. Here is an example of output (make sure not to include ANY other descriptive text or any spaces after the semicolon): Mood: Black/Dark Scheme;Relationship Status: Heartbroken;Favorite Color: Black;Favorite Emoji: Skull"},
             {"role": "user", "content": songs}
         ]
     )
