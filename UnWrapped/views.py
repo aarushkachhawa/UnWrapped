@@ -241,6 +241,8 @@ def top_artist_and_songs_slide(request):
         'top_songs': wrapped_data['top_songs']
     }
 
+    request.session['top_artist'] = wrapped_data['top_artist_year']
+    request.session['top_songs'] = wrapped_data['top_songs']
     # Render a single template with both top artist and top songs
     return render(request, 'topArtistAndSongs.html', context)
 
@@ -442,6 +444,11 @@ def get_most_popular_artists(request):
         'artist2': artist2,
         'artist3': artist3,
     }
+
+    request.session['top_3_artists'] = json.dumps(top_3_artists)
+    request.session['artist1'] = artist1
+    request.session['artist2'] = artist2
+    request.session['artist3'] = artist3
     return render(request, 'slide_2.html', context)
 
 # used for your seasonal mood (get top 100 songs in the last ~1 month), gets top 100 songs and the artists
@@ -531,6 +538,10 @@ def llm_insights_page(request):
         'mood': mood,
         'songPath': songPath,
     }
+    request.session['content'] = contentArr
+    request.session['mood'] = mood
+    request.session['songPath'] = songPath
+
     return render(request, 'LLMinsights.html', context)
 
 
@@ -632,6 +643,12 @@ def night_owl(request): # combine this into one calculate stats method so we don
         "hour_hand_rotation": hour_hand_rotation - 90,
         "minute_hand_rotation": minute_hand_rotation - 90,
     }
+
+    request.session['latest_time'] = context['latest_time']
+    request.session['time_ranges'] = json.dumps(time_ranges)
+    request.session['total_minutes'] = total_time
+    request.session['hour_hand_rotation'] = hour_hand_rotation - 90
+    request.sesion['minute_hand_rotation'] = minute_hand_rotation - 90
     
     print(context['time_ranges'])
     return render(request, 'slide_3.html', context)
