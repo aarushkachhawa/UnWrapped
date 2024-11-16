@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 SPOTIFY_CLIENT_ID = settings.SPOTIFY_CLIENT_ID
 SPOTIFY_CLIENT_SECRET = settings.SPOTIFY_CLIENT_SECRET
 SPOTIFY_REDIRECT_URI = settings.SPOTIFY_REDIRECT_URI
-SPOTIFY_SCOPE = 'user-top-read user-read-recently-played'  # Add more scopes if needed
+SPOTIFY_SCOPE = 'user-top-read user-read-recently-played user-read-private'  # Add more scopes if needed
 SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token"
 SPOTIFY_API_URL = "https://api.spotify.com/v1/me/top/artists"
 SPOTIFY_TRACK_URL = "https://api.spotify.com/v1/me/top/tracks"
@@ -291,7 +291,8 @@ def calculate_ads(request):
 
     if ads_minutes > 360:
         ads_minutes = "over 360"
-    return HttpResponse(ads_minutes)
+
+    return ads_minutes
 
 def get_most_popular_artists(request):
     if 'spotify_access_token' not in request.session:
@@ -620,3 +621,42 @@ def transition_one(request):
         logger.error(f"Error in transition view: {e}")
         messages.error(request, "An error occurred while loading the transition page.")
         return redirect('home')
+
+def get_account_level(request):
+    access_token = request.session.get('spotify_access_token')
+
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+
+    response = requests.get(f"{SPOTIFY_BASE_URL}", headers=headers)
+
+    if response.status_code == 401:
+        refresh_token = request.session.get('spotify_refresh_token')
+        new_tokens = refresh_spotify_token(refresh_token)
+        access_token = new_tokens.get('access_token')
+        request.session['spotify_access_token'] = access_token
+        headers = {
+            "Authorization": f"Bearer {access_token}"
+        }
+        response = requests.get(f"{SPOTIFY_BASE_URL}", headers=headers)
+
+    if response.status_code != 200:
+        print(response.text, "Error: Can't get user's account status.")
+        return redirect('home')
+
+    response = response.json()
+    print(response['product'])
+    if response['product'] == 'premium':
+        premium = True
+    else:
+        premium = False
+
+    print(premium)
+
+    context = {
+        "premium": premium,
+        "ads_minutes": calculate_ads(request),
+    }
+
+    return render(request, 'ads_minutes.html', context)
