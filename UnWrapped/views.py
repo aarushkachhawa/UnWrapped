@@ -560,9 +560,18 @@ def night_owl(request): # combine this into one calculate stats method so we don
 
     time_list = []
     for song in last_50_songs:
-        listening_time = song['played_at']
-        datetime_obj = datetime.fromisoformat(listening_time)
-        datetime_obj = datetime_obj - timedelta(hours=5) # convert from GMT to EST
+        listening_time = song['played_at'].strip()  # Strip whitespace
+        # Replace 'Z' with '+00:00' for UTC
+        if listening_time.endswith('Z'):
+            listening_time = listening_time[:-1] + '+00:00'
+        
+        try:
+            datetime_obj = datetime.fromisoformat(listening_time)
+        except ValueError as e:
+            print(f"Error parsing date: {listening_time} - {e}")
+            continue  # Skip this song if there's an error
+    
+        datetime_obj = datetime_obj - timedelta(hours=5)  # Convert from GMT to EST
         time_list.append({
             "hour": (datetime_obj.hour - 5) % 24, # latest hour is 5 AM
             "minute": datetime_obj.minute,
@@ -587,25 +596,45 @@ def night_owl(request): # combine this into one calculate stats method so we don
         hour = song["hour"]
         total_time += song["track_length"]
 
-        if hour >= 0 and hour <= 5:
+        if hour + 5 >= 0 and hour + 5 <= 5:
             time_ranges["0-5"] += (song["track_length"])
-        elif hour >= 6 and hour <= 11:
+        elif hour + 5 >= 6 and hour + 5 <= 11:
             time_ranges["6-11"] += (song["track_length"])
-        elif hour >= 12 and hour <= 17:
+        elif hour + 5 >= 12 and hour + 5 <= 17:
             time_ranges["12-17"] += (song["track_length"])
         else:
             time_ranges["18-23"] += (song["track_length"])
 
     latest_time["hour"] = (latest_time["hour"] + 5) % 24
-    print("latest", latest_time)
+    #print("latest", latest_time)
 
     for key in time_ranges:
         time_ranges[key] = round(time_ranges[key] / 60000)
-    print("time per hour range:", time_ranges)
+    #print("time per hour range:", time_ranges)
 
     total_time = round(total_time / 60000)
-    print("total minutes:", total_time)
-    return HttpResponse(latest_time)
+    #print("total minutes:", total_time)
+
+    hour = latest_time['hour']
+    minute = latest_time['minute']
+    if hour != 12:
+        hour = latest_time['hour'] if latest_time['hour'] < 12 else latest_time['hour'] - 12
+        
+    degrees_per_min = 360/60
+    minute_hand_rotation = minute * degrees_per_min
+    
+    hour_hand_rotation = 360/12 * hour + 360/12/60 * minute
+
+    context = {
+        "latest_time": f"{hour}:{'0' if latest_time['minute'] < 10 else ''}{latest_time['minute']} {'AM' if latest_time['hour'] < 12 else 'PM'}",
+        'time_ranges': json.dumps(time_ranges),
+        "total_minutes": total_time,
+        "hour_hand_rotation": hour_hand_rotation - 90,
+        "minute_hand_rotation": minute_hand_rotation - 90,
+    }
+    
+    print(context['time_ranges'])
+    return render(request, 'slide_3.html', context)
 
 
 @login_required
