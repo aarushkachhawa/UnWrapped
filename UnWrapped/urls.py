@@ -4,7 +4,6 @@ from . import views
 from django.shortcuts import redirect
 
 app_name = 'UnWrapped'
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', lambda request: redirect('login', permanent=True)),  # Redirect root to login
@@ -22,4 +21,7 @@ urlpatterns = [
     path('night_owl/', views.night_owl, name="night_owl"),
     path('llm_insights_page/', views.llm_insights_page, name="llm_insights_page"),
     path('transition_one/', views.transition_one, name="transition_one"),
+    path('profile/', views.profile, name="profile"),
+    path('contact/', views.contactDevs, name="contact"),
+    path('halloween_graph/', views.halloween_graph_view, name='halloween_graph'),
 ]
