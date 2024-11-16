@@ -688,7 +688,7 @@ def get_account_level(request):
 
     context = {
         "premium": premium,
-        "ads_minutes": calculate_ads(request),
+        "ads_minutes": round(calculate_ads(request)),
     }
 
     return render(request, 'ads_minutes.html', context)
