@@ -1,0 +1,201 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unwrapped</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Notable&display=swap" rel="stylesheet">
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+    </script>
+    <style>
+         * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Notable', sans-serif;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center top 100px;
+            background-color: #FFA500; /* Changed background color to orange */
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header {
+            width: 100%;
+            height: 100px;
+            background-color: #000; /* Changed header background to black */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #ECD101;
+            padding: 0 40px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .menu-icon {
+            color: #ECD101;
+            font-size: 65px;
+            padding: 0 40px;
+        }
+
+        .title {
+            font-size: 36px;
+            font-weight: bold;
+            color: #FFA500; /* Changed header text to orange */
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .profile {
+            color: #ECD101;
+            font-size: 20px;
+            padding: 0 30px;
+            margin-top: 30px;
+        }
+
+        .slide-title {
+            color: #000; /* Changed from blue to black */
+            font-size: 36px;
+            text-align: center;
+            margin-top: 115px;
+            padding-bottom: 25px;
+            flex-grow: 1;
+        }
+
+        .chart-and-artists {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .artist-record {
+            width: 70px;
+            height: auto;
+            padding-right: 10px;
+        }
+
+        .artist-label {
+            font-size: 22px;
+            padding-right: 20px;
+            color: #000; /* Changed from blue to black */
+        }
+
+        .artist {
+            display: flex;
+            align-items: center;
+            padding-bottom: 50px;
+        }
+
+        .chart-legend {
+            padding-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="menu-icon">☰</div>
+        <div class="title">UNWRAPPED</div>
+        <div class="profile">PROFILE</div>
+    </div>
+
+    <div class="container">
+        <div class="slide-title">Your Top 3 Artists Over Time</div>
+        <div class="chart-and-artists">
+            <canvas id="artistRankings" style="width:100%;max-width:1000px"></canvas>
+            <script>
+                const top3Artists = JSON.parse('{{ top_3_artists | escapejs }}');
+                const artistLabels = Object.keys(top3Artists);
+                const artistData = Object.values(top3Artists);
+
+                const xValues = [["over the", "last year"], ["over the last", "six months"], ["over the", "last month"]];
+
+                const datasets = artistLabels.map((artist, index) => ({
+                    label: artist,
+                    data: artistData[index],
+                    borderColor: index === 0 ? "#EF6E53" : index === 1 ? "#DDC371" : "#2A9D90",
+                    fill: false
+                }));
+
+                new Chart("artistRankings", {
+                    type: "line",
+                    data: {
+                        labels: xValues,
+                        datasets: datasets
+                    },
+                    options: {
+                        legend: {
+                            display: false,
+                        },
+                        scales: {
+                            xAxes: [{
+                                ticks: {
+                                    fontFamily: 'Notable',
+                                    fontSize: 15,
+                                    fontColor: "#473924",
+                                },
+                            }],
+                            yAxes: [{
+                                ticks: {
+                                    fontFamily: 'Notable',
+                                    fontColor: "#473924",
+                                    fontSize: 15,
+                                    reverse: true,
+                                },
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: "Ranking",
+                                    fontFamily: 'Notable',
+                                    fontColor: "#473924",
+                                    fontSize: 21,
+                                }
+                            }]
+                        },
+                        layout: {
+                            padding: {
+                                left: 70,
+                                right: 70,
+                                bottom: 70,
+                                top: 40
+                            }
+                        }
+                    }
+                });
+            </script>
+
+            <div class="chart-legend">
+                <div class="artist">
+                    <img src="{% static 'slide_2/salmon_record.png' %}" class="artist-record">
+                    <label class="artist-label">{{artist1}}</label>
+                </div>
+                <div class="artist">
+                    <img src="{% static 'slide_2/gold_record.png' %}" class="artist-record">
+                    <label class="artist-label">{{artist2}}</label>
+                </div>
+                <div class="artist">
+                    <img src="{% static 'slide_2/teal_record.png' %}" class="artist-record">
+                    <label class="artist-label">{{artist3}}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

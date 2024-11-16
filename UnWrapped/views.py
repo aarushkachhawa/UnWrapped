@@ -27,6 +27,7 @@ SPOTIFY_API_URL = "https://api.spotify.com/v1/me/top/artists"
 SPOTIFY_TRACK_URL = "https://api.spotify.com/v1/me/top/tracks"
 SPOTIFY_BASE_URL = "https://api.spotify.com/v1/me"
 
+
 def logout_view(request):
     logout(request)
     messages.info(request, "You have successfully logged out.")
@@ -123,6 +124,7 @@ def spotify_auth_url():
     )
     return auth_url
 
+
 @login_required
 def home(request):
     if 'spotify_access_token' not in request.session:
@@ -133,17 +135,18 @@ def home(request):
 
 @login_required
 def getStats(request):
-
     if 'wrappedData' in request.session:
-        return request.session['wrappedData'] # the format for request.session['wrappedData'] is {'top_artists': list, 'top_songs': list, 'top_artist_year': string}
+        return request.session[
+            'wrappedData']  # the format for request.session['wrappedData'] is {'top_artists': list, 'top_songs': list, 'top_artist_year': string}
 
     access_token = request.session['spotify_access_token']
     headers = {
         "Authorization": f"Bearer {access_token}"
     }
 
-    numTopTracks = 5 # change this to x top tracks you want
-    response = requests.get(f"{SPOTIFY_API_URL}?time_range=long_term&limit={numTopTracks}", headers=headers) # medium_term for 6 months, short_term for 1 month, long_term for 1 year
+    numTopTracks = 5  # change this to x top tracks you want
+    response = requests.get(f"{SPOTIFY_API_URL}?time_range=long_term&limit={numTopTracks}",
+                            headers=headers)  # medium_term for 6 months, short_term for 1 month, long_term for 1 year
     trackResponse = requests.get(f"{SPOTIFY_TRACK_URL}?time_range=long_term&limit={numTopTracks}", headers=headers)
     if response.status_code == 401 or trackResponse.status_code == 401:
         refresh_token = request.session.get('spotify_refresh_token')
@@ -193,6 +196,7 @@ def spotify_callback(request):
 
     return redirect('home')
 
+
 @login_required
 def stats(request):
     if 'spotify_access_token' not in request.session:
@@ -218,7 +222,8 @@ def stats(request):
         },
         {
             'title': 'Top Artist This Year',
-            'content': [wrappedData['top_artist_year']], # top_artist_year is a single value and the slides expect a list
+            'content': [wrappedData['top_artist_year']],
+            # top_artist_year is a single value and the slides expect a list
             'additionalData': None
         },
     ]
@@ -228,7 +233,8 @@ def stats(request):
     }
 
     return render(request, 'stats.html', context)
-    
+
+
 @login_required
 def top_artist_and_songs_slide(request):
     # Fetch Spotify data (top artists and top songs)
@@ -271,7 +277,8 @@ def get_last_50_songs(request):
         response = requests.get(f"{SPOTIFY_BASE_URL}/player/recently-played", headers=headers, params=parameters)
 
     if response.status_code != 200:
-        print(response.text, "Error: Couldn't get last 50 songs played from Spotify & some statistics will be impacted.")
+        print(response.text,
+              "Error: Couldn't get last 50 songs played from Spotify & some statistics will be impacted.")
         return redirect('home')
 
     response_json = response.json()
@@ -284,7 +291,8 @@ def get_last_50_songs(request):
 def calculate_ads(request):
     seconds_in_a_month = 2.628e+6
 
-    last_50_songs = get_last_50_songs(request) # we should make this only get called once when stats are calculated, for now tho we'll call it again here
+    last_50_songs = get_last_50_songs(
+        request)  # we should make this only get called once when stats are calculated, for now tho we'll call it again here
     oldest_time = datetime.fromisoformat(last_50_songs[-1]['played_at'][:-1])
     newest_time = datetime.fromisoformat(last_50_songs[0]['played_at'][:-1])
     time_dif = newest_time - oldest_time
@@ -305,7 +313,8 @@ def calculate_ads(request):
         ads_minutes = "over 360"
     return HttpResponse(ads_minutes)
 
-def get_most_popular_artists(request):
+
+def get_most_popular_artists(request, page = "slide_2.html"):
     if 'spotify_access_token' not in request.session:
         return redirect(spotify_auth_url())
 
@@ -381,7 +390,7 @@ def get_most_popular_artists(request):
 
     for artist in top_3_artists:
         if len(top_3_artists[artist]) != 2:
-            top_3_artists[artist].append(None) # artist wasn't in the top artists during this time period
+            top_3_artists[artist].append(None)  # artist wasn't in the top artists during this time period
 
     # get the rankings of the artists in the last ~1 month
     num_found = 0
@@ -434,15 +443,20 @@ def get_most_popular_artists(request):
             artist3 = artist
         count += 1
 
-    #print(top_3_artists)
-    
+    # print(top_3_artists)
+
     context = {
         'top_3_artists': json.dumps(top_3_artists),
         'artist1': artist1,
         'artist2': artist2,
         'artist3': artist3,
     }
-    return render(request, 'slide_2.html', context)
+    return render(request, page, context)
+
+@login_required
+def halloween_graph(request):
+    return get_most_popular_artists(request, "halloween_graph.html")
+
 
 # used for your seasonal mood (get top 100 songs in the last ~1 month), gets top 100 songs and the artists
 def get_recent_top_songs(request):
@@ -494,6 +508,7 @@ def get_recent_top_songs(request):
 
     return songs_list
 
+
 def analyze_seasonal_mood(request):
     client = OpenAI(api_key=OPENAI_API_KEY)
     songs = str(get_recent_top_songs(request))
@@ -504,15 +519,17 @@ def analyze_seasonal_mood(request):
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "You are a music analyst."},
-            {"role": "user", "content": "The following 100 songs are the songs a user listened to most frequently this season. Describe the music they listened to using 6 adjectives and give an example song for each adjective from their top 100 songs. Follow this format for all 6 adjectives/moods: Mood: Song Title by Artist"},
+            {"role": "user",
+             "content": "The following 100 songs are the songs a user listened to most frequently this season. Describe the music they listened to using 6 adjectives and give an example song for each adjective from their top 100 songs. Follow this format for all 6 adjectives/moods: Mood: Song Title by Artist"},
             {"role": "user", "content": songs}
         ]
     )
-    
+
     description = response.choices[0].message
     print(description)
 
     return json.dumps(description)
+
 
 @login_required
 def llm_insights_page(request):
@@ -555,7 +572,8 @@ def analyze_clothing(request):
 
     return description.content.split(";")
 
-def night_owl(request): # combine this into one calculate stats method so we don't need to call get last 50 songs multiple times
+
+def night_owl(request):  # combine this into one calculate stats method so we don't need to call get last 50 songs multiple times
     last_50_songs = get_last_50_songs(request)
 
     time_list = []
@@ -573,14 +591,15 @@ def night_owl(request): # combine this into one calculate stats method so we don
     
         datetime_obj = datetime_obj - timedelta(hours=5)  # Convert from GMT to EST
         time_list.append({
-            "hour": (datetime_obj.hour - 5) % 24, # latest hour is 5 AM
+            "hour": (datetime_obj.hour - 5) % 24,  # latest hour is 5 AM
             "minute": datetime_obj.minute,
             "track_length": song["track"]["duration_ms"]
         })
 
     latest_time = time_list[0]
     for song in time_list:
-        if (song["hour"] > latest_time["hour"]) or (song["hour"] == latest_time["hour"] and song["minute"] > latest_time["minute"]):
+        if (song["hour"] > latest_time["hour"]) or (
+                song["hour"] == latest_time["hour"] and song["minute"] > latest_time["minute"]):
             latest_time = song
 
     time_ranges = {
