@@ -560,9 +560,18 @@ def night_owl(request): # combine this into one calculate stats method so we don
 
     time_list = []
     for song in last_50_songs:
-        listening_time = song['played_at']
-        datetime_obj = datetime.fromisoformat(listening_time)
-        datetime_obj = datetime_obj - timedelta(hours=5) # convert from GMT to EST
+        listening_time = song['played_at'].strip()  # Strip whitespace
+        # Replace 'Z' with '+00:00' for UTC
+        if listening_time.endswith('Z'):
+            listening_time = listening_time[:-1] + '+00:00'
+        
+        try:
+            datetime_obj = datetime.fromisoformat(listening_time)
+        except ValueError as e:
+            print(f"Error parsing date: {listening_time} - {e}")
+            continue  # Skip this song if there's an error
+    
+        datetime_obj = datetime_obj - timedelta(hours=5)  # Convert from GMT to EST
         time_list.append({
             "hour": (datetime_obj.hour - 5) % 24, # latest hour is 5 AM
             "minute": datetime_obj.minute,
