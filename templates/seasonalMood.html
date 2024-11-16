@@ -47,22 +47,21 @@
 
 
         .center-record {
-        position: absolute;
-        top: 25%;
-        left: 30%;
-        width: 500px;
-        height: 500px;
-        background-image: url("{% static 'seasonalMood/center_record.png' %}"); /* Replace with correct image path */
-        background-size: cover;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: #FFF;
-        font-size: 24px;
-        font-weight: bold;
-        text-align: center;
-
+            position: absolute;
+            top: 25%;
+            left: calc(50% - 250px);
+            width: 500px;
+            height: 500px;
+            background-image: url("{% static 'seasonalMood/center_record.png' %}"); /* Replace with correct image path */
+            background-size: cover;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #FFF;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
     }
 
     /* Small Record Positions */
@@ -71,26 +70,67 @@
         height: 100px;
         background-size: cover;
         border-radius: 50%;
+    }
+
+    .small-record-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
         position: absolute;
+        gap: 15px; /* Space between record and text */
+    }
+
+    .small-record-text {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+    }
+
+    .small-record-song {
+        font-family: 'Notable', sans-serif;
+        color: #000000;
+        font-size: 24px;
+    }
+
+    .small-record-artist {
+        font-family: 'Radio Canada', sans-serif;
+        color: #000000;
+        font-size: 16px;
+    }
+
+    .small-record-container1 {
+        top: 200px;
+        left: calc(50% - 500px);
     }
 
     /* Specific positions for small records */
     .small-record1 {
         background-image: url("{% static 'seasonalMood/red_record.png' %}");
-        top: 25%;
-        left: 15%;
+    }
+
+    .small-record-container2 {
+        top: 200px;
+        right: calc(50% - 500px);
     }
 
     .small-record2 {
         background-image: url("{% static 'seasonalMood/yellow_record.png' %}");
-        top: 25%;
-        right: 15%;
+    }
+
+    .small-record-container3 {
+        top: 400px;
+        left: calc(50% - 650px);
     }
 
     .small-record3 {
         background-image: url("{% static 'seasonalMood/blue_record.png' %}");
-        top: 50%;
-        left: 10%;
+        top: 400px;
+    }
+
+    .small-record-container4 {
+        top: 400px;
+        right: calc(50% - 650px);
     }
 
     .small-record4 {
@@ -99,10 +139,20 @@
         right: 10%;
     }
 
+    .small-record-container5 {
+        top: 600px;
+        left: calc(50% - 500px);
+    }
+
     .small-record5 {
         background-image: url("{% static 'seasonalMood/yellow_record.png' %}");
         top: 75%;
         left: 20%;
+    }
+
+    .small-record-container6 {
+        top: 600px;
+        right: calc(50% - 500px);
     }
 
     .small-record6 {
@@ -147,12 +197,54 @@
     </div>
 
     <!-- Small records surrounding the large record -->
-    <div class="small-record small-record1"></div>
-    <div class="small-record small-record2"></div>
-    <div class="small-record small-record3"></div>
-    <div class="small-record small-record4"></div>
-    <div class="small-record small-record5"></div>
-    <div class="small-record small-record6"></div>
+    <div class="small-record-container small-record-container1">
+        <div class="small-record small-record1"></div>
+        <div class="small-record-text">
+            <div class="small-record-song">{{mood1}}</div>
+            <div class="small-record-artist">{{song_artist1}}</div>
+        </div>
+    </div>
+
+
+    <div class="small-record-container small-record-container2">
+        <div class="small-record-text">
+            <div class="small-record-song">{{mood2}}</div>
+            <div class="small-record-artist">{{song_artist2}}</div>
+        </div>
+        <div class="small-record small-record2"></div>
+    </div>
+
+    <div class="small-record-container small-record-container3">
+        <div class="small-record small-record3"></div>
+        <div class="small-record-text">
+            <div class="small-record-song">{{mood3}}</div>
+            <div class="small-record-artist">{{song_artist3}}</div>
+        </div>
+    </div>
+
+    <div class="small-record-container small-record-container4">
+        <div class="small-record-text">
+            <div class="small-record-song">{{mood4}}</div>
+            <div class="small-record-artist">{{song_artist4}}</div>
+        </div>
+        <div class="small-record small-record4"></div>
+    </div>
+
+    <div class="small-record-container small-record-container5">
+        <div class="small-record small-record5"></div>
+        <div class="small-record-text">
+            <div class="small-record-song">{{mood5}}</div>
+            <div class="small-record-artist">{{song_artist5}}</div>
+        </div>
+    </div>
+
+    <div class="small-record-container small-record-container6">
+        <div class="small-record-text">
+            <div class="small-record-song">{{mood6}}</div>
+            <div class="small-record-artist">{{song_artist6}}</div>
+        </div>
+        <div class="small-record small-record6"></div>
+    </div>
 
     <img src="{% static 'topArtist/triangle_button.png' %}" class="forward-triangle-button" alt="Forward Button">
 

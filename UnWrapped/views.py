@@ -500,21 +500,47 @@ def analyze_seasonal_mood(request):
     print('\n\n\n\n\n')
 
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are a music analyst."},
-            {"role": "user", "content": "The following 100 songs are the songs a user listened to most frequently this season. Describe the music they listened to using 6 adjectives and give an example song for each adjective from their top 100 songs. Follow this format for all 6 adjectives/moods: Mood: Song Title by Artist"},
+            {"role": "user", "content": "The following 100 songs are the songs a user listened to most frequently this season. Based on the songs listened come with 6 adjectives to describe their taste in music and for each adjective find an example song. Return the 6 adjectives and their respective example song and artist in the following format: Adjective1*Song Title by Artist*Adjective2*Song Title by Artist* etc. DO NOT return anything besides the 6 adjectives and their respective example song / artist."},
             {"role": "user", "content": songs}
         ]
     )
     
-    description = response.choices[0].message
+    description = response.choices[0].message.content
+
+    description = description.split('*')
+
+    mood1 = description[0]
+    song_artist1 = description[1]
+    mood2 = description[2]
+    song_artist2 = description[3]
+    mood3 = description[4]
+    song_artist3 = description[5]
+    mood4 = description[6]
+    song_artist4 = description[7]
+    mood5 = description[8]
+    song_artist5 = description[9]
+    mood6 = description[10]
+    song_artist6 = description[11]
+
+
     print(description)
 
-    #return json.dumps(description)
-
     context = {
-
+        "mood1" : mood1,
+        "mood2" : mood2,
+        "mood3" : mood3,
+        "mood4" : mood4,
+        "mood5" : mood5,
+        "mood6" : mood6,
+        "song_artist1" : song_artist1,
+        "song_artist2" : song_artist2,
+        "song_artist3" : song_artist3,
+        "song_artist4" : song_artist4,
+        "song_artist5" : song_artist5,
+        "song_artist6" : song_artist6,
     }
 
     return render(request, 'seasonalMood.html', context)
