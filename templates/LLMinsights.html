@@ -16,7 +16,6 @@
     {% block content %}
 
     <style>
-        /* Global Styles */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -100,18 +99,18 @@
 
         .artist-info {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
         }
 
         .artist-image {
-            width: 80px;
-            height: 200px;
+            width: 400px;
+            height: 400px;
         }
 
         .artist-vinyl {
             width: 160px;
-            height: 400px;
+            height: 390px;
         }
 
         .top-artist-section h2 {
@@ -189,7 +188,7 @@
     </style>
     <!-- Page Title -->
     <div class="page-title">
-        <h1>Your Top Artist & Top 5 Songs</h1>
+        <h1>LLM Insights</h1>
     </div>
 
     <!-- Content Sections for Top Artist and Top Songs -->
@@ -197,7 +196,8 @@
         <!-- Top Artist Section on the Left -->
         <div class="top-artist-section">
             <div class="artist-info">
-                <img src="{% static 'topArtist/album_cover_record.png' %}" class="artist-vinyl">
+                    <img src="{% static songPath %}" class="artist-image">
+                    <img src="{% static 'topArtist/album_cover_record.png' %}" class="artist-vinyl">
             </div>
         </div>
 

@@ -21,14 +21,6 @@
         .container {
             width: 100%;
         }
-        .profileContainer {
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 800px;
-            position: relative;
-        }
         .rainbow-corner {
             width: 80px;
             height: 80px;
@@ -46,17 +38,6 @@
             right: -20px;
             background: conic-gradient(from 180deg, violet, indigo, blue, green, yellow, orange, red);
             border-radius: 50%;
-        }
-        .profileHeader {
-            background-color: #4ba3e3;
-            color: #ffd700;
-            padding: 1rem;
-            text-align: center;
-            margin: -2rem -2rem 2rem -2rem;
-            border-radius: 10px 10px 0 0;
-            font-size: 2rem;
-            font-weight: bold;
-            letter-spacing: 2px;
         }
         .info-item {
             display: flex;
@@ -229,80 +210,27 @@
         .pink {background-color: #ffcdd2;}
         .orange {background-color: #fff3e0;}
         .blue {background-color: #e3f2fd;}
+        .contactContainer {
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 800px;
+            position: relative;
+            text-align: center;
+            h1 {
+                margin-bottom: 50px;
+            }
+        }
     </style>
 
-    <div class="profileContainer">
+    <div class="contactContainer">
         <!-- <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="rainbow-corner bottom-right">
         <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="rainbow-corner bottom-left"> -->
-        <div class="info-item">
-            <label>USERNAME:</label>
-            <div class="data-field username-field">{{ username }}</div>
-        </div>
-        <div class="info-item">
-            <label>EMAIL:</label>
-            <div class="data-field email-field">{{ email }}</div>
-        </div>
-        <div class="info-item">
-            <label>TOP GENRE:</label>
-            <div class="data-field genre-field"></div>
-        </div>
-        <div class="bottom-section">
-            <div class="top-artists">
-                <div class="info-item">
-                    <label>TOP FIVE ARTISTS</label>
-                </div>
-                <div class="artist-item">
-                    <div class="artist-number">1</div>
-                    <div class="artist-field"></div>
-                </div>
-                <div class="artist-item">
-                    <div class="artist-number">2</div>
-                    <div class="artist-field teal"></div>
-                </div>
-                <div class="artist-item">
-                    <div class="artist-number">3</div>
-                    <div class="artist-field pink"></div>
-                </div>
-                <div class="artist-item">
-                    <div class="artist-number">4</div>
-                    <div class="artist-field orange"></div>
-                </div>
-                <div class="artist-item">
-                    <div class="artist-number">5</div>
-                    <div class="artist-field blue"></div>
-                </div>
-            </div>
-            <div class="record-players">
-                <div class="jukebox grey">
-                    <div class="jukebox-top">
-                        <div class="record-window">
-                            <div class="record"></div>
-                        </div>
-                    </div>
-                    <div class="jukebox-controls">
-                        <div class="control"></div>
-                        <div class="control"></div>
-                        <div class="control"></div>
-                    </div>
-                    <div class="jukebox-label">PAST WRAPS!</div>
-                </div>
-                <a href="{% url 'slide_2' %}" style="text-decoration: none;">
-                <div class="jukebox turquoise">
-                    <div class="jukebox-top">
-                        <div class="record-window">
-                            <div class="record"></div>
-                        </div>
-                    </div>
-                    <div class="jukebox-controls">
-                        <div class="control"></div>
-                        <div class="control"></div>
-                        <div class="control"></div>
-                    </div>
-                    <div class="jukebox-label">MONTHLY TRENDS</div>  
-                </div>
-                </a>
-            </div>
-        </div>
+        <h1> Contact </h1>
+
+        <p> Hello! Our project was made for Georgia Tech's CS 2340 class. We built this app using Django and the Spotify API. </p>
+
     </div>
     {% endblock %}
 </body>

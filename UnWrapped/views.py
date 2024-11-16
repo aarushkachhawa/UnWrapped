@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 from openai import OpenAI
 from .localSettings import OPENAI_API_KEY
 import json
+import os, random
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +31,17 @@ def logout_view(request):
     logout(request)
     messages.info(request, "You have successfully logged out.")
     return redirect('login')
+
+@login_required
+def profile(request):
+    context = {
+        'username': request.user.get_username(),
+        'email': request.user.email
+    }
+    return render(request, 'profile.html', context)
+
+def contactDevs(request):
+    return render(request, 'contact.html', {})
 
 def register(request):
     if request.user.is_authenticated:
@@ -506,8 +518,19 @@ def analyze_seasonal_mood(request):
 @login_required
 def llm_insights_page(request):
     contentArr = analyze_clothing(request)
-    context = {
-        'content': contentArr
+    mood = contentArr[0].split(": ")[1].lower()
+    if mood not in ["restless", "bitersweet", "introspective", "overjoyed", "pensive"]:
+        mood = "other"
+    rootDir = f"llmInsights/{mood}/"
+    try:
+        imageList = [file for file in os.listdir(f"/home/pkadekodi/UnWrapped/static/llmInsights/{mood}") if file[len(file) - 3:].lower() == "jpg"]
+        songPath = rootDir + random.choice(imageList)
+    except:
+        songPath = rootDir + "2014FHD.jpg"
+    context = { # send mood in separately because of how horrible django's template functionality is :)
+        'content': contentArr,
+        'mood': mood,
+        'songPath': songPath,
     }
     return render(request, 'LLMinsights.html', context)
 
@@ -523,7 +546,7 @@ def analyze_clothing(request):
         messages=[
             {"role": "system", "content": "You are a style analyst."},
             {"role": "user",
-             "content": "The following 100 songs are the songs a user listened to most frequently recently. Describe their style in the following format: Mood: description; Relationship Status: description; Favorite Color: description; Favorite Emoji: description. Here is an example of output (make sure not to include ANY other descriptive text or any spaces after the semicolon): Mood: Black/Dark Scheme;Relationship Status: Heartbroken;Favorite Color: Black;Favorite Emoji: Skull"},
+             "content": "The following 100 songs are the songs a user listened to most frequently recently. Describe their style in the following format (make sure the description is only one word!, the mood can only be Bittersweet, Pensive, Restless, Overjoyed, or Introspective): Mood: description; Relationship Status: description; Favorite Color: description; Favorite Emoji: description. Here is an example of output (make sure not to include ANY other descriptive text or any spaces after the semicolon): Mood: Black/Dark Scheme;Relationship Status: Heartbroken;Favorite Color: Black;Favorite Emoji: Skull"},
             {"role": "user", "content": songs}
         ]
     )
@@ -538,9 +561,18 @@ def night_owl(request): # combine this into one calculate stats method so we don
 
     time_list = []
     for song in last_50_songs:
-        listening_time = song['played_at']
-        datetime_obj = datetime.fromisoformat(listening_time)
-        datetime_obj = datetime_obj - timedelta(hours=5) # convert from GMT to EST
+        listening_time = song['played_at'].strip()  # Strip whitespace
+        # Replace 'Z' with '+00:00' for UTC
+        if listening_time.endswith('Z'):
+            listening_time = listening_time[:-1] + '+00:00'
+        
+        try:
+            datetime_obj = datetime.fromisoformat(listening_time)
+        except ValueError as e:
+            print(f"Error parsing date: {listening_time} - {e}")
+            continue  # Skip this song if there's an error
+    
+        datetime_obj = datetime_obj - timedelta(hours=5)  # Convert from GMT to EST
         time_list.append({
             "hour": (datetime_obj.hour - 5) % 24, # latest hour is 5 AM
             "minute": datetime_obj.minute,

@@ -24,4 +24,6 @@ urlpatterns = [
     path('llm_insights_page/', views.llm_insights_page, name="llm_insights_page"),
     path('transition_one/', views.transition_one, name="transition_one"),
     path('ads_minutes/', views.get_account_level, name="ads_minutes"),
+    path('profile/', views.profile, name="profile"),
+    path('contact/', views.contactDevs, name="contact"),
 ]

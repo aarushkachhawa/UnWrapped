@@ -50,22 +50,6 @@
             right: -150px;
         }
 
-        /* Fixed Header */
-        .header {
-            width: 100%;
-            height: 100px;
-            background-color: #5AABF3;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #ECD101;
-            padding: 0 40px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-        }
-
         .menu-icon {
             color: #ECD101;
             font-size: 65px;
@@ -166,6 +150,15 @@
             width: 100%;
         }
 
+        .dark-mode .song {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background-color: #121212;
+            padding: 40px 15px;
+            width: 100%;
+        }
+
         .vinyl-icon-red {
             width: 100px;
             height: 100px;
@@ -196,6 +189,12 @@
             margin: 0;
         }
 
+        .dark-mode .song-details h3 {
+            font-size: 25px;
+            color: #E0E0E0;
+            margin: 0;
+        }
+
         .song-details p {
             font-family: 'Radio Canada', sans-serif;
             font-size: 16px;
@@ -203,23 +202,12 @@
             margin: 0;
         }
 
-        .forward-triangle-button {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            bottom: 3%;
-            right: calc(50% - 100px);
+        .dark-mode .song-details p {
+            font-family: 'Radio Canada', sans-serif;
+            font-size: 16px;
+            color: #E0E0E0;
+            margin: 0;
         }
-
-        .backward-triangle-button {
-            position: absolute;
-            transform: rotate(180deg);
-            width: 40px;
-            height: 40px;
-            bottom: 3%;
-            right: calc(50% + 100px);
-        }
-
 
     </style>
 
@@ -278,6 +266,7 @@
 
                     <div class="vinyl-icon-yellow"></div>
                 </div>
+
                 <div class="song">
                     <div class="song-details">
                         <h3>Mean It</h3>
@@ -293,7 +282,18 @@
         <img src="{% static 'topArtist/triangle_button.png' %}" class="forward-triangle-button" alt="Forward Button">
     </a>
 
-    <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button">
+    <div class="circle-container">
+        <div class="darker-small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+    </div>
+
+    <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button" alt="Forward Button">
 
     <img src="{% static 'topArtist/top_left_corner_rainbow.png' %}" class="bottom-corner-rainbow">
 

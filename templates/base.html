@@ -68,7 +68,7 @@
 
         .title {
             position: absolute;
-            left: 50%;
+            left: calc(50% - 18px);
             transform: translateX(-50%);
             font-size: 36px;
             font-weight: bold;
@@ -82,12 +82,12 @@
             flex-grow: 1;
         }
 
-        .profile {
+        .dark-mode-div {
             margin-left: auto;
             color: #ECD101;
             font-size: 20px;
             padding: 0 30px;
-            margin-top: 30px;
+            cursor: pointer;
         }
 
         .note-icons {
@@ -160,7 +160,7 @@
             text-shadow: none;
         }
 
-        .dark-mode .menu-icon, .dark-mode .profile, .dark-mode .note1, .dark-mode .note2 {
+        .dark-mode .menu-icon, .dark-mode .dark-mode-div, .dark-mode .note1, .dark-mode .note2 {
             color: #FDD835;
         }
 
@@ -188,6 +188,7 @@
             border-radius: 5px;
             cursor: pointer;
             z-index: 1001;
+
         }
 
         .sidebar {
@@ -205,6 +206,7 @@
             flex-direction: column;
             gap: 20px;
             padding-left: 20px;
+            padding-right: 10px;
         }
 
         .sidebar a {
@@ -226,34 +228,82 @@
             margin-left: 270px; /* Adjust to sidebar width */
         }
 
+        .forward-triangle-button {
+            position: absolute;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            bottom: 3%;
+            right: calc(50% - 175px);
+        }
+
+        .backward-triangle-button {
+            position: absolute;
+            align-items: center;
+            transform: rotate(180deg);
+            width: 40px;
+            height: 40px;
+            bottom: 3%;
+            right: calc(50% + 175px);
+        }
+
+        .circle-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: absolute;
+            bottom: calc(3% + 15px); /* Adjust to position correctly above the triangles */
+            left: calc(50% - 21px);
+            transform: translateX(-50%);
+            width: 250px; /* Adjust the width to space the circles evenly */
+        }
+
+
+        .small-circle {
+            width: 8px;
+            height: 8px;
+            background-color: #d3d3d3;
+            border-radius: 50%;
+        }
+
+        .darker-small-circle {
+            width: 8px;
+            height: 8px;
+            background-color: dimgray;
+            border-radius: 50%;
+        }
+
+
     </style>
 </head>
 <body>
-    <button class="toggle-button" onclick="toggleDarkMode()">Toggle Dark Mode</button>
     <div class="header">
         <div class="menu-icon" onclick="toggleSidebar()">☰</div>
         <div class="title">UNWRAPPED</div>
-        <div class="profile">PROFILE</div>
+        <div class="dark-mode-div" id="dark-mode-btn">TOGGLE DARK MODE</div>
     </div>
 
     <div class="sidebar" id="sidebar">
         <a href="{% url 'home' %}">Home</a>
-        <a href="{% url 'slide_2' %}">Most Popular Artists</a>
+        <a href="{% url 'top_artist' %}">Top Artists and Top Songs</a>
+        <a href="{% url 'slide_2' %}">Top Artist Graph</a>
         <a href="{% url 'llm_insights_page' %}">LLM Insights</a>
+        <a href="{% url 'contact' %}">Contact</a>
+        <a href="{% url 'profile' %}">Profile</a>
     </div>
 
-    <script>
-        // Function to toggle dark mode
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-        }
 
+    <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const container = document.getElementById('main-container');
             sidebar.classList.toggle('active');
             container.classList.toggle('sidebar-active');
         }
+
+        document.getElementById('dark-mode-btn').onclick = function() {
+            document.body.classList.toggle('dark-mode');
+        };
     </script>
 
     <div class="container">
