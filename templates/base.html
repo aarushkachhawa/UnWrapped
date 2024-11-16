@@ -82,12 +82,11 @@
             flex-grow: 1;
         }
 
-        .profile {
+        .dark-mode-div {
             margin-left: auto;
             color: #ECD101;
             font-size: 20px;
             padding: 0 30px;
-            margin-top: 30px;
             cursor: pointer;
         }
 
@@ -161,7 +160,7 @@
             text-shadow: none;
         }
 
-        .dark-mode .menu-icon, .dark-mode .profile, .dark-mode .note1, .dark-mode .note2 {
+        .dark-mode .menu-icon, .dark-mode .dark-mode-div, .dark-mode .note1, .dark-mode .note2 {
             color: #FDD835;
         }
 
@@ -278,11 +277,10 @@
     </style>
 </head>
 <body>
-    <button class="toggle-button" onclick="toggleDarkMode()">Toggle Dark Mode</button>
     <div class="header">
         <div class="menu-icon" onclick="toggleSidebar()">☰</div>
         <div class="title">UNWRAPPED</div>
-        <div class="profile" id="profileDiv">PROFILE</div>
+        <div class="dark-mode-div" id="dark-mode-btn">TOGGLE DARK MODE</div>
     </div>
 
     <div class="sidebar" id="sidebar">
@@ -291,15 +289,11 @@
         <a href="{% url 'slide_2' %}">Top Artist Graph</a>
         <a href="{% url 'llm_insights_page' %}">LLM Insights</a>
         <a href="{% url 'contact' %}">Contact</a>
+        <a href="{% url 'profile' %}">Profile</a>
     </div>
 
 
     <script>
-        // Function to toggle dark mode
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-        }
-
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const container = document.getElementById('main-container');
@@ -307,8 +301,8 @@
             container.classList.toggle('sidebar-active');
         }
 
-        document.getElementById('profileDiv').onclick = function() {
-            window.location.href = "{% url 'profile' %}";
+        document.getElementById('dark-mode-btn').onclick = function() {
+            document.body.classList.toggle('dark-mode');
         };
     </script>
 
