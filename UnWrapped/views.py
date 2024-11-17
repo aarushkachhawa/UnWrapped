@@ -253,7 +253,7 @@ def top_artist_and_songs_slide(request, page='topArtistAndSongs.html'):
     return render(request, page, context)
 
 def halloween_top_artist(request):
-    return top_artist_and_songs_slide(request, 'halloween/halloween_top_artist.html')
+    return top_artist_and_songs_slide(request, 'halloween_top_artist.html')
 
 def christmas_top_artist(request):
     return top_artist_and_songs_slide(request, 'christmas/christmas_top_artist.html')
@@ -464,7 +464,7 @@ def get_most_popular_artists(request, page = "slide_2.html"):
 
 @login_required
 def halloween_graph(request):
-    return get_most_popular_artists(request, "halloween/halloween_graph.html")
+    return get_most_popular_artists(request, "halloween_graph.html")
 
 @login_required
 def christmas_graph(request):
@@ -683,7 +683,7 @@ def night_owl(request, page='slide_3.html'):  # combine this into one calculate 
     return render(request, page, context)
 
 def halloween_night_owl(request):
-    return night_owl(request, 'halloween/halloween_night_owl.html')
+    return night_owl(request, 'halloween_night_owl.html')
 
 def christmas_night_owl(request):
     return night_owl(request, 'christmas/christmas_night_owl.html')

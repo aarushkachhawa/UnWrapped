@@ -14,7 +14,6 @@ urlpatterns = [
     path('profile/', views.profile, name="profile"),
     path('contact/', views.contactDevs, name="contact"),
     path('spotify_callback/', views.spotify_callback, name='spotify_callback'),  # Spotify OAuth callback
-
     path('top_artist/', views.top_artist_and_songs_slide, name='top_artist'),
     path('slide_2/', views.get_most_popular_artists, name="slide_2"),
     path('top_artists/', views.get_most_popular_artists, name="top_artists"),
@@ -24,14 +23,16 @@ urlpatterns = [
     path('llm_insights_page/', views.llm_insights_page, name="llm_insights_page"),
     path('transition_one/', views.transition_one, name="transition_one"),
     path('ads_minutes/', views.get_account_level, name="ads_minutes"),
-
     path('halloween_ads/', views.halloween_ads, name='halloween_ads'),
+    path('halloween_top_artist/', views.halloween_top_artist, name='halloween_top_artist'),
+    path('halloween_graph/', views.halloween_graph, name='halloween_graph'),
+    path('halloween_night_owl/', views.halloween_night_owl, name='halloween_night_owl'),
 
 ]
 
 '''
 path('halloween_top_artist/', views.halloween_top_artist, name='halloween_top_artist'),
-path('halloween_graph/', views.halloween_graph, name='halloween_graph'),
+
 path('halloween_ads/', views.halloween_ads, name='halloween_ads'),
 path('halloween_seasonal_mood/', views.halloween_seasonal_mood, name='halloween_seasonal_mood'),
 path('halloween_night_owl/', views.halloween_night_owl, name='halloween_night_owl'),
