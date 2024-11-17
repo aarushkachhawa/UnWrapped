@@ -199,9 +199,25 @@
 
         <!-- Text along the circular path -->
         <text fill="#C64036" font-size="36" font-weight="bold" transform="translate(8, 0)" style="text-shadow: 2px 2px 0 white;">
+            {% if season == "winter" %}
             <textPath href="#textCircle" startOffset="0%">
                 YOUR WINTER MOOD
             </textPath>
+            {% elif season == "spring" %}
+            <textPath href="#textCircle" startOffset="0%">
+                YOUR SPRING MOOD
+            </textPath>
+
+            {% elif season == "summer" %}
+            <textPath href="#textCircle" startOffset="0%">
+                YOUR SUMMER MOOD
+            </textPath>
+            {% else %}
+            <textPath href="#textCircle" startOffset="0%">
+                YOUR AUTUMN MOOD
+            </textPath>
+
+            {% endif %}
         </text>
 
         <!-- Text along bottom circular path-->

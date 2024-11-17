@@ -572,6 +572,23 @@ def analyze_seasonal_mood(request):
 
     print(response_json['images'][0]['url'])
 
+    current_date = datetime.now()
+    month = current_date.month
+
+    print("month", month)
+
+    curr_season = None
+    # Determine the season based on date ranges
+    if (month <= 2 or month == 12):
+        curr_season = "winter"
+    elif (month <= 5 and month >= 3):
+        curr_season = "spring"
+    elif (month <= 8 and month >= 6):
+        curr_season = "summer"
+    else:
+        curr_season = "autumn"
+
+
     context = {
         "mood1" : mood1,
         "mood2" : mood2,
@@ -585,7 +602,8 @@ def analyze_seasonal_mood(request):
         "song_artist4" : song_artist4,
         "song_artist5" : song_artist5,
         "song_artist6" : song_artist6,
-        "image" : response_json['images'][0]['url']
+        "image" : response_json['images'][0]['url'],
+        "season" : curr_season,
     }
 
     return render(request, 'seasonalMood.html', context)
