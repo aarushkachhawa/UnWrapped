@@ -127,12 +127,26 @@
             })
         </script>
 
-        <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="top-left">
-        <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="bottom-right">
+        <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="top-left rainbow">
+        <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="bottom-right rainbow">
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const dark_mode = localStorage.getItem('dark_mode') === 'on';
+                const rainbows = document.getElementsByClassName('rainbow');
+                if (dark_mode) {
+                    for (let i = 0; i < rainbows.length; i++) {
+                        rainbows[i].src = "{% static 'slide_2/dark_mode_rainbow.png' %}"
+                    }
+                }
+            });
+        </script>
+
         <div class="slide-title">Your Top 3 Artists Over Time</div>
         <div class="chart-and-artists">
             <canvas id="artistRankings" style="width:100%;max-width:1000px"></canvas>
             <script>
+                const dark_mode = localStorage.getItem('dark_mode') === 'on'
                 const top3Artists = JSON.parse('{{ top_3_artists | escapejs }}');
                 const artists = Object.keys(top3Artists);
                 const artist1 = artists[0];
@@ -178,13 +192,16 @@
                                 ticks: {
                                     fontFamily: 'Notable',
                                     fontSize: 15,
-                                    fontColor: "#473924",
+                                    fontColor: dark_mode ? "#a8a6a6" : "#473924",
                                 },
+                                gridLines: {
+                                    color: dark_mode ? "#a8a6a6" : "#473924",
+                                }
                             }],
                             yAxes: [{
                                 ticks: {
                                     fontFamily: 'Notable',
-                                    fontColor: "#473924",
+                                    fontColor: dark_mode ? "#a8a6a6" : "#473924",
                                     fontSize: 15,
                                     reverse: true,
                                 },
@@ -192,8 +209,11 @@
                                     display: true,
                                     labelString: "Ranking",
                                     fontFamily: 'Notable',
-                                    fontColor: "#473924",
+                                    fontColor: dark_mode ? "#a8a6a6" : "#473924",
                                     fontSize: 21,
+                                },
+                                gridLines: {
+                                    color: dark_mode ? "#a8a6a6" : "#473924",
                                 }
                             }]
                         },
