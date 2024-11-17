@@ -26,4 +26,5 @@ urlpatterns = [
     path('profile/', views.profile, name="profile"),
     path('contact/', views.contactDevs, name="contact"),
     path('halloween_graph/', views.halloween_graph, name='halloween_graph'),
+    path('save_wrap/', views.save_wrap, name='save_wrap'),
 ]

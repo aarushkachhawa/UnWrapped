@@ -236,7 +236,7 @@ def stats(request):
 
 
 @login_required
-def top_artist_and_songs_slide(request):
+def top_artist_and_songs_slide(request, stats_call = False):
     # Fetch Spotify data (top artists and top songs)
     wrapped_data = getStats(request)
 
@@ -250,7 +250,8 @@ def top_artist_and_songs_slide(request):
     request.session['top_artist'] = wrapped_data['top_artist_year']
     request.session['top_songs'] = wrapped_data['top_songs']
     # Render a single template with both top artist and top songs
-    return render(request, 'topArtistAndSongs.html', context)
+    if not stats_call:
+        return render(request, 'topArtistAndSongs.html', context)
 
 
 @login_required
@@ -317,7 +318,7 @@ def calculate_ads(request):
     return ads_minutes
 
 
-def get_most_popular_artists(request, page = "slide_2.html"):
+def get_most_popular_artists(request, page = "slide_2.html", stats_call=False):
     if 'spotify_access_token' not in request.session:
         return redirect(spotify_auth_url())
 
@@ -459,7 +460,9 @@ def get_most_popular_artists(request, page = "slide_2.html"):
     request.session['artist1'] = artist1
     request.session['artist2'] = artist2
     request.session['artist3'] = artist3
-    return render(request, page, context)
+
+    if not stats_call:
+        return render(request, page, context)
 
 @login_required
 def halloween_graph(request):
@@ -503,7 +506,7 @@ def get_recent_top_songs(request):
         for track in response_json['items']:
             artists_list = []
             for artist in track["artists"]:
-                artists_list.append(artist["name"])
+                artists_list.append((artist["name"], artist["id"]))
             songs_list.append({
                 "song_name": track["name"],
                 "artists": artists_list,
@@ -540,7 +543,7 @@ def analyze_seasonal_mood(request):
 
 
 @login_required
-def llm_insights_page(request):
+def llm_insights_page(request, stats_call=False):
     contentArr = analyze_clothing(request)
     mood = contentArr[0].split(": ")[1].lower()
     if mood not in ["restless", "bitersweet", "introspective", "overjoyed", "pensive"]:
@@ -560,7 +563,8 @@ def llm_insights_page(request):
     request.session['mood'] = mood
     request.session['songPath'] = songPath
 
-    return render(request, 'LLMinsights.html', context)
+    if not stats_call:
+        return render(request, 'LLMinsights.html', context)
 
 
 def analyze_clothing(request):
@@ -585,7 +589,7 @@ def analyze_clothing(request):
     return description.content.split(";")
 
 
-def night_owl(request):  # combine this into one calculate stats method so we don't need to call get last 50 songs multiple times
+def night_owl(request, stats_call=False):  # combine this into one calculate stats method so we don't need to call get last 50 songs multiple times
     last_50_songs = get_last_50_songs(request)
 
     time_list = []
@@ -668,10 +672,11 @@ def night_owl(request):  # combine this into one calculate stats method so we do
     request.session['time_ranges'] = json.dumps(time_ranges)
     request.session['total_minutes'] = total_time
     request.session['hour_hand_rotation'] = hour_hand_rotation - 90
-    request.sesion['minute_hand_rotation'] = minute_hand_rotation - 90
+    request.session['minute_hand_rotation'] = minute_hand_rotation - 90
     
     print(context['time_ranges'])
-    return render(request, 'slide_3.html', context)
+    if not stats_call:     
+        return render(request, 'slide_3.html', context)
 
 
 @login_required
@@ -725,6 +730,22 @@ def get_account_level(request):
     context = {
         "premium": premium,
         "ads_minutes": round(calculate_ads(request)),
+        "language": "english",
     }
 
+    request.session['premium'] = premium
+    request.session['ads_minutes'] = context['ads_minutes']
     return render(request, 'ads_minutes.html', context)
+
+def save_wrap(request):
+    if 'top_artist' not in request.session or 'top_songs' not in request.session:
+        top_artist_and_songs_slide(request, stats_call=True)
+
+    if 'top_3_artists' not in request.session or 'artist1' not in request.session or 'artist2' not in request.session or 'artist3' not in request.session:
+        get_most_popular_artists(request, stats_call=True)
+
+    if 'content' not in request.session or 'mood' not in request.session or 'songPath' not in request.session:
+        llm_insights_page(request, stats_call=True)
+
+    if 'latest_time' not in request.session or 'time_ranges' not in request.session or 'total_minutes' not in request.session or 'hour_hand_rotation' not in request.session or 'minute_hand_rotation' not in request.session:
+        night_owl(request, stats_call=True)
