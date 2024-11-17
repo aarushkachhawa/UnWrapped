@@ -313,7 +313,15 @@
                 console.log(localStorage.getItem('dark_mode'));
             }
         };
-    </script>
+
+        document.addEventListener("DOMContentLoaded", function() {
+            if (localStorage.getItem('dark_mode') === 'on') {
+                document.body.classList.add('dark-mode');
+                console.log('dark mode on');
+                // add dark mode to all items
+            }
+        })
+        </script>
 
     <div class="container">
         {% block content %}
