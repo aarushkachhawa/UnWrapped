@@ -1,0 +1,310 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Seasonal Mood</title>
+
+</head>
+<body>
+    {% block content %}
+
+    <style>
+        /* Global Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Notable', sans-serif;
+            background-color: #FCF8F1;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center top 100px;
+            overflow: hidden;
+        }
+
+        .top-corner-rainbow {
+            width: 300px;
+            height: 300px;
+            position: absolute;
+            top: -50px;
+            left: -50px;
+        }
+
+        .bottom-corner-rainbow {
+            width: 300px;
+            height: 300px;
+            transform: rotate(180deg);
+            position: absolute;
+            bottom: -150px;
+            right: -50px;
+        }
+
+
+        .center-record {
+            position: absolute;
+            top: 200px;
+            left: calc(50% - 260px);
+            width: 500px;
+            height: 500px;
+            background-image: url("{% static 'seasonalMood/center_record.png' %}"); /* Replace with correct image path */
+            background-size: cover;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #FFF;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .record-image {
+            width: 150px;
+            height: 150px;
+            position: absolute;
+            top: 365px;
+            left: calc(50% - 75px);
+            z-index: 10;
+            border-radius: 100px;
+
+            /* FIX THE IMAGE BY GETTING IT OUT OF THE RECORD DIV*/
+        }
+
+
+        /* Small Record Positions */
+        .small-record {
+            width: 100px;
+            height: 100px;
+            background-size: cover;
+            border-radius: 50%;
+        }
+
+        .small-record-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            position: absolute;
+            gap: 15px; /* Space between record and text */
+        }
+
+        .small-record-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+        }
+
+        .small-record-mood {
+            font-family: 'Notable', sans-serif;
+            color: #000000;
+            font-size: 24px;
+            width: 150px;
+            /*margin-right: 30px;*/
+        }
+
+        .small-record-artist {
+            font-family: 'Radio Canada', sans-serif;
+            color: #000000;
+            font-size: 16px;
+            width: 150px;
+            /*margin-right: 30px;*/
+        }
+
+        .small-record-container1 {
+            top: 200px;
+            left: calc(50% - 500px);
+        }
+
+        /* Specific positions for small records */
+        .small-record1 {
+            background-image: url("{% static 'seasonalMood/red_record.png' %}");
+        }
+
+        .small-record-container2 {
+            top: 200px;
+            right: calc(50% - 500px);
+        }
+
+        .small-record2 {
+            background-image: url("{% static 'seasonalMood/yellow_record.png' %}");
+        }
+
+        .small-record-container3 {
+            top: 400px;
+            left: calc(50% - 650px);
+        }
+
+        .small-record3 {
+            background-image: url("{% static 'seasonalMood/blue_record.png' %}");
+            top: 400px;
+        }
+
+        .small-record-container4 {
+            top: 400px;
+            right: calc(50% - 650px);
+        }
+
+        .small-record4 {
+            background-image: url("{% static 'seasonalMood/red_record.png' %}");
+            top: 50%;
+            right: 10%;
+        }
+
+        .small-record-container5 {
+            top: 600px;
+            left: calc(50% - 500px);
+        }
+
+        .small-record5 {
+            background-image: url("{% static 'seasonalMood/yellow_record.png' %}");
+            top: 75%;
+            left: 20%;
+        }
+
+        .small-record-container6 {
+            top: 600px;
+            right: calc(50% - 500px);
+        }
+
+        .small-record6 {
+            background-image: url("{% static 'seasonalMood/blue_record.png' %}");
+            top: 75%;
+            right: 20%;
+        }
+
+        .small-record-container2, .small-record-container4, .small-record-container6 {
+
+            text-align: right; /* Align text within the text container */
+        }
+
+    </style>
+
+    <img src="{% static 'topArtist/top_left_corner_rainbow.png' %}" class="top-corner-rainbow">
+
+    <img src={{image}} class="record-image">
+
+    <div class="center-record">
+        <svg width="400" height="400" viewBox="0 0 400 400">
+        <!-- Define a circular path for the text to follow -->
+        <defs>
+            <path id="textCircle" d="M 200, 200 m -150, 0 a 150,150 0 1,1 300,0 a 150,150 0 1,1 -300,0"/>
+            <path id="textCircleBottom" d="M 200, 200 m 150, 0 a 150,150 0 1,0 -300,0 a 150,150 0 1,0 300,0"/>
+        </defs>
+
+        <!-- Text along the circular path -->
+        <text fill="#C64036" font-size="36" font-weight="bold" transform="translate(8, 0)" style="text-shadow: 2px 2px 0 white;">
+            {% if season == "winter" %}
+            <textPath href="#textCircle" startOffset="0%">
+                YOUR WINTER MOOD
+            </textPath>
+            {% elif season == "spring" %}
+            <textPath href="#textCircle" startOffset="0%">
+                YOUR SPRING MOOD
+            </textPath>
+
+            {% elif season == "summer" %}
+            <textPath href="#textCircle" startOffset="0%">
+                YOUR SUMMER MOOD
+            </textPath>
+            {% else %}
+            <textPath href="#textCircle" startOffset="0%">
+                YOUR AUTUMN MOOD
+            </textPath>
+
+            {% endif %}
+        </text>
+
+        <!-- Text along bottom circular path-->
+        <text fill="#C64036" font-size="18" font-weight="bold" transform="translate(5, -4)">
+            <textPath href="#textCircleBottom" startOffset="60%">
+                & EXAMPLES OF SOME OF
+            </textPath>
+        </text>
+
+        <text fill="#C64036" font-size="18" font-weight="bold" transform="translate(5, 30)">
+            <textPath href="#textCircleBottom" startOffset="63%">
+                YOUR FAVORITE SONGS
+            </textPath>
+        </text>
+    </svg>
+    </div>
+
+    <!-- Small records surrounding the large record -->
+    <div class="small-record-container small-record-container1">
+        <div class="small-record small-record1"></div>
+        <div class="small-record-text">
+            <div class="small-record-mood">{{mood1}}</div>
+            <div class="small-record-artist">{{song_artist1}}</div>
+        </div>
+    </div>
+
+
+    <div class="small-record-container small-record-container2">
+        <div class="small-record-text">
+            <div class="small-record-mood">{{mood2}}</div>
+            <div class="small-record-artist">{{song_artist2}}</div>
+        </div>
+        <div class="small-record small-record2"></div>
+    </div>
+
+    <div class="small-record-container small-record-container3">
+        <div class="small-record small-record3"></div>
+        <div class="small-record-text">
+            <div class="small-record-mood">{{mood3}}</div>
+            <div class="small-record-artist">{{song_artist3}}</div>
+        </div>
+    </div>
+
+    <div class="small-record-container small-record-container4">
+        <div class="small-record-text">
+            <div class="small-record-mood">{{mood4}}</div>
+            <div class="small-record-artist">{{song_artist4}}</div>
+        </div>
+        <div class="small-record small-record4"></div>
+    </div>
+
+    <div class="small-record-container small-record-container5">
+        <div class="small-record small-record5"></div>
+        <div class="small-record-text">
+            <div class="small-record-mood">{{mood5}}</div>
+            <div class="small-record-artist">{{song_artist5}}</div>
+        </div>
+    </div>
+
+    <div class="small-record-container small-record-container6">
+        <div class="small-record-text">
+            <div class="small-record-mood">{{mood6}}</div>
+            <div class="small-record-artist">{{song_artist6}}</div>
+        </div>
+        <div class="small-record small-record6"></div>
+    </div>
+
+    <img src="{% static 'topArtist/triangle_button.png' %}" class="forward-triangle-button" alt="Forward Button">
+
+
+    <div class="circle-container">
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="darker-small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+    </div>
+
+    <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button" alt="Forward Button">
+
+    <a href="{% url 'slide_3' %}">
+                <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button" alt="Forward Button">
+    </a>
+
+    {% endblock %}
+</body>
+</html>

@@ -505,11 +505,19 @@ def get_recent_top_songs(request):
         response_json = response.json()
         for track in response_json['items']:
             artists_list = []
+
+            artist_id = None
+            first = True
             for artist in track["artists"]:
-                artists_list.append((artist["name"], artist["id"]))
+                if first:
+                    artist_id = artist["id"]
+                    first = False
+                artists_list.append(artist["name"])
+
             songs_list.append({
                 "song_name": track["name"],
                 "artists": artists_list,
+                "artist_id": artist_id
             })
 
         if response_json['next'] is None:
@@ -522,24 +530,111 @@ def get_recent_top_songs(request):
 
 def analyze_seasonal_mood(request):
     client = OpenAI(api_key=OPENAI_API_KEY)
-    songs = str(get_recent_top_songs(request))
+    songs_list = get_recent_top_songs(request)
+    songs = str(songs_list)
     print(songs)
     print('\n\n\n\n\n')
 
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are a music analyst."},
-            {"role": "user",
-             "content": "The following 100 songs are the songs a user listened to most frequently this season. Describe the music they listened to using 6 adjectives and give an example song for each adjective from their top 100 songs. Follow this format for all 6 adjectives/moods: Mood: Song Title by Artist"},
+            {"role": "user", "content": "The following 100 songs are the songs a user listened to most frequently this season. Based on the songs listened come with 6 adjectives to describe their taste in music and for each adjective find an example song. Make sure the adjectives are 8 characters in length or smaller. Return the 6 adjectives and their respective example song and artist in the following format: Adjective1*Song Title by Artist*Adjective2*Song Title by Artist* etc. DO NOT return anything besides the 6 adjectives and their respective example song / artist."},
             {"role": "user", "content": songs}
         ]
     )
+    
+    description = response.choices[0].message.content
 
-    description = response.choices[0].message
+    description = description.split('*')
+
+    mood1 = description[0]
+    song_artist1 = description[1]
+    mood2 = description[2]
+    song_artist2 = description[3]
+    mood3 = description[4]
+    song_artist3 = description[5]
+    mood4 = description[6]
+    song_artist4 = description[7]
+    mood5 = description[8]
+    song_artist5 = description[9]
+    mood6 = description[10]
+    song_artist6 = description[11]
+
     print(description)
 
-    return json.dumps(description)
+    song1 = song_artist1.split('by')[0].strip()
+
+    print(song1)
+
+    artist_id = None
+    for song in songs_list:
+        if song['song_name'] == song1:
+            artist_id = song['artist_id']
+            break
+
+    print(artist_id)
+
+    access_token = request.session.get('spotify_access_token')
+
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+
+    songs_list = []
+    response = requests.get(f"https://api.spotify.com/v1/artists/{artist_id}", headers=headers)
+
+    """if response.status_code == 401:
+        refresh_token = request.session.get('spotify_refresh_token')
+        new_tokens = refresh_spotify_token(refresh_token)
+        access_token = new_tokens.get('access_token')
+        request.session['spotify_access_token'] = access_token
+        headers = {
+            "Authorization": f"Bearer {access_token}"
+        }
+        response = requests.get(f"{SPOTIFY_BASE_URL}/player/recently-played", headers=headers, params=parameters)
+"""
+    response_json = response.json()
+
+    print(response_json['images'][0]['url'])
+
+    current_date = datetime.now()
+    month = current_date.month
+
+    print("month", month)
+
+    curr_season = None
+    # Determine the season based on date ranges
+    if (month <= 2 or month == 12):
+        curr_season = "winter"
+    elif (month <= 5 and month >= 3):
+        curr_season = "spring"
+    elif (month <= 8 and month >= 6):
+        curr_season = "summer"
+    else:
+        curr_season = "autumn"
+
+
+    context = {
+        "mood1" : mood1,
+        "mood2" : mood2,
+        "mood3" : mood3,
+        "mood4" : mood4,
+        "mood5" : mood5,
+        "mood6" : mood6,
+        "song_artist1" : song_artist1,
+        "song_artist2" : song_artist2,
+        "song_artist3" : song_artist3,
+        "song_artist4" : song_artist4,
+        "song_artist5" : song_artist5,
+        "song_artist6" : song_artist6,
+        "image" : response_json['images'][0]['url'],
+        "season" : curr_season,
+    }
+
+    return render(request, 'seasonalMood.html', context)
+
+
 
 
 @login_required
