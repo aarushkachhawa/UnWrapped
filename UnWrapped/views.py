@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 from openai import OpenAI
 from .localSettings import OPENAI_API_KEY
 import json
+import os, random
 
 logger = logging.getLogger(__name__)
 
@@ -20,11 +21,12 @@ logger = logging.getLogger(__name__)
 SPOTIFY_CLIENT_ID = settings.SPOTIFY_CLIENT_ID
 SPOTIFY_CLIENT_SECRET = settings.SPOTIFY_CLIENT_SECRET
 SPOTIFY_REDIRECT_URI = settings.SPOTIFY_REDIRECT_URI
-SPOTIFY_SCOPE = 'user-top-read user-read-recently-played'  # Add more scopes if needed
+SPOTIFY_SCOPE = 'user-top-read user-read-recently-played user-read-private'  # Add more scopes if needed
 SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token"
 SPOTIFY_API_URL = "https://api.spotify.com/v1/me/top/artists"
 SPOTIFY_TRACK_URL = "https://api.spotify.com/v1/me/top/tracks"
 SPOTIFY_BASE_URL = "https://api.spotify.com/v1/me"
+
 
 def logout_view(request):
     logout(request)
@@ -122,6 +124,7 @@ def spotify_auth_url():
     )
     return auth_url
 
+
 @login_required
 def home(request):
     if 'spotify_access_token' not in request.session:
@@ -132,17 +135,18 @@ def home(request):
 
 @login_required
 def getStats(request):
-
     if 'wrappedData' in request.session:
-        return request.session['wrappedData'] # the format for request.session['wrappedData'] is {'top_artists': list, 'top_songs': list, 'top_artist_year': string}
+        return request.session[
+            'wrappedData']  # the format for request.session['wrappedData'] is {'top_artists': list, 'top_songs': list, 'top_artist_year': string}
 
     access_token = request.session['spotify_access_token']
     headers = {
         "Authorization": f"Bearer {access_token}"
     }
 
-    numTopTracks = 5 # change this to x top tracks you want
-    response = requests.get(f"{SPOTIFY_API_URL}?time_range=long_term&limit={numTopTracks}", headers=headers) # medium_term for 6 months, short_term for 1 month, long_term for 1 year
+    numTopTracks = 5  # change this to x top tracks you want
+    response = requests.get(f"{SPOTIFY_API_URL}?time_range=long_term&limit={numTopTracks}",
+                            headers=headers)  # medium_term for 6 months, short_term for 1 month, long_term for 1 year
     trackResponse = requests.get(f"{SPOTIFY_TRACK_URL}?time_range=long_term&limit={numTopTracks}", headers=headers)
     if response.status_code == 401 or trackResponse.status_code == 401:
         refresh_token = request.session.get('spotify_refresh_token')
@@ -192,6 +196,7 @@ def spotify_callback(request):
 
     return redirect('home')
 
+
 @login_required
 def stats(request):
     if 'spotify_access_token' not in request.session:
@@ -217,7 +222,8 @@ def stats(request):
         },
         {
             'title': 'Top Artist This Year',
-            'content': [wrappedData['top_artist_year']], # top_artist_year is a single value and the slides expect a list
+            'content': [wrappedData['top_artist_year']],
+            # top_artist_year is a single value and the slides expect a list
             'additionalData': None
         },
     ]
@@ -227,7 +233,8 @@ def stats(request):
     }
 
     return render(request, 'stats.html', context)
-    
+
+
 @login_required
 def top_artist_and_songs_slide(request):
     # Fetch Spotify data (top artists and top songs)
@@ -270,7 +277,8 @@ def get_last_50_songs(request):
         response = requests.get(f"{SPOTIFY_BASE_URL}/player/recently-played", headers=headers, params=parameters)
 
     if response.status_code != 200:
-        print(response.text, "Error: Couldn't get last 50 songs played from Spotify & some statistics will be impacted.")
+        print(response.text,
+              "Error: Couldn't get last 50 songs played from Spotify & some statistics will be impacted.")
         return redirect('home')
 
     response_json = response.json()
@@ -283,7 +291,8 @@ def get_last_50_songs(request):
 def calculate_ads(request):
     seconds_in_a_month = 2.628e+6
 
-    last_50_songs = get_last_50_songs(request) # we should make this only get called once when stats are calculated, for now tho we'll call it again here
+    last_50_songs = get_last_50_songs(
+        request)  # we should make this only get called once when stats are calculated, for now tho we'll call it again here
     oldest_time = datetime.fromisoformat(last_50_songs[-1]['played_at'][:-1])
     newest_time = datetime.fromisoformat(last_50_songs[0]['played_at'][:-1])
     time_dif = newest_time - oldest_time
@@ -302,9 +311,11 @@ def calculate_ads(request):
 
     if ads_minutes > 360:
         ads_minutes = "over 360"
-    return HttpResponse(ads_minutes)
 
-def get_most_popular_artists(request):
+    return ads_minutes
+
+
+def get_most_popular_artists(request, page = "slide_2.html"):
     if 'spotify_access_token' not in request.session:
         return redirect(spotify_auth_url())
 
@@ -380,7 +391,7 @@ def get_most_popular_artists(request):
 
     for artist in top_3_artists:
         if len(top_3_artists[artist]) != 2:
-            top_3_artists[artist].append(None) # artist wasn't in the top artists during this time period
+            top_3_artists[artist].append(None)  # artist wasn't in the top artists during this time period
 
     # get the rankings of the artists in the last ~1 month
     num_found = 0
@@ -433,15 +444,20 @@ def get_most_popular_artists(request):
             artist3 = artist
         count += 1
 
-    #print(top_3_artists)
-    
+    # print(top_3_artists)
+
     context = {
         'top_3_artists': json.dumps(top_3_artists),
         'artist1': artist1,
         'artist2': artist2,
         'artist3': artist3,
     }
-    return render(request, 'slide_2.html', context)
+    return render(request, page, context)
+
+@login_required
+def halloween_graph(request):
+    return get_most_popular_artists(request, "halloween_graph.html")
+
 
 # used for your seasonal mood (get top 100 songs in the last ~1 month), gets top 100 songs and the artists
 def get_recent_top_songs(request):
@@ -501,6 +517,7 @@ def get_recent_top_songs(request):
 
     return songs_list
 
+
 def analyze_seasonal_mood(request):
     client = OpenAI(api_key=OPENAI_API_KEY)
     songs_list = get_recent_top_songs(request)
@@ -533,7 +550,6 @@ def analyze_seasonal_mood(request):
     song_artist5 = description[9]
     mood6 = description[10]
     song_artist6 = description[11]
-
 
     print(description)
 
@@ -610,11 +626,23 @@ def analyze_seasonal_mood(request):
 
 
 
+
 @login_required
 def llm_insights_page(request):
     contentArr = analyze_clothing(request)
-    context = {
-        'content': contentArr
+    mood = contentArr[0].split(": ")[1].lower()
+    if mood not in ["restless", "bitersweet", "introspective", "overjoyed", "pensive"]:
+        mood = "other"
+    rootDir = f"llmInsights/{mood}/"
+    try:
+        imageList = [file for file in os.listdir(f"/home/pkadekodi/UnWrapped/static/llmInsights/{mood}") if file[len(file) - 3:].lower() == "jpg"]
+        songPath = rootDir + random.choice(imageList)
+    except:
+        songPath = rootDir + "2014FHD.jpg"
+    context = { # send mood in separately because of how horrible django's template functionality is :)
+        'content': contentArr,
+        'mood': mood,
+        'songPath': songPath,
     }
     return render(request, 'LLMinsights.html', context)
 
@@ -630,7 +658,7 @@ def analyze_clothing(request):
         messages=[
             {"role": "system", "content": "You are a style analyst."},
             {"role": "user",
-             "content": "The following 100 songs are the songs a user listened to most frequently recently. Describe their style in the following format (make sure the description is only one word!): Mood: description; Relationship Status: description; Favorite Color: description; Favorite Emoji: description. Here is an example of output (make sure not to include ANY other descriptive text or any spaces after the semicolon): Mood: Black/Dark Scheme;Relationship Status: Heartbroken;Favorite Color: Black;Favorite Emoji: Skull"},
+             "content": "The following 100 songs are the songs a user listened to most frequently recently. Describe their style in the following format (make sure the description is only one word!, the mood can only be Bittersweet, Pensive, Restless, Overjoyed, or Introspective): Mood: description; Relationship Status: description; Favorite Color: description; Favorite Emoji: description. Here is an example of output (make sure not to include ANY other descriptive text or any spaces after the semicolon): Mood: Black/Dark Scheme;Relationship Status: Heartbroken;Favorite Color: Black;Favorite Emoji: Skull"},
             {"role": "user", "content": songs}
         ]
     )
@@ -640,23 +668,34 @@ def analyze_clothing(request):
 
     return description.content.split(";")
 
-def night_owl(request): # combine this into one calculate stats method so we don't need to call get last 50 songs multiple times
+
+def night_owl(request):  # combine this into one calculate stats method so we don't need to call get last 50 songs multiple times
     last_50_songs = get_last_50_songs(request)
 
     time_list = []
     for song in last_50_songs:
-        listening_time = song['played_at']
-        datetime_obj = datetime.fromisoformat(listening_time)
-        datetime_obj = datetime_obj - timedelta(hours=5) # convert from GMT to EST
+        listening_time = song['played_at'].strip()  # Strip whitespace
+        # Replace 'Z' with '+00:00' for UTC
+        if listening_time.endswith('Z'):
+            listening_time = listening_time[:-1] + '+00:00'
+        
+        try:
+            datetime_obj = datetime.fromisoformat(listening_time)
+        except ValueError as e:
+            print(f"Error parsing date: {listening_time} - {e}")
+            continue  # Skip this song if there's an error
+    
+        datetime_obj = datetime_obj - timedelta(hours=5)  # Convert from GMT to EST
         time_list.append({
-            "hour": (datetime_obj.hour - 5) % 24, # latest hour is 5 AM
+            "hour": (datetime_obj.hour - 5) % 24,  # latest hour is 5 AM
             "minute": datetime_obj.minute,
             "track_length": song["track"]["duration_ms"]
         })
 
     latest_time = time_list[0]
     for song in time_list:
-        if (song["hour"] > latest_time["hour"]) or (song["hour"] == latest_time["hour"] and song["minute"] > latest_time["minute"]):
+        if (song["hour"] > latest_time["hour"]) or (
+                song["hour"] == latest_time["hour"] and song["minute"] > latest_time["minute"]):
             latest_time = song
 
     time_ranges = {
@@ -672,25 +711,45 @@ def night_owl(request): # combine this into one calculate stats method so we don
         hour = song["hour"]
         total_time += song["track_length"]
 
-        if hour >= 0 and hour <= 5:
+        if hour + 5 >= 0 and hour + 5 <= 5:
             time_ranges["0-5"] += (song["track_length"])
-        elif hour >= 6 and hour <= 11:
+        elif hour + 5 >= 6 and hour + 5 <= 11:
             time_ranges["6-11"] += (song["track_length"])
-        elif hour >= 12 and hour <= 17:
+        elif hour + 5 >= 12 and hour + 5 <= 17:
             time_ranges["12-17"] += (song["track_length"])
         else:
             time_ranges["18-23"] += (song["track_length"])
 
     latest_time["hour"] = (latest_time["hour"] + 5) % 24
-    print("latest", latest_time)
+    #print("latest", latest_time)
 
     for key in time_ranges:
         time_ranges[key] = round(time_ranges[key] / 60000)
-    print("time per hour range:", time_ranges)
+    #print("time per hour range:", time_ranges)
 
     total_time = round(total_time / 60000)
-    print("total minutes:", total_time)
-    return HttpResponse(latest_time)
+    #print("total minutes:", total_time)
+
+    hour = latest_time['hour']
+    minute = latest_time['minute']
+    if hour != 12:
+        hour = latest_time['hour'] if latest_time['hour'] < 12 else latest_time['hour'] - 12
+        
+    degrees_per_min = 360/60
+    minute_hand_rotation = minute * degrees_per_min
+    
+    hour_hand_rotation = 360/12 * hour + 360/12/60 * minute
+
+    context = {
+        "latest_time": f"{hour}:{'0' if latest_time['minute'] < 10 else ''}{latest_time['minute']} {'AM' if latest_time['hour'] < 12 else 'PM'}",
+        'time_ranges': json.dumps(time_ranges),
+        "total_minutes": total_time,
+        "hour_hand_rotation": hour_hand_rotation - 90,
+        "minute_hand_rotation": minute_hand_rotation - 90,
+    }
+    
+    print(context['time_ranges'])
+    return render(request, 'slide_3.html', context)
 
 
 @login_required
@@ -708,3 +767,42 @@ def transition_one(request):
         logger.error(f"Error in transition view: {e}")
         messages.error(request, "An error occurred while loading the transition page.")
         return redirect('home')
+
+def get_account_level(request):
+    access_token = request.session.get('spotify_access_token')
+
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+
+    response = requests.get(f"{SPOTIFY_BASE_URL}", headers=headers)
+
+    if response.status_code == 401:
+        refresh_token = request.session.get('spotify_refresh_token')
+        new_tokens = refresh_spotify_token(refresh_token)
+        access_token = new_tokens.get('access_token')
+        request.session['spotify_access_token'] = access_token
+        headers = {
+            "Authorization": f"Bearer {access_token}"
+        }
+        response = requests.get(f"{SPOTIFY_BASE_URL}", headers=headers)
+
+    if response.status_code != 200:
+        print(response.text, "Error: Can't get user's account status.")
+        return redirect('home')
+
+    response = response.json()
+    print(response['product'])
+    if response['product'] == 'premium':
+        premium = True
+    else:
+        premium = False
+
+    #print(premium)
+
+    context = {
+        "premium": premium,
+        "ads_minutes": round(calculate_ads(request)),
+    }
+
+    return render(request, 'ads_minutes.html', context)

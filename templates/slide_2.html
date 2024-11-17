@@ -58,17 +58,17 @@
 
        .top-left {
            position: absolute;
-           top: 0px;
-           left: -100px;
-           width: 200px;
+           top: -50px;
+           left: -150px;
+           width: 300px;
            height: auto;
        }
 
        .bottom-right {
            position: absolute;
-           bottom: -100px;
-           right: -100px;
-           width: 200px;
+           bottom: -150px;
+           right: -150px;
+           width: 300px;
            height: auto;
            transform: rotate(180deg);
        }
@@ -115,7 +115,7 @@
         <script
             src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
         </script>
-        
+
         <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="top-left">
         <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="bottom-right">
         <div class="slide-title">Your Top 3 Artists Over Time</div>
@@ -123,17 +123,33 @@
             <canvas id="artistRankings" style="width:100%;max-width:1000px"></canvas>
             <script>
                 const top3Artists = JSON.parse('{{ top_3_artists | escapejs }}');
-                const artistLabels = Object.keys(top3Artists);
-                const artistData = Object.values(top3Artists);
+                const artists = Object.keys(top3Artists);
+                const artist1 = artists[0];
+                const artist2 = artists[1];
+                const artist3 = artists[2];
 
                 const xValues = [["over the", "last year"], ["over the last", "six months"], ["over the", "last month"]];
 
-                const datasets = artistLabels.map((artist, index) => ({
-                    label: artist,
-                    data: artistData[index],
-                    borderColor: index === 0 ? "#EF6E53" : index === 1 ? "#DDC371" : "#2A9D90",
-                    fill: false
-                }));
+                const datasets = [
+                    {
+                        label: artist1,
+                        data: top3Artists[artist1],
+                        borderColor: "#EF6E53",
+                        fill: false,
+                    },
+                    {
+                        label: artist2,
+                        data: top3Artists[artist2],
+                        borderColor: "#DDC371",
+                        fill: false,
+                    },
+                    {
+                        label: artist3,
+                        data: top3Artists[artist3],
+                        borderColor: "#2A9D90",
+                        fill: false,
+                    },
+                ];
 
                 document.addEventListener("DOMContentLoaded", function() {
                 new Chart("artistRankings", {
