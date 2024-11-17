@@ -240,11 +240,41 @@ def top_artist_and_songs_slide(request, stats_call = False):
     # Fetch Spotify data (top artists and top songs)
     wrapped_data = getStats(request)
 
-    # Prepare context with both top artist and top songs
+    access_token = request.session.get('spotify_access_token')
+
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+
+
+    artist_name = wrapped_data['top_artist_year']
+
+    search_response = requests.get(f"https://api.spotify.com/v1/search?q={artist_name}&type=artist&limit=1", headers=headers)
+
+    results = search_response.json().get('artists', {}).get('items', [])
+
+    artist_id = None
+    for artist in results:
+        if artist['name'].lower() == artist_name.lower():
+            artist_id = artist['id']
+
+    print(artist_id)
+
+    artist_response = requests.get(f"https://api.spotify.com/v1/artists/{artist_id}", headers=headers)
+    print(artist_name)
+    print(artist_response.json())
+    image_response = artist_response.json().get('images', [])
+    """while image_response == []:
+        artist_response = requests.get(f"https://api.spotify.com/v1/artists/{artist_id}", headers=headers)
+        image_response = artist_response.json().get('images', [])"""
+
+    image_url = image_response[0]['url']
+
     context = {
         'title': 'Top Artist and Top Songs of the Year',
         'top_artist': wrapped_data['top_artist_year'],
-        'top_songs': wrapped_data['top_songs']
+        'top_songs': wrapped_data['top_songs'],
+        'image': image_url
     }
 
     request.session['top_artist'] = wrapped_data['top_artist_year']

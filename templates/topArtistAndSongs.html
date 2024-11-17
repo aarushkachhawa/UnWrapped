@@ -96,7 +96,7 @@
         .top-artist-section {
             display: flex;
             flex-direction: column;
-            align-items: flex-start; /* Align to the left */
+            /*align-items: flex-start; /* Align to the left */
             max-width: 300px;
         }
 
@@ -106,21 +106,30 @@
             align-items: center;
         }
 
-        .artist-image {
-            width: 80px;
-            height: 200px;
+        .record-image {
+            width: 400px;
+            height: 400px;
+            position: absolute;
+            top: 300px;
+            left: calc(50% - 650px);
+            z-index: 10;
+
+            /* FIX THE IMAGE BY GETTING IT OUT OF THE RECORD DIV*/
         }
 
         .artist-vinyl {
             width: 160px;
             height: 400px;
+            position: absolute;
+            top: 300px;
+            left: calc(50% - 250px);
         }
 
         .top-artist-section h2 {
             font-size: 32px;
             color: #5AABF3;
             text-shadow: 2px 2px 4px rgba(199, 58, 68, 1);
-            margin-top: 10px;
+            margin-top: 500px;
         }
 
         /* Songs section styling */
@@ -225,9 +234,11 @@
         <div class="top-artist-section">
             <div class="artist-info">
                 <img src="{% static 'topArtist/album_cover_record.png' %}" class="artist-vinyl">
-                <h2>Bruno Mars</h2>
+                <h2>{{top_artist}}</h2>
             </div>
         </div>
+
+        <img src={{image}} class="record-image">
 
         <!-- Top Songs Section on the Right -->
         <div class="top-songs-section">
