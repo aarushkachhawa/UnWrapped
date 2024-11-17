@@ -708,6 +708,7 @@ def get_account_level(request):
     context = {
         "premium": premium,
         "ads_minutes": round(calculate_ads(request)),
+        "language": "hindi",
     }
 
     return render(request, 'ads_minutes.html', context)

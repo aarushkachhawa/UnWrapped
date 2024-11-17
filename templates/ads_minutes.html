@@ -100,7 +100,7 @@
 
 
         <div id="text-container">
-          {% if language == “english” %}
+          {% if language == "english" %}
             <h1 id="top-line">You Avoided Approximately</h1>
             <h1 id="ads-minutes">{{ads_minutes}} Minutes</h1>
             <h1>of ads this week</h1>
@@ -109,7 +109,7 @@
             {% else %}
               <p>How many times have you heard “Want a break from the ads?”</p>
             {% endif %}
-          {% elif language == “hindi” %}
+          {% elif language == "hindi" %}
             <h1 id="top-line">आपने लगभग बचा लिया</h1>
             <h1 id="ads-minutes">{{ads_minutes}} मिनट</h1>
             <h1>इस सप्ताह के विज्ञापनों से</h1>
@@ -118,7 +118,7 @@
             {% else %}
               <p>कितनी बार आपने सुना है "क्या आप विज्ञापनों से एक ब्रेक चाहते हैं?"</p>
             {% endif %}
-          {% elif language == “mandarin” %}
+          {% elif language == "mandarin" %}
             <h1 id="top-line">本周您大约避免了</h1>
             <h1 id="ads-minutes">{{ads_minutes}} 分钟</h1>
             <h1>的广告时间</h1>
@@ -127,6 +127,7 @@
             {% else %}
               <p>您听过多少次"要不要休息一下广告？"</p>
             {% endif %}
+          {% endif %}
         </div>
 
     {% endblock %}
