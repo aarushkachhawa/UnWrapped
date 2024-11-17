@@ -120,18 +120,6 @@
         <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="top-left rainbow">
         <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="bottom-right rainbow">
 
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                const dark_mode = localStorage.getItem('dark_mode') === 'on';
-                const rainbows = document.getElementsByClassName('rainbow');
-                if (dark_mode) {
-                    for (let i = 0; i < rainbows.length; i++) {
-                        rainbows[i].src = "{% static 'slide_2/dark_mode_rainbow.png' %}"
-                    }
-                }
-            });
-        </script>
-
         <div class="slide-title">Your Top 3 Artists Over Time</div>
         <div class="chart-and-artists">
             <canvas id="artistRankings" style="width:100%;max-width:1000px"></canvas>
