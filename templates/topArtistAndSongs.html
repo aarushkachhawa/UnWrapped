@@ -50,29 +50,6 @@
             right: -150px;
         }
 
-        .menu-icon {
-            color: #ECD101;
-            font-size: 65px;
-        }
-
-        .title {
-            font-size: 36px;
-            font-weight: bold;
-            color: #ECD101;
-            text-shadow:
-                -1px -1px 0 #C64036,
-                1px -1px 0 #C64036,
-                -1px 1px 0 #C64036,
-                1px 1px 0 #C64036;
-            text-align: center;
-            flex-grow: 1;
-        }
-
-        .profile {
-            color: #ECD101;
-            font-size: 20px;
-        }
-
         /* Combined Title Styling */
         .page-title {
             font-size: 20px;
@@ -114,7 +91,13 @@
             left: calc(50% - 650px);
             z-index: 10;
 
-            /* FIX THE IMAGE BY GETTING IT OUT OF THE RECORD DIV*/
+        }
+
+        .top-artist-section h2 {
+            font-size: 32px;
+            color: #5AABF3;
+            text-shadow: 2px 2px 4px rgba(199, 58, 68, 1);
+            margin-top: 500px;
         }
 
         .artist-vinyl {
@@ -125,97 +108,96 @@
             left: calc(50% - 250px);
         }
 
-        .top-artist-section h2 {
-            font-size: 32px;
-            color: #5AABF3;
-            text-shadow: 2px 2px 4px rgba(199, 58, 68, 1);
-            margin-top: 500px;
-        }
-
-        /* Songs section styling */
-        .top-songs-section {
-            display: flex;
-            gap: 15px;
-            max-width: 600px;
-        }
-
-        .songs-column {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .songs-column:nth-child(2) {
-            margin-top: 130px; /* Offset for the right column */
-            margin-left: 80px; /* Offset for the right column */
-        }
-
-        .song {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background-color: #FCF8F1;
-            padding: 40px 15px;
-            width: 100%;
-        }
-
-        .dark-mode .song {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background-color: #121212;
-            padding: 40px 15px;
-            width: 100%;
-        }
-
-        .vinyl-icon-red {
+        .small-record {
             width: 100px;
             height: 100px;
             background-size: cover;
-            background-position: center;
+            border-radius: 50%;
+        }
+
+        .small-record-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            position: absolute;
+            gap: 15px;
+        }
+
+        .small-record-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .small-record-container1 {
+            top: 250px;
+            left: calc(50%);
+        }
+
+        .small-record1 {
             background-image: url("{% static 'topArtist/red_record.png' %}");
         }
 
-        .vinyl-icon-blue {
-            background-image: url("{% static 'topArtist/blue_record.png' %}");
-            width: 100px;
-            height: 100px;
-            background-size: cover;
-            background-position: center;
+        .small-record-container2 {
+            top: 350px;
+            right: calc(50% - 600px);
         }
 
-        .vinyl-icon-yellow {
-            background-image: url("{% static 'topArtist/yellow_record.png' %}");
-            width: 100px;
-            height: 100px;
-            background-size: cover;
-            background-position: center;
+        .small-record2 {
+            background-image: url("{% static 'seasonalMood/yellow_record.png' %}");
         }
 
-        .song-details h3 {
+        .small-record-container3 {
+            top: 450px;
+            left: calc(50%);
+        }
+
+        .small-record3 {
+            background-image: url("{% static 'seasonalMood/blue_record.png' %}");
+        }
+
+        .small-record-container4 {
+            top: 550px;
+            right: calc(50% - 600px);
+        }
+
+        .small-record4 {
+            background-image: url("{% static 'seasonalMood/red_record.png' %}");
+        }
+
+        .small-record-container5 {
+            top: 650px;
+            left: calc(50%);
+        }
+
+        .small-record5 {
+            background-image: url("{% static 'seasonalMood/yellow_record.png' %}");
+        }
+
+        .song-text-song {
             font-size: 25px;
             color: #000000;
-            margin: 0;
+            width: 150px;
         }
 
-        .dark-mode .song-details h3 {
+        .dark-mode .song-text-song {
             font-size: 25px;
             color: #E0E0E0;
-            margin: 0;
+            width: 150px;
         }
 
-        .song-details p {
+        .song-text-artist {
             font-family: 'Radio Canada', sans-serif;
             font-size: 16px;
             color: #000000;
-            margin: 0;
+            width: 150px;
         }
 
-        .dark-mode .song-details p {
+        .dark-mode .song-text-artist {
             font-family: 'Radio Canada', sans-serif;
             font-size: 16px;
             color: #E0E0E0;
-            margin: 0;
+            width: 150px;
         }
 
     </style>
@@ -226,7 +208,6 @@
     <div class="page-title">
         <h1>Your Top Artist & Top 5 Songs</h1>
     </div>
-
 
     <!-- Content Sections for Top Artist and Top Songs -->
     <div class="content-sections">
@@ -239,55 +220,48 @@
         </div>
 
         <img src={{top_artist.1}} class="record-image">
+    </div>
 
-        <!-- Top Songs Section on the Right -->
-        <div class="top-songs-section">
-            <!-- Left Column for Songs 1, 3, and 5 -->
-            <div class="songs-column">
-                <div class="song">
-                    <div class="vinyl-icon-red"></div>
-                    <div class="song-details">
-                        <h3>{{top_songs.0}}</h3>
-                        <p>{{top_songs_artists.0}}</p>
-                    </div>
-                </div>
-                <div class="song">
-                    <div class="vinyl-icon-blue"></div>
-                    <div class="song-details">
-                        <h3>{{top_songs.1}}</h3>
-                        <p>{{top_songs_artists.1}}</p>
-                    </div>
-                </div>
-                <div class="song">
-                    <div class="vinyl-icon-yellow"></div>
-                    <div class="song-details">
-                        <h3>{{top_songs.2}}</h3>
-                        <p>{{top_songs_artists.2}}</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Column for Songs 2 and 4 -->
-            <div class="songs-column">
-                <div class="song">
-                    <div class="song-details">
-                        <h3>{{top_songs.3}}</h3>
-                        <p>{{top_songs_artists.3}}</p>
-                    </div>
-
-                    <div class="vinyl-icon-yellow"></div>
-                </div>
-
-                <div class="song">
-                    <div class="song-details">
-                        <h3>{{top_songs.4}}</h3>
-                        <p>{{top_songs_artists.4}}</p>
-                    </div>
-                    <div class="vinyl-icon-red"></div>
-                </div>
-            </div>
+    <div class="small-record-container small-record-container1">
+        <div class="small-record small-record1"></div>
+        <div class="small-record-text">
+            <div class="song-text-song">{{top_songs.0}}</div>
+            <div class="song-text-artist">{{top_songs_artists.0}}</div>
         </div>
     </div>
+
+    <div class="small-record-container small-record-container2">
+        <div class="small-record-text">
+            <div class="song-text-song">{{top_songs.1}}</div>
+            <div class="song-text-artist">{{top_songs_artists.1}}</div>
+        </div>
+        <div class="small-record small-record2"></div>
+    </div>
+
+    <div class="small-record-container small-record-container3">
+        <div class="small-record small-record3"></div>
+        <div class="small-record-text">
+            <div class="song-text-song">{{top_songs.2}}</div>
+            <div class="song-text-artist">{{top_songs_artists.2}}</div>
+        </div>
+    </div>
+
+    <div class="small-record-container small-record-container4">
+        <div class="small-record-text">
+            <div class="song-text-song">{{top_songs.3}}</div>
+            <div class="song-text-artist">{{top_songs_artists.3}}</div>
+        </div>
+        <div class="small-record small-record4"></div>
+    </div>
+
+    <div class="small-record-container small-record-container5">
+        <div class="small-record small-record5"></div>
+        <div class="small-record-text">
+            <div class="song-text-song">{{top_songs.4}}</div>
+            <div class="song-text-artist">{{top_songs_artists.4}}</div>
+        </div>
+    </div>
+
 
     <a href="{% url 'slide_2' %}">
         <img src="{% static 'topArtist/triangle_button.png' %}" class="forward-triangle-button" alt="Forward Button">

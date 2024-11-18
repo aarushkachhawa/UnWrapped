@@ -75,7 +75,6 @@
 
         }
 
-
         /* Small Record Positions */
         .small-record {
             width: 100px;
@@ -96,7 +95,6 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-
         }
 
         .small-record-mood {
@@ -298,11 +296,11 @@
         <div class="small-circle"></div>
     </div>
 
-    <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button" alt="Forward Button">
-
     <a href="{% url 'slide_3' %}">
-                <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button" alt="Forward Button">
+        <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button" alt="Forward Button">
     </a>
+
+    <img src="{% static 'topArtist/top_left_corner_rainbow.png' %}" class="bottom-corner-rainbow">
 
     {% endblock %}
 </body>
