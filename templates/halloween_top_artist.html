@@ -16,6 +16,7 @@
     {% block content %}
 
     <style>
+        /* Global Styles */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -24,27 +25,29 @@
 
         body {
             font-family: 'Notable', sans-serif;
-            background-image: url("{% static 'topArtist/background.png' %}");
+            background-color: #FCF8F1;
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center top;
             padding-top: 100px;
+            overflow: hidden;
         }
 
-        /* Fixed Header */
-        .header {
-            width: 100%;
-            height: 100px;
-            background-color: #5AABF3;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #ECD101;
-            padding: 0 40px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1000;
+        .top-corner-rainbow {
+            width: 300px;
+            height: 300px;
+            position: absolute;
+            top: -50px;
+            left: -150px;
+        }
+
+        .bottom-corner-rainbow {
+            width: 300px;
+            height: 300px;
+            transform: rotate(180deg);
+            position: absolute;
+            bottom: -150px;
+            right: -150px;
         }
 
         .menu-icon {
@@ -72,11 +75,11 @@
 
         /* Combined Title Styling */
         .page-title {
-            font-size: 24px;
-            color: #C64036;
+            font-size: 20px;
+            color: #D24E0D;
             margin-bottom: 20px;
             text-align: center;
-            margin-top: 10px;
+            margin-top: 20px;
         }
 
         /* Layout for Artist and Songs Side by Side */
@@ -99,18 +102,18 @@
 
         .artist-info {
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             align-items: center;
         }
 
         .artist-image {
-            width: 400px;
-            height: 400px;
+            width: 80px;
+            height: 200px;
         }
 
         .artist-vinyl {
             width: 160px;
-            height: 390px;
+            height: 400px;
         }
 
         .top-artist-section h2 {
@@ -139,11 +142,20 @@
         }
 
         .song {
-            /*display: flex;*/
+            display: flex;
             align-items: center;
             gap: 15px;
             background-color: #FCF8F1;
-            padding: 20px 15px;
+            padding: 40px 15px;
+            width: 100%;
+        }
+
+        .dark-mode .song {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background-color: #121212;
+            padding: 40px 15px;
             width: 100%;
         }
 
@@ -157,16 +169,16 @@
 
         .vinyl-icon-blue {
             background-image: url("{% static 'topArtist/blue_record.png' %}");
-            width: 115px;
-            height: 115px;
+            width: 100px;
+            height: 100px;
             background-size: cover;
             background-position: center;
         }
 
         .vinyl-icon-yellow {
             background-image: url("{% static 'topArtist/yellow_record.png' %}");
-            width: 105px;
-            height: 105px;
+            width: 100px;
+            height: 100px;
             background-size: cover;
             background-position: center;
         }
@@ -177,6 +189,12 @@
             margin: 0;
         }
 
+        .dark-mode .song-details h3 {
+            font-size: 25px;
+            color: #E0E0E0;
+            margin: 0;
+        }
+
         .song-details p {
             font-family: 'Radio Canada', sans-serif;
             font-size: 16px;
@@ -184,30 +202,30 @@
             margin: 0;
         }
 
+        .dark-mode .song-details p {
+            font-family: 'Radio Canada', sans-serif;
+            font-size: 16px;
+            color: #E0E0E0;
+            margin: 0;
+        }
 
     </style>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            if (localStorage.getItem('dark_mode') === 'on') {
-                document.body.classList.add('dark-mode');
-                console.log('dark mode on');
-            }
-        })
-    </script>
+    <img src="{% static 'topArtist/top_left_corner_rainbow.png' %}" class="top-corner-rainbow">
 
     <!-- Page Title -->
     <div class="page-title">
-        <h1>LLM Insights</h1>
+        <h1>Your Top Artist & Top 5 Songs</h1>
     </div>
+
 
     <!-- Content Sections for Top Artist and Top Songs -->
     <div class="content-sections">
         <!-- Top Artist Section on the Left -->
         <div class="top-artist-section">
             <div class="artist-info">
-                    <img src="{% static songPath %}" class="artist-image">
-                    <img src="{% static 'topArtist/album_cover_record.png' %}" class="artist-vinyl">
+                <img src="{% static 'topArtist/album_cover_record.png' %}" class="artist-vinyl">
+                <h2>Bruno Mars</h2>
             </div>
         </div>
 
@@ -215,13 +233,70 @@
         <div class="top-songs-section">
             <!-- Left Column for Songs 1, 3, and 5 -->
             <div class="songs-column">
-                {% for line in content %}
-                    <p> {{ line }} </p>
-                {% endfor %}
+                <div class="song">
+                    <div class="vinyl-icon-red"></div>
+                    <div class="song-details">
+                        <h3>Telepatia</h3>
+                        <p>Kali Uchis</p>
+                    </div>
+                </div>
+                <div class="song">
+                    <div class="vinyl-icon-blue"></div>
+                    <div class="song-details">
+                        <h3>Feather</h3>
+                        <p>Sabrina Carpenter</p>
+                    </div>
+                </div>
+                <div class="song">
+                    <div class="vinyl-icon-yellow"></div>
+                    <div class="song-details">
+                        <h3>APT.</h3>
+                        <p>ROSE, Bruno Mars</p>
+                    </div>
+                </div>
             </div>
 
+            <!-- Right Column for Songs 2 and 4 -->
+            <div class="songs-column">
+                <div class="song">
+                    <div class="song-details">
+                        <h3>White Horse</h3>
+                        <p>Chris Stapleton</p>
+                    </div>
+
+                    <div class="vinyl-icon-yellow"></div>
+                </div>
+
+                <div class="song">
+                    <div class="song-details">
+                        <h3>Mean It</h3>
+                        <p>Gracie Abrams</p>
+                    </div>
+                    <div class="vinyl-icon-red"></div>
+                </div>
+            </div>
         </div>
     </div>
+
+    <a href="{% url 'slide_2' %}">
+        <img src="{% static 'topArtist/triangle_button.png' %}" class="forward-triangle-button" alt="Forward Button">
+    </a>
+
+    <div class="circle-container">
+        <div class="darker-small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+    </div>
+
+    <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button" alt="Forward Button">
+
+    <img src="{% static 'topArtist/top_left_corner_rainbow.png' %}" class="bottom-corner-rainbow">
+
     {% endblock %}
 </body>
 </html>

@@ -1,3 +1,5 @@
+from idlelib.pyparse import trans
+
 import requests
 from django.db.models.functions import NullIf
 from django.http import JsonResponse, HttpResponse
@@ -237,7 +239,7 @@ def stats(request):
 
 
 @login_required
-def top_artist_and_songs_slide(request):
+def top_artist_and_songs_slide(request, page='topArtistAndSongs.html'):
     # Fetch Spotify data (top artists and top songs)
     wrapped_data = getStats(request)
 
@@ -279,7 +281,13 @@ def top_artist_and_songs_slide(request):
     }
 
     # Render a single template with both top artist and top songs
-    return render(request, 'topArtistAndSongs.html', context)
+    return render(request, page, context)
+
+def halloween_top_artist(request):
+    return top_artist_and_songs_slide(request, 'halloween_top_artist.html')
+
+def christmas_top_artist(request):
+    return top_artist_and_songs_slide(request, 'christmas/christmas_top_artist.html')
 
 
 @login_required
@@ -489,6 +497,10 @@ def get_most_popular_artists(request, page = "slide_2.html"):
 def halloween_graph(request):
     return get_most_popular_artists(request, "halloween_graph.html")
 
+@login_required
+def christmas_graph(request):
+    return get_most_popular_artists(request, "christmas/christmas_graph.html")
+
 
 # used for your seasonal mood (get top 100 songs in the last ~1 month), gets top 100 songs and the artists
 def get_recent_top_songs(request):
@@ -657,9 +669,17 @@ def analyze_seasonal_mood(request):
 
 
 
+'''
+def halloween_seasonal_mood(request):
+    return analyze_seasonal_mood(request, 'halloween/halloween_seasonal_mood.html')
+    
+def christmas_seasonal_mood(request):
+    return analyze_seasonal_mood(request, 'christmas/christmas_seasonal_mood.html')
+'''
+
 
 @login_required
-def llm_insights_page(request):
+def llm_insights_page(request, page='LLMinsights.html'):
     contentArr = analyze_clothing(request)
     mood = contentArr[0].split(": ")[1].lower()
     if mood not in ["restless", "bitersweet", "introspective", "overjoyed", "pensive"]:
@@ -675,7 +695,13 @@ def llm_insights_page(request):
         'mood': mood,
         'songPath': songPath,
     }
-    return render(request, 'LLMinsights.html', context)
+    return render(request, page, context)
+
+def halloween_llm_insights(request) :
+    return llm_insights_page(request, 'halloween/halloween_llm_insights.html')
+
+def christmas_llm_insights(request) :
+    return llm_insights_page(request, 'christmas/christmas_llm_insights.html')
 
 
 def analyze_clothing(request):
@@ -700,7 +726,7 @@ def analyze_clothing(request):
     return description.content.split(";")
 
 
-def night_owl(request):  # combine this into one calculate stats method so we don't need to call get last 50 songs multiple times
+def night_owl(request, page='slide_3.html'):  # combine this into one calculate stats method so we don't need to call get last 50 songs multiple times
     last_50_songs = get_last_50_songs(request)
 
     time_list = []
@@ -780,11 +806,17 @@ def night_owl(request):  # combine this into one calculate stats method so we do
     }
     
     print(context['time_ranges'])
-    return render(request, 'slide_3.html', context)
+    return render(request, page, context)
+
+def halloween_night_owl(request):
+    return night_owl(request, 'halloween_night_owl.html')
+
+def christmas_night_owl(request):
+    return night_owl(request, 'christmas/christmas_night_owl.html')
 
 
 @login_required
-def transition_one(request):
+def transition_one(request, page='transitionOne.html'):
     """
     Renders the transition page with music player animation.
     """
@@ -792,14 +824,21 @@ def transition_one(request):
         return redirect(spotify_auth_url())
 
     try:
-        return render(request, 'transitionOne.html')
+        return render(request, page)
 
     except Exception as e:
         logger.error(f"Error in transition view: {e}")
         messages.error(request, "An error occurred while loading the transition page.")
         return redirect('home')
 
-def get_account_level(request):
+def halloween_transition_one(request):
+    return transition_one(request, 'halloween/halloween_transition_one.html')
+
+def christmas_transition_one(request):
+    return transition_one(request, 'christmas/christmas_transition_one.html')
+
+
+def get_account_level(request, page='ads_minutes.html'):
     access_token = request.session.get('spotify_access_token')
 
     headers = {
@@ -836,4 +875,10 @@ def get_account_level(request):
         "ads_minutes": round(calculate_ads(request)),
     }
 
-    return render(request, 'ads_minutes.html', context)
+    return render(request, page, context)
+
+def halloween_ads(request):
+    return get_account_level(request, 'halloween/halloween_ads.html')
+
+def christmas_ads(request):
+    return get_account_level(request, 'christmas/christmas_ads.html')
