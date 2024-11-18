@@ -234,11 +234,11 @@
         <div class="top-artist-section">
             <div class="artist-info">
                 <img src="{% static 'topArtist/album_cover_record.png' %}" class="artist-vinyl">
-                <h2>{{top_artist}}</h2>
+                <h2>{{top_artist.0}}</h2>
             </div>
         </div>
 
-        <img src={{image}} class="record-image">
+        <img src={{top_artist.1}} class="record-image">
 
         <!-- Top Songs Section on the Right -->
         <div class="top-songs-section">
@@ -247,22 +247,22 @@
                 <div class="song">
                     <div class="vinyl-icon-red"></div>
                     <div class="song-details">
-                        <h3>Telepatia</h3>
-                        <p>Kali Uchis</p>
+                        <h3>{{top_songs.0}}</h3>
+                        <p>{{top_songs_artists.0}}</p>
                     </div>
                 </div>
                 <div class="song">
                     <div class="vinyl-icon-blue"></div>
                     <div class="song-details">
-                        <h3>Feather</h3>
-                        <p>Sabrina Carpenter</p>
+                        <h3>{{top_songs.1}}</h3>
+                        <p>{{top_songs_artists.1}}</p>
                     </div>
                 </div>
                 <div class="song">
                     <div class="vinyl-icon-yellow"></div>
                     <div class="song-details">
-                        <h3>APT.</h3>
-                        <p>ROSE, Bruno Mars</p>
+                        <h3>{{top_songs.2}}</h3>
+                        <p>{{top_songs_artists.2}}</p>
                     </div>
                 </div>
             </div>
@@ -271,8 +271,8 @@
             <div class="songs-column">
                 <div class="song">
                     <div class="song-details">
-                        <h3>White Horse</h3>
-                        <p>Chris Stapleton</p>
+                        <h3>{{top_songs.3}}</h3>
+                        <p>{{top_songs_artists.3}}</p>
                     </div>
 
                     <div class="vinyl-icon-yellow"></div>
@@ -280,8 +280,8 @@
 
                 <div class="song">
                     <div class="song-details">
-                        <h3>Mean It</h3>
-                        <p>Gracie Abrams</p>
+                        <h3>{{top_songs.4}}</h3>
+                        <p>{{top_songs_artists.4}}</p>
                     </div>
                     <div class="vinyl-icon-red"></div>
                 </div>

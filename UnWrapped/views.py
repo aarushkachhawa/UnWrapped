@@ -166,19 +166,39 @@ def getStats(request):
         data = response.json()
         artists = data.get('items', [])
         top_artists = [artists[i]['name'] for i in range(min(5, len(artists)))]
+
+        top_artist_year = [
+            artists[0]['name'],
+            artists[0]['images'][0]['url']
+        ]
+
         top_songs_data = trackResponse.json()
         songs = top_songs_data.get('items', [])
+        print("songs in getStats():", songs)
         top_songs = [songs[i]['name'] for i in range(min(5, len(songs)))]
         top_songs_urls = [songs[i]['preview_url'] for i in range(min(5, len(songs)))]
+
+        top_songs_artists = []
+        for i in range(min(5, len(songs))):
+            song = songs[i]
+            if 'artists' in song:
+                artist_names = [artist.get('name', "Unknown Artist") for artist in song['artists']]
+                top_songs_artists.append(", ".join(artist_names))
+            else:
+                top_songs_artists.append("Unknown Artist")  # Fallback for missing artist info
+
+        print("############################################################   ", top_artist_year[1])
 
         returnData = {
             'top_artists': top_artists,
             'top_songs': top_songs,
-            'top_artist_year': top_artists[0] if top_artists else "Unknown",
+            'top_songs_artists': top_songs_artists,
+            'top_artist_year': top_artist_year,
             'top_songs_urls': top_songs_urls
         }
         request.session['wrappedData'] = returnData
         return returnData
+
     except Exception as e:
         logger.error(f"Error processing Spotify data: {e}")
         messages.error(request, "An error occurred while processing Spotify data.")
@@ -241,41 +261,13 @@ def top_artist_and_songs_slide(request):
     # Fetch Spotify data (top artists and top songs)
     wrapped_data = getStats(request)
 
-    access_token = request.session.get('spotify_access_token')
-
-    headers = {
-        "Authorization": f"Bearer {access_token}"
-    }
-
-
-    artist_name = wrapped_data['top_artist_year']
-
-    search_response = requests.get(f"https://api.spotify.com/v1/search?q={artist_name}&type=artist&limit=1", headers=headers)
-
-    results = search_response.json().get('artists', {}).get('items', [])
-
-    artist_id = None
-    for artist in results:
-        if artist['name'].lower() == artist_name.lower():
-            artist_id = artist['id']
-
-    print(artist_id)
-
-    artist_response = requests.get(f"https://api.spotify.com/v1/artists/{artist_id}", headers=headers)
-    print(artist_name)
-    print(artist_response.json())
-    image_response = artist_response.json().get('images', [])
-    """while image_response == []:
-        artist_response = requests.get(f"https://api.spotify.com/v1/artists/{artist_id}", headers=headers)
-        image_response = artist_response.json().get('images', [])"""
-
-    image_url = image_response[0]['url']
+    print("top songs: ", wrapped_data['top_songs'])
 
     context = {
         'title': 'Top Artist and Top Songs of the Year',
         'top_artist': wrapped_data['top_artist_year'],
         'top_songs': wrapped_data['top_songs'],
-        'image': image_url
+        'top_songs_artists': wrapped_data['top_songs_artists'],
     }
 
     # Render a single template with both top artist and top songs
