@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 SPOTIFY_CLIENT_ID = settings.SPOTIFY_CLIENT_ID
 SPOTIFY_CLIENT_SECRET = settings.SPOTIFY_CLIENT_SECRET
 SPOTIFY_REDIRECT_URI = settings.SPOTIFY_REDIRECT_URI
+STATICFILES_DIRS = settings.STATICFILES_DIRS
 SPOTIFY_SCOPE = 'user-top-read user-read-recently-played user-read-private'  # Add more scopes if needed
 SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token"
 SPOTIFY_API_URL = "https://api.spotify.com/v1/me/top/artists"
@@ -665,10 +666,10 @@ def llm_insights_page(request):
         mood = "other"
     rootDir = f"llmInsights/{mood}/"
     try:
-        imageList = [file for file in os.listdir(f"/home/pkadekodi/UnWrapped/static/llmInsights/{mood}") if file[len(file) - 3:].lower() == "jpg"]
+        imageList = [file for file in os.listdir(f"{STATICFILES_DIRS[0]}/llmInsights/{mood}") if file[len(file) - 3:].lower() == "jpg"]
         songPath = rootDir + random.choice(imageList)
     except:
-        songPath = rootDir + "2014FHD.jpg"
+        songPath = "llmInsights/other/" + "2014FHD.jpg"
     context = { # send mood in separately because of how horrible django's template functionality is :)
         'content': contentArr,
         'mood': mood,
