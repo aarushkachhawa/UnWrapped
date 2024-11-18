@@ -862,7 +862,7 @@ def get_account_level(request):
     request.session['ads_minutes'] = context['ads_minutes']
     return render(request, 'ads_minutes.html', context)
 
-def save_wrap(request):
+def generate_wrap(request):
     if 'top_artist' not in request.session or 'top_songs' not in request.session:
         top_artist_and_songs_slide(request, stats_call=True)
 
