@@ -446,12 +446,30 @@ def get_most_popular_artists(request, page = "slide_2.html"):
 
     # print(top_3_artists)
 
+    language = request.session.get('language', 'english')
+
+    time_labels = {
+        'english': [["over the", "last year"], ["over the last", "six months"], ["over the", "last month"]],
+        'hindi': [["पिछले", "साल में"], ["पिछले", "छह महीने में"], ["पिछले", "महीने में"]],
+        'mandarin': [["过去", "一年"], ["过去", "六个月"], ["过去", "一个月"]]
+    }
+
+    ranking_labels = {
+        'english': "Ranking",
+        'hindi': "स्थान",
+        'mandarin': "排名"
+    }
+
     context = {
         'top_3_artists': json.dumps(top_3_artists),
         'artist1': artist1,
         'artist2': artist2,
         'artist3': artist3,
+        'language': language,
+        'time_labels': json.dumps(time_labels[language]),
+        'ranking_label': ranking_labels[language]
     }
+    
     return render(request, page, context)
 
 @login_required
@@ -651,6 +669,7 @@ def night_owl(request):  # combine this into one calculate stats method so we do
         "total_minutes": total_time,
         "hour_hand_rotation": hour_hand_rotation - 90,
         "minute_hand_rotation": minute_hand_rotation - 90,
+        "language": hindi
     }
     
     print(context['time_ranges'])
@@ -708,7 +727,7 @@ def get_account_level(request):
     context = {
         "premium": premium,
         "ads_minutes": round(calculate_ads(request)),
-        "language": "hindi",
+        "language": hindi
     }
 
     return render(request, 'ads_minutes.html', context)
