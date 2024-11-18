@@ -1,3 +1,4 @@
+{% extends 'base.html' %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -8,6 +9,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Notable&display=swap" rel="stylesheet">
+</head>
+<body>
+    {% block content %}
     <style>
         * {
             margin: 0;
@@ -61,7 +65,7 @@
             display: flex;
             justify-content: center;
             gap: 20px;
-            margin: 15px 0;
+            margin-top: 50px;
             height: 40px;
         }
 
@@ -282,21 +286,13 @@
             }
         }
     </style>
-</head>
-<body>
     <!-- Rainbow corners -->
     <div class="rainbow-corner top-left"></div>
     <div class="rainbow-corner top-right"></div>
     <div class="rainbow-corner bottom-left"></div>
     <div class="rainbow-corner bottom-right"></div>
 
-    <!-- Blue header -->
-    <div class="blue-header">
-        <h1>UNWRAPPED</h1>
-    </div>
-
     <!-- Main content -->
-    <div class="content">
         {% if form.errors %}
             <div class="alert alert-danger">
                 <ul>
@@ -331,7 +327,7 @@
             {% csrf_token %}
             <div class="form-group">
                 <label for="id_username">Username:</label>
-                <input type="text" name="username" id="id_username" value="{{ form.username.value }}" required>
+                <input type="text" name="username" id="id_username" required>
             </div>
 
             <div class="form-group">
@@ -351,6 +347,6 @@
         <div class="forgot-password">
             <button onclick="window.location.href='{% url 'reset' %}'">Forgot your password?</button>
         </div>
-    </div>
+    {% endblock %}
 </body>
 </html>
