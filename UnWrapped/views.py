@@ -14,6 +14,9 @@ from openai import OpenAI
 from .localSettings import OPENAI_API_KEY
 import json
 import os, random
+from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import make_password
 
 logger = logging.getLogger(__name__)
 
@@ -837,3 +840,31 @@ def get_account_level(request):
     }
 
     return render(request, 'ads_minutes.html', context)
+
+
+def reset(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        new_password = request.POST.get('new_password')
+
+        # Use get_user_model() to get the custom user model
+        User = get_user_model()
+
+        try:
+            # Find user by username
+            user = User.objects.get(username=username)
+
+            # Update the password and hash it
+            user.password = make_password(new_password)
+            user.save()
+
+            # Redirect or show success message
+            messages.success(request, 'Your password has been reset successfully.')
+            return redirect('login')  # Redirect to login page after resetting password
+
+        except User.DoesNotExist:
+            # Handle case where the username is not found
+            messages.error(request, 'Username not found.')
+            return render(request, 'reset.html')
+
+    return render(request, 'reset.html')

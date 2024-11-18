@@ -25,5 +25,5 @@ urlpatterns = [
     path('ads_minutes/', views.get_account_level, name="ads_minutes"),
     path('profile/', views.profile, name="profile"),
     path('contact/', views.contactDevs, name="contact"),
-    path('halloween_graph/', views.halloween_graph, name='halloween_graph'),
+    path('reset/', views.reset, name='reset'), # For initiating the reset request (email input)
 ]
