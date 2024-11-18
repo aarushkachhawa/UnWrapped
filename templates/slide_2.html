@@ -118,7 +118,15 @@
 
         <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="top-left">
         <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="bottom-right">
-        <div class="slide-title">Your Top 3 Artists Over Time</div>
+        <div class="slide-title">
+            {% if language == "english" %}
+                Your Top 3 Artists Over Time
+            {% elif language == "hindi" %}
+                समय के साथ आपके शीर्ष 3 कलाकार
+            {% elif language == "mandarin" %}
+                随时间推移的前三名艺术家
+            {% endif %}
+        </div>
         <div class="chart-and-artists">
             <canvas id="artistRankings" style="width:100%;max-width:1000px"></canvas>
             <script>
@@ -128,7 +136,8 @@
                 const artist2 = artists[1];
                 const artist3 = artists[2];
 
-                const xValues = [["over the", "last year"], ["over the last", "six months"], ["over the", "last month"]];
+                const xValues = JSON.parse('{{ time_labels | escapejs }}');
+                const rankingLabel = '{{ ranking_label | escapejs }}';
 
                 const datasets = [
                     {
