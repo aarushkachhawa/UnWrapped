@@ -15,7 +15,7 @@
 <body>
 
     {% block content %}
-        <scriptn 
+        <script
             src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
         </script>
 
@@ -200,6 +200,7 @@
             <script>
                 const xValues = [""]
                 const time_ranges = JSON.parse('{{ time_ranges | escapejs }}');
+                const language = "{{language}}";
                 const ranges = Object.keys(time_ranges);
                 const range1 = ranges[0];
                 const range2 = ranges[1];
@@ -275,7 +276,7 @@
                                 },
                                 scaleLabel: {
                                     display: true,
-                                    labelString: language === "english" ? "Minutes Listened" : 
+                                    labelString: language === "english" ? "Minutes Listened" :
                                                 language === "hindi" ? "सुने गए मिनट" : 
                                                 "收听分钟数",
                                     fontFamily: 'Notable',

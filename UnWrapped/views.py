@@ -669,7 +669,7 @@ def night_owl(request):  # combine this into one calculate stats method so we do
         "total_minutes": total_time,
         "hour_hand_rotation": hour_hand_rotation - 90,
         "minute_hand_rotation": minute_hand_rotation - 90,
-        "language": hindi
+        "language": "hindi",
     }
     
     print(context['time_ranges'])
@@ -727,7 +727,7 @@ def get_account_level(request):
     context = {
         "premium": premium,
         "ads_minutes": round(calculate_ads(request)),
-        "language": hindi
+        "language": "hindi"
     }
 
     return render(request, 'ads_minutes.html', context)
