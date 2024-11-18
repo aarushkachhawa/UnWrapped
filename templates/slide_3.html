@@ -184,7 +184,16 @@
                 </p>
             </div>
             <div class="right-section">
-                <h1 class="total-minutes">{{total_minutes}} minutes</h1>
+                <h1 class="total-minutes">
+                    {{total_minutes}} 
+                    {% if language == "english" %}
+                        minutes
+                    {% elif language == "hindi" %}
+                        मिनट
+                    {% elif language == "mandarin" %}
+                        分钟
+                    {% endif %}
+                </h1>
                 <canvas id="hoursBarGraph" style="width:100%;max-width:800px"></canvas>
                 <p>
                     {% if language == "english" %}
