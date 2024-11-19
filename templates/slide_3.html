@@ -208,6 +208,8 @@
                     }
                 ]
                 document.addEventListener("DOMContentLoaded", function() {
+                    const fontColor = "#8b8484";
+
                     new Chart("hoursBarGraph", {
                     type: "bar",
                     data: {
@@ -222,7 +224,7 @@
                                 fontFamily: 'Notable',
                                 padding: 30,
                                 fontSize: 14,
-                                fontColor: "#473924",
+                                fontColor: fontColor,
                                 boxWidth: 5,
                             }
                         },
@@ -231,13 +233,13 @@
                                 ticks: {
                                     fontFamily: 'Notable',
                                     fontSize: 15,
-                                    fontColor: "#473924",
+                                    fontColor: fontColor,
                                 },
                             }],
                             yAxes: [{
                                 ticks: {
                                     fontFamily: 'Notable',
-                                    fontColor: "#473924",
+                                    fontColor: fontColor,
                                     fontSize: 15,
                                     beginAtZero: true
                                 },
@@ -245,7 +247,7 @@
                                     display: true,
                                     labelString: "Minutes Listened",
                                     fontFamily: 'Notable',
-                                    fontColor: "#473924",
+                                    fontColor: fontColor,
                                     fontSize: 20,
                                 },
                             }]

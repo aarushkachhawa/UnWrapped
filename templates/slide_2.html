@@ -110,6 +110,7 @@
        .chart-legend {
            padding-top: 50px;
        }
+
    </style>
 
         <script
@@ -152,64 +153,68 @@
                 ];
 
                 document.addEventListener("DOMContentLoaded", function() {
-                new Chart("artistRankings", {
-                    type: "line",
-                    data: {
-                        labels: xValues,
-                        datasets: datasets
-                    },
-                    options: {
-                        legend: {
-                            display: false,
+
+                    const fontColor = "#8b8484";
+                    // Check if dark mode is active
+
+                    new Chart("artistRankings", {
+                        type: "line",
+                        data: {
+                            labels: xValues,
+                            datasets: datasets
                         },
-                        scales: {
-                            xAxes: [{
-                                ticks: {
-                                    fontFamily: 'Notable',
-                                    fontSize: 15,
-                                    fontColor: "#473924",
-                                },
-                            }],
-                            yAxes: [{
-                                ticks: {
-                                    fontFamily: 'Notable',
-                                    fontColor: "#473924",
-                                    fontSize: 15,
-                                    reverse: true,
-                                },
-                                scaleLabel: {
-                                    display: true,
-                                    labelString: "Ranking",
-                                    fontFamily: 'Notable',
-                                    fontColor: "#473924",
-                                    fontSize: 21,
+                        options: {
+                            legend: {
+                                display: false,
+                            },
+                            scales: {
+                                xAxes: [{
+                                    ticks: {
+                                        fontFamily: 'Notable',
+                                        fontSize: 15,
+                                        fontColor: fontColor,
+                                    },
+                                }],
+                                yAxes: [{
+                                    ticks: {
+                                        fontFamily: 'Notable',
+                                        fontColor: fontColor,
+                                        fontSize: 15,
+                                        reverse: true,
+                                    },
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: "Ranking",
+                                        fontFamily: 'Notable',
+                                        fontColor: fontColor,
+                                        fontSize: 21,
+                                    }
+                                }]
+                            },
+                            layout: {
+                                padding: {
+                                    left: 70,
+                                    right: 70,
+                                    bottom: 70,
+                                    top: 40
                                 }
-                            }]
-                        },
-                        layout: {
-                            padding: {
-                                left: 70,
-                                right: 70,
-                                bottom: 70,
-                                top: 40
                             }
                         }
-                    }
-                });
+                    });
             })
             </script>
 
             <div class="chart-legend">
                 <div class="artist">
-                    <img src="{% static 'slide_2/salmon_record.png' %}" class="artist-record">
+                    <img src="{% static 'slide_2/removed_pink.png' %}" class="artist-record">
                     <label class="artist-label">{{artist1}}</label>
                 </div>
                 <div class="artist">
-                    <img src="{% static 'slide_2/gold_record.png' %}" class="artist-record">
+                    <img src="{% static 'slide_2/removed_gold.png' %}" class="artist-record">
                     <label class="artist-label">{{artist2}}</label>
                 </div>
                 <div class="artist">
-                    <img src="{% static 'slide_2/teal_record.png' %}" class="artist-record">
+                    <img src="{% static 'slide_2/removed_teal.png' %}" class="artist-record">
                     <label class="artist-label">{{artist3}}</label>
                 </div>
             </div>
