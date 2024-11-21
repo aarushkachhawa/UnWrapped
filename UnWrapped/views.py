@@ -891,4 +891,5 @@ def generate_wrap(request):
     calculate_llm_insights_page(request)
     calculate_night_owl(request)
 
-    return HttpResponse("generating wrap")
+    # save to model
+    return HttpResponse("generating wrap") # replace with render top_artist page
