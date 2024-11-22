@@ -17,13 +17,38 @@ class CustomWrap(models.Model): # there can only be one wrap per day
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='wraps')  # Establishing the relationship
     wrapDate = models.DateTimeField(auto_now_add=True)  # Automatically set the field to now when the object is first created
     year = models.IntegerField(default=datetime.now().year)  # Default to the current year
-    top_songs_month = models.JSONField(default=dict())  # Field to store top 5 songs and artists as a JSON object
-    top_songs_6_month = models.JSONField(default=dict())
-    top_songs_year = models.JSONField(default=dict())
-    top_artist_year = models.CharField(max_length=500, default="Unknown")
-    top_artist_month = models.CharField(max_length=500, default="Unknown")
-    llm_insights = models.JSONField(default=dict())
-    ad_time = models.IntegerField(default=0)
+
+    top_artist = models.CharField(max_length=500, default="Unknown")
+    top_songs = models.JSONField(default=list)
+    image_url = models.TextField(default=None)
+    top_3_artists = models.TextField(default=list)
+    artist1 = models.CharField(max_length=500, default="Unknown")
+    artist2 = models.CharField(max_length=500, default="Unknown")
+    artist3 = models.CharField(max_length=500, default="Unknown")
+    song_artist1 = models.TextField(default="Unknown")
+    song_artist2 = models.TextField(default="Unknown")
+    song_artist3 = models.TextField(default="Unknown")
+    song_artist4 = models.TextField(default="Unknown")
+    song_artist5 = models.TextField(default="Unknown")
+    song_artist6 = models.TextField(default="Unknown")
+    mood1 = models.CharField(max_length=500, default="Unknown")
+    mood2 = models.CharField(max_length=500, default="Unknown")
+    mood3 = models.CharField(max_length=500, default="Unknown")
+    mood4 = models.CharField(max_length=500, default="Unknown")
+    mood5 = models.CharField(max_length=500, default="Unknown")
+    mood6 = models.CharField(max_length=500, default="Unknown")
+    image = models.TextField(default=None)
+    season = models.CharField(max_length = 20, default = "Seasonal")
+    content = models.TextField(default=None)
+    mood = models.CharField(max_length=500, default="Unknown")
+    songPath = models.TextField(default=None)
+    latest_time = models.CharField(max_length=500, default="Unknown")
+    time_ranges = models.JSONField(default=dict)
+    total_minutes = models.FloatField(default=0)
+    hour_hand_rotation = models.FloatField(default=0)
+    minute_hand_rotation = models.FloatField(default=0)
+    premium = models.BooleanField(default=False)
+    ads_minutes = models.FloatField(default=0)
 
     def save(self, *args, **kwargs):
         # Check if a wrap for the same user and year exists
@@ -34,14 +59,18 @@ class CustomWrap(models.Model): # there can only be one wrap per day
             if existing_wrap.wrapDate.date() == datetime.now().date():
                 # If it exists and the date matches, update it
                 existing_wrap.top_songs = self.top_songs
-                existing_wrap.save()  # Save the existing wrap
+                # existing_wrap.save()  # Save the existing wrap
                 return  # Exit to avoid creating a new instance
         
         # If no existing wrap or date doesn't match, create a new wrap
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Wrap for {self.year} by {self.user.name}"
+        ret_str =  f"Wrap for {self.year} by {self.user.name}\n"
+        for key, value in self.__dict__.items():
+            ret_str += f"{key}: {value}\n"
+
+        return ret_str
     
 # llm_insights_data = [
 #     {"Mood": "Something"},
