@@ -14,15 +14,9 @@
                 <path class="rainbow-path" d="M 0 150 L 100 150" stroke="#B5EAD7" stroke-width="25" fill="none"/>
             </svg>
 
-            <!-- Record Player -->
-            <div class="record-player">
-                <div class="record-disc">
-                    <div class="disc-label"></div>
-                </div>
-            </div>
+            <img src="{% static 'transition_slide/yellow_record.png' %}" class="record">
         </div>
 
-        <!-- Title Section -->
         <div class="insights-section">
             <h2 class="insights-title">MORE MUSICAL INSIGHTS >>></h2>
         </div>
@@ -96,71 +90,19 @@
         }
     }
 
-    .record-player {
-        width: 300px;
-        height: 300px;
-        background-color: #FFF;
-        border-radius: 10px;
-        position: relative;
-        z-index: 3;
+    .record {
+        width: 200px;
+        height: 200px;
+        animation: spin_record 2s linear infinite;
     }
 
-    .record-disc {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 250px;
-        height: 250px;
-        background-color: #000;
-        border-radius: 50%;
-        animation: spin 2s linear infinite;
-        overflow: hidden;
-    }
-
-    .record-disc::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 240px;
-        height: 240px;
-        transform: translate(-50%, -50%);
-        border: 1px solid #333;
-        border-radius: 50%;
-        box-shadow:
-            0 0 0 5px #111,
-            0 0 0 10px #222,
-            0 0 0 15px #111,
-            0 0 0 20px #222,
-            0 0 0 25px #111,
-            0 0 0 30px #222,
-            0 0 0 35px #111,
-            0 0 0 40px #222;
-    }
-
-    .disc-label {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 80px;
-        height: 80px;
-        background-color: #FFD700;
-        border-radius: 50%;
-        z-index: 2;
-    }
-
-    .disc-label::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 10px;
-        height: 10px;
-        background-color: #000;
-        border-radius: 50%;
+    @keyframes spin_record {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
     }
 
     .insights-title {
