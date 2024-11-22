@@ -686,6 +686,7 @@ def calculate_llm_insights_page(request):
     if mood not in ["restless", "bitersweet", "introspective", "overjoyed", "pensive"]:
         mood = "other"
     rootDir = f"llmInsights/{mood}/"
+    imagePath = f"llmInsights/{mood}.png"
     try:
         imageList = [file for file in os.listdir(f"{STATICFILES_DIRS[0]}/llmInsights/{mood}") if
                      file[len(file) - 3:].lower() == "jpg"]
@@ -695,6 +696,7 @@ def calculate_llm_insights_page(request):
     request.session['content'] = contentArr
     request.session['mood'] = mood
     request.session['songPath'] = songPath
+    request.session['imagePath'] = imagePath
 
 
 @login_required
@@ -702,7 +704,8 @@ def llm_insights_page(request):
     context = { # send mood in separately because of how horrible django's template functionality is :)
         'content': request.session['content'],
         'mood': request.session['mood'],
-        'songPath': request.session['songPath']
+        'songPath': request.session['songPath'],
+        'imagePath': request.session['imagePath']
     }
     return render(request, 'LLMinsights.html', context)
 
