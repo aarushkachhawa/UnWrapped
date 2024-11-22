@@ -15,6 +15,9 @@ from .localSettings import OPENAI_API_KEY
 import json
 import os, random
 from UnWrapped.models import CustomWrap
+from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import make_password
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +25,7 @@ logger = logging.getLogger(__name__)
 SPOTIFY_CLIENT_ID = settings.SPOTIFY_CLIENT_ID
 SPOTIFY_CLIENT_SECRET = settings.SPOTIFY_CLIENT_SECRET
 SPOTIFY_REDIRECT_URI = settings.SPOTIFY_REDIRECT_URI
+STATICFILES_DIRS = settings.STATICFILES_DIRS
 SPOTIFY_SCOPE = 'user-top-read user-read-recently-played user-read-private'  # Add more scopes if needed
 SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token"
 SPOTIFY_API_URL = "https://api.spotify.com/v1/me/top/artists"
@@ -166,19 +170,39 @@ def getStats(request):
         data = response.json()
         artists = data.get('items', [])
         top_artists = [artists[i]['name'] for i in range(min(5, len(artists)))]
+
+        top_artist_year = [
+            artists[0]['name'],
+            artists[0]['images'][0]['url']
+        ]
+
         top_songs_data = trackResponse.json()
         songs = top_songs_data.get('items', [])
+        print("songs in getStats():", songs)
         top_songs = [songs[i]['name'] for i in range(min(5, len(songs)))]
         top_songs_urls = [songs[i]['preview_url'] for i in range(min(5, len(songs)))]
+
+        top_songs_artists = []
+        for i in range(min(5, len(songs))):
+            song = songs[i]
+            if 'artists' in song:
+                artist_names = [artist.get('name', "Unknown Artist") for artist in song['artists']]
+                top_songs_artists.append(", ".join(artist_names))
+            else:
+                top_songs_artists.append("Unknown Artist")  # Fallback for missing artist info
+
+        print("############################################################   ", top_artist_year[1])
 
         returnData = {
             'top_artists': top_artists,
             'top_songs': top_songs,
-            'top_artist_year': top_artists[0] if top_artists else "Unknown",
+            'top_songs_artists': top_songs_artists,
+            'top_artist_year': top_artist_year,
             'top_songs_urls': top_songs_urls
         }
         request.session['wrappedData'] = returnData
         return returnData
+
     except Exception as e:
         logger.error(f"Error processing Spotify data: {e}")
         messages.error(request, "An error occurred while processing Spotify data.")
@@ -241,35 +265,7 @@ def calculate_top_artist_and_songs_slide(request):
     # Fetch Spotify data (top artists and top songs)
     wrapped_data = getStats(request)
 
-    access_token = request.session.get('spotify_access_token')
-
-    headers = {
-        "Authorization": f"Bearer {access_token}"
-    }
-
-
-    artist_name = wrapped_data['top_artist_year']
-
-    search_response = requests.get(f"https://api.spotify.com/v1/search?q={artist_name}&type=artist&limit=1", headers=headers)
-
-    results = search_response.json().get('artists', {}).get('items', [])
-
-    artist_id = None
-    for artist in results:
-        if artist['name'].lower() == artist_name.lower():
-            artist_id = artist['id']
-
-    print(artist_id)
-
-    artist_response = requests.get(f"https://api.spotify.com/v1/artists/{artist_id}", headers=headers)
-    print(artist_name)
-    print(artist_response.json())
-    image_response = artist_response.json().get('images', [])
-    """while image_response == []:
-        artist_response = requests.get(f"https://api.spotify.com/v1/artists/{artist_id}", headers=headers)
-        image_response = artist_response.json().get('images', [])"""
-
-    image_url = image_response[0]['url']
+    print("top songs: ", wrapped_data['top_songs'])
 
     request.session['top_artist'] = wrapped_data['top_artist_year']
     request.session['top_songs'] = wrapped_data['top_songs']
@@ -685,32 +681,26 @@ def analyze_seasonal_mood(request):
     return render(request, 'seasonalMood.html', context)
 
 
-
-
 @login_required
-def calculate_llm_insights_page(request):
+def llm_insights_page(request):
     contentArr = analyze_clothing(request)
     mood = contentArr[0].split(": ")[1].lower()
     if mood not in ["restless", "bitersweet", "introspective", "overjoyed", "pensive"]:
         mood = "other"
     rootDir = f"llmInsights/{mood}/"
     try:
-        imageList = [file for file in os.listdir(f"/home/pkadekodi/UnWrapped/static/llmInsights/{mood}") if file[len(file) - 3:].lower() == "jpg"]
+        imageList = [file for file in os.listdir(f"{STATICFILES_DIRS[0]}/llmInsights/{mood}") if file[len(file) - 3:].lower() == "jpg"]
         songPath = rootDir + random.choice(imageList)
     except:
-        songPath = rootDir + "2014FHD.jpg"
-
+        songPath = "llmInsights/other/" + "2014FHD.jpg"
+    context = { # send mood in separately because of how horrible django's template functionality is :)
+        'content': contentArr,
+        'mood': mood,
+        'songPath': songPath,
+    }
     request.session['content'] = contentArr
     request.session['mood'] = mood
     request.session['songPath'] = songPath
-
-def llm_insights_page(request):
-    context = {  # send mood in separately because of how horrible django's template functionality is :)
-        'content': request.session['content'],
-        'mood': request.session['mood'],
-        'songPath': request.session['songPath'],
-    }
-
     return render(request, 'LLMinsights.html', context)
 
 
@@ -932,3 +922,30 @@ def generate_wrap(request):
     wrap.save()
 
     return HttpResponse("generating wrap") # replace with render loading page
+
+def reset(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        new_password = request.POST.get('new_password')
+
+        # Use get_user_model() to get the custom user model
+        User = get_user_model()
+
+        try:
+            # Find user by username
+            user = User.objects.get(username=username)
+
+            # Update the password and hash it
+            user.password = make_password(new_password)
+            user.save()
+
+            # Redirect or show success message
+            messages.success(request, 'Your password has been reset successfully.')
+            return redirect('login')  # Redirect to login page after resetting password
+
+        except User.DoesNotExist:
+            # Handle case where the username is not found
+            messages.error(request, 'Username not found.')
+            return render(request, 'reset.html')
+
+    return render(request, 'reset.html')
