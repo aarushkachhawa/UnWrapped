@@ -17,6 +17,12 @@ import os, random
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
+from pydub import AudioSegment
+from io import BytesIO
+import base64
+import librosa
+import soundfile as sf
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -860,3 +866,79 @@ def reset(request):
             return render(request, 'reset.html')
 
     return render(request, 'reset.html')
+
+
+
+def game(request):
+    access_token = request.session.get('spotify_access_token')
+
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+
+    # Step 1: Fetch the user's top tracks
+    top_tracks_url = "https://api.spotify.com/v1/me/top/tracks?limit=10"
+    response = requests.get(top_tracks_url, headers=headers)
+
+    if response.status_code != 200:
+        return redirect('home')
+
+    top_tracks = response.json().get('items', [])
+
+    if len(top_tracks) < 2:
+        return redirect('home')
+
+    # Step 2: Pick two random tracks from the top 10
+    track1, track2 = random.sample(top_tracks, 2)
+
+    track1_preview_url = track1.get('preview_url')
+    track2_preview_url = track2.get('preview_url')
+
+    if not track1_preview_url or not track2_preview_url:
+        return redirect('home')
+
+    # Step 3: Download the preview audio for the selected tracks
+    track1_audio = requests.get(track1_preview_url)
+    track2_audio = requests.get(track2_preview_url)
+
+    if track1_audio.status_code != 200 or track2_audio.status_code != 200:
+        return redirect('home')
+
+    # Step 4: Process and mix audio using librosa
+    try:
+        # Load audio data
+        audio1, sr1 = librosa.load(BytesIO(track1_audio.content), sr=None)
+        audio2, sr2 = librosa.load(BytesIO(track2_audio.content), sr=None)
+
+        # Ensure both audio files have the same sample rate
+        if sr1 != sr2:
+            raise ValueError("Sample rates of the two audio files must match.")
+
+        # Pad or truncate the shorter audio to match lengths
+        min_len = min(len(audio1), len(audio2))
+        audio1 = audio1[:min_len]
+        audio2 = audio2[:min_len]
+
+        # Mix the two audio signals (adjust volume as needed)
+        mixed_audio = (audio1 + audio2) / 2
+
+        # Save mixed audio to a buffer
+        mixed_audio_buffer = BytesIO()
+        sf.write(mixed_audio_buffer, mixed_audio, sr1, format='WAV')
+        mixed_audio_buffer.seek(0)
+
+        # Encode the mixed audio to Base64
+        mixed_audio_base64 = base64.b64encode(mixed_audio_buffer.read()).decode('utf-8')
+    except Exception as e:
+        return redirect('home')
+
+    # Step 5: Render the game template and pass the mixed audio and track names
+    context = {
+        'track1_name': track1.get('name'),
+        'track2_name': track2.get('name'),
+        'mixed_audio': mixed_audio_base64,  # Pass Base64 encoded audio
+    }
+
+    print(context)
+
+    return render(request, 'game.html', context)

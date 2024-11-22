@@ -26,4 +26,5 @@ urlpatterns = [
     path('profile/', views.profile, name="profile"),
     path('contact/', views.contactDevs, name="contact"),
     path('reset/', views.reset, name='reset'), # For initiating the reset request (email input)
+    path('game/', views.game, name="game")
 ]
