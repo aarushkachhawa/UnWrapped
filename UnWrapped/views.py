@@ -269,7 +269,7 @@ def calculate_top_artist_and_songs_slide(request):
 
     request.session['top_artist'] = wrapped_data['top_artist_year']
     request.session['top_songs'] = wrapped_data['top_songs']
-    request.session['image_url'] = image_url
+    request.session['image_url'] = wrapped_data['top_artist_year'][1]
 
 def top_artist_and_songs_slide(request):
     context = {
@@ -680,27 +680,30 @@ def analyze_seasonal_mood(request):
 
     return render(request, 'seasonalMood.html', context)
 
-
-@login_required
-def llm_insights_page(request):
+def calculate_llm_insights_page(request):
     contentArr = analyze_clothing(request)
     mood = contentArr[0].split(": ")[1].lower()
     if mood not in ["restless", "bitersweet", "introspective", "overjoyed", "pensive"]:
         mood = "other"
     rootDir = f"llmInsights/{mood}/"
     try:
-        imageList = [file for file in os.listdir(f"{STATICFILES_DIRS[0]}/llmInsights/{mood}") if file[len(file) - 3:].lower() == "jpg"]
+        imageList = [file for file in os.listdir(f"{STATICFILES_DIRS[0]}/llmInsights/{mood}") if
+                     file[len(file) - 3:].lower() == "jpg"]
         songPath = rootDir + random.choice(imageList)
     except:
         songPath = "llmInsights/other/" + "2014FHD.jpg"
-    context = { # send mood in separately because of how horrible django's template functionality is :)
-        'content': contentArr,
-        'mood': mood,
-        'songPath': songPath,
-    }
     request.session['content'] = contentArr
     request.session['mood'] = mood
     request.session['songPath'] = songPath
+
+
+@login_required
+def llm_insights_page(request):
+    context = { # send mood in separately because of how horrible django's template functionality is :)
+        'content': request.session['content'],
+        'mood': request.session['mood'],
+        'songPath': request.session['songPath']
+    }
     return render(request, 'LLMinsights.html', context)
 
 
@@ -855,7 +858,6 @@ def calculate_get_account_level(request):
     if response.status_code != 200:
         print(response.text, "Error: Can't get user's account status.")
         return redirect('home')
-
     response = response.json()
     print(response['product'])
     if 'product' in response and response['product'] == 'premium':
