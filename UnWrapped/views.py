@@ -14,6 +14,7 @@ from openai import OpenAI
 from .localSettings import OPENAI_API_KEY
 import json
 import os, random
+from UnWrapped.models import CustomWrap
 
 logger = logging.getLogger(__name__)
 
@@ -806,6 +807,8 @@ def calculate_night_owl(request):  # combine this into one calculate stats metho
     
     hour_hand_rotation = 360/12 * hour + 360/12/60 * minute
 
+    print(json.dumps(time_ranges))
+
     request.session['latest_time'] = f"{hour}:{'0' if latest_time['minute'] < 10 else ''}{latest_time['minute']} {'AM' if latest_time['hour'] < 12 else 'PM'}"
     request.session['time_ranges'] = json.dumps(time_ranges)
     request.session['total_minutes'] = total_time
@@ -892,4 +895,40 @@ def generate_wrap(request):
     calculate_night_owl(request)
 
     # save to model
-    return HttpResponse("generating wrap") # replace with render top_artist page
+    wrap = CustomWrap(
+        user = request.user,
+        top_artist = request.session['top_artist'],
+        top_songs = request.session['top_songs'],
+        image_url = request.session['image_url'],
+        top_3_artists = request.session['top_3_artists'],
+        artist1 = request.session['artist1'],
+        artist2 = request.session['artist2'],
+        artist3 = request.session['artist3'],
+        mood1 = request.session['mood1'],
+        mood2=request.session['mood2'],
+        mood3=request.session['mood3'],
+        mood4=request.session['mood4'],
+        mood5=request.session['mood5'],
+        mood6=request.session['mood6'],
+        song_artist1 = request.session['song_artist1'],
+        song_artist2=request.session['song_artist2'],
+        song_artist3=request.session['song_artist3'],
+        song_artist4=request.session['song_artist4'],
+        song_artist5=request.session['song_artist5'],
+        song_artist6=request.session['song_artist6'],
+        image = request.session['image'],
+        season = request.session['season'],
+        content = request.session['content'],
+        mood = request.session['mood'],
+        songPath = request.session['songPath'],
+        latest_time = request.session['latest_time'],
+        time_ranges = request.session['time_ranges'],
+        total_minutes = request.session['total_minutes'],
+        hour_hand_rotation = request.session['hour_hand_rotation'],
+        minute_hand_rotation = request.session['minute_hand_rotation'],
+        premium = request.session['premium'],
+        ads_minutes = request.session['ads_minutes'],
+    )
+    wrap.save()
+
+    return HttpResponse("generating wrap") # replace with render loading page
