@@ -291,7 +291,15 @@
             </div>
         {% endif %}
 
-        <h2 class="login-heading">LOGIN!</h2>
+        <h2 class="login-heading">
+            {% if language == "english" %}
+                LOGIN!
+            {% elif language == "hindi" %}
+                लॉग इन!
+            {% elif language == "mandarin" %}
+                登录！
+            {% endif %}
+        </h2>
 
         <!-- Added music notes -->
         <div class="music-notes">
@@ -308,17 +316,41 @@
         <form method="POST" action="{% url 'login' %}">
             {% csrf_token %}
             <div class="form-group">
-                <label>USERNAME:</label>
+                <label>
+                    {% if language == "english" %}
+                        USERNAME:
+                    {% elif language == "hindi" %}
+                        उपयोगकर्ता नाम:
+                    {% elif language == "mandarin" %}
+                        用户名：
+                    {% endif %}
+                </label>
                 {{ form.username }}
             </div>
             <div class="form-group">
-                <label>PASSWORD:</label>
+                <label>
+                    {% if language == "english" %}
+                        PASSWORD:
+                    {% elif language == "hindi" %}
+                        पासवर्ड:
+                    {% elif language == "mandarin" %}
+                        密码：
+                    {% endif %}
+                </label>
                 {{ form.password }}
             </div>
 
             <div class="vinyl-record" onclick="document.forms[0].submit();">
                 <div class="vinyl-outer">
-                    <div class="vinyl-inner">ENTER</div>
+                    <div class="vinyl-inner">
+                        {% if language == "english" %}
+                            ENTER
+                        {% elif language == "hindi" %}
+                            प्रवेश
+                        {% elif language == "mandarin" %}
+                            进入
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </form>

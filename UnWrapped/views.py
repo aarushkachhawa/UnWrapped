@@ -66,6 +66,9 @@ def register(request):
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('home')
+
+    language = request.session.get('language', 'english')
+
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -82,7 +85,7 @@ def login_view(request):
             messages.error(request, 'Invalid username or password.')
     else:
         form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'login.html', {'form': form, 'language': language})
 
 
 # Helper function to get Spotify tokens
