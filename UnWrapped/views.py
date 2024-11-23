@@ -41,7 +41,7 @@ def profile(request):
     language = request.session.get('language', 'english')
     context = {
         'username': request.user.get_username(),
-        'email': request.user.email
+        'email': request.user.email,
         'language': language
     }
     return render(request, 'profile.html', context)
