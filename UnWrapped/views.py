@@ -906,31 +906,113 @@ def game(request):
 
     # Step 4: Process and mix audio using librosa
     try:
+        """"# Load audio data
+        audio1, sr1 = librosa.load(BytesIO(track1_audio.content), sr=None)
+        audio2, sr2 = librosa.load(BytesIO(track2_audio.content), sr=None)
+
+        # Analyze tempos
+        tempo1, _ = librosa.beat.beat_track(y=audio1, sr=sr1)
+        tempo2, _ = librosa.beat.beat_track(y=audio2, sr=sr2)
+
+        # Set a target tempo (average of both tracks)
+        target_tempo = (tempo1 + tempo2) / 2
+
+        # Resample audio to match target tempo
+        resampling_factor1 = target_tempo / tempo1
+        resampling_factor2 = target_tempo / tempo2
+
+        audio1_resampled = librosa.resample(audio1, orig_sr=sr1, target_sr=int(sr1 * resampling_factor1))
+        audio2_resampled = librosa.resample(audio2, orig_sr=sr2, target_sr=int(sr2 * resampling_factor2))
+
+
+        # Update sample rates after resampling
+        sr1_resampled = int(sr1 * resampling_factor1)
+        sr2_resampled = int(sr2 * resampling_factor2)
+
+        # Ensure both audio files have the same sample rate
+        if sr1_resampled != sr2_resampled:
+            raise ValueError("Sample rates of the two resampled audio files must match.")
+
+        print("this worked!!")
+
+        # Beat tracking on resampled audio
+        tempo1_resampled, beat_frames1 = librosa.beat.beat_track(y=audio1_resampled, sr=sr1_resampled)
+        tempo2_resampled, beat_frames2 = librosa.beat.beat_track(y=audio2_resampled, sr=sr2_resampled)
+
+        print("this worked!!")
+
+        beat_times1 = librosa.frames_to_time(beat_frames1, sr=sr1_resampled)
+        beat_times2 = librosa.frames_to_time(beat_frames2, sr=sr2_resampled)
+
+        first_beat_time1 = beat_times1[0]
+        first_beat_time2 = beat_times2[0]
+
+        # Convert first beat times to sample indices
+        first_beat_sample1 = int(first_beat_time1 * sr1_resampled)
+        first_beat_sample2 = int(first_beat_time2 * sr2_resampled)
+
+        # Trim the audio before the first beat
+        audio1_aligned = audio1_resampled[first_beat_sample1:]
+        audio2_aligned = audio2_resampled[first_beat_sample2:]
+
+        # Pad or truncate to the shorter length
+        min_len = min(len(audio1_aligned), len(audio2_aligned))
+        audio1_aligned = audio1_aligned[:min_len]
+        audio2_aligned = audio2_aligned[:min_len]
+
+        # Mix the two audio signals
+        mixed_audio = (audio1_aligned + audio2_aligned) / 2
+
+        # Save the mixed audio to a buffer
+        mixed_audio_buffer = BytesIO()
+        sf.write(mixed_audio_buffer, mixed_audio, sr1_resampled, format='WAV')
+        mixed_audio_buffer.seek(0)
+
+        # Encode the mixed audio to Base64
+        mixed_audio_base64 = base64.b64encode(mixed_audio_buffer.read()).decode('utf-8')"""
+
+
+
         # Load audio data
         audio1, sr1 = librosa.load(BytesIO(track1_audio.content), sr=None)
         audio2, sr2 = librosa.load(BytesIO(track2_audio.content), sr=None)
+
+        # Analyze tempos
+        tempo1, _ = librosa.beat.beat_track(y=audio1, sr=sr1)
+        tempo2, _ = librosa.beat.beat_track(y=audio2, sr=sr2)
+
+        # Set a target tempo (average of both tracks)
+        target_tempo = (tempo1 + tempo2) / 2
+
+        # Resample audio to match target tempo
+        resampling_factor1 = target_tempo / tempo1
+        resampling_factor2 = target_tempo / tempo2
+
+        audio1_resampled = librosa.resample(audio1, orig_sr=sr1, target_sr=int(sr1 * resampling_factor1))
+        audio2_resampled = librosa.resample(audio2, orig_sr=sr2, target_sr=int(sr2 * resampling_factor2))
 
         # Ensure both audio files have the same sample rate
         if sr1 != sr2:
             raise ValueError("Sample rates of the two audio files must match.")
 
-        # Pad or truncate the shorter audio to match lengths
-        min_len = min(len(audio1), len(audio2))
-        audio1 = audio1[:min_len]
-        audio2 = audio2[:min_len]
+        # Pad or truncate to the shorter length
+        min_len = min(len(audio1_resampled), len(audio2_resampled))
+        audio1_resampled = audio1_resampled[:min_len]
+        audio2_resampled = audio2_resampled[:min_len]
 
-        # Mix the two audio signals (adjust volume as needed)
-        mixed_audio = (audio1 + audio2) / 2
+        # Mix the two audio signals
+        mixed_audio = (audio1_resampled + audio2_resampled) / 2
 
-        # Save mixed audio to a buffer
+        # Save the mixed audio to a buffer
         mixed_audio_buffer = BytesIO()
         sf.write(mixed_audio_buffer, mixed_audio, sr1, format='WAV')
         mixed_audio_buffer.seek(0)
 
         # Encode the mixed audio to Base64
         mixed_audio_base64 = base64.b64encode(mixed_audio_buffer.read()).decode('utf-8')
+
     except Exception as e:
-        return redirect('home')
+            return redirect('home')
 
     # Step 5: Render the game template and pass the mixed audio and track names
     context = {
@@ -939,6 +1021,6 @@ def game(request):
         'mixed_audio': mixed_audio_base64,  # Pass Base64 encoded audio
     }
 
-    print(context)
+    #print(context)
 
     return render(request, 'game.html', context)
