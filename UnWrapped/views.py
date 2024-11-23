@@ -35,6 +35,9 @@ def logout_view(request):
 
 @login_required
 def profile(request):
+    if request.method == "POST" and 'language' in request.POST:
+        request.session['language'] = request.POST.get('language')
+
     language = request.session.get('language', 'english')
     context = {
         'username': request.user.get_username(),

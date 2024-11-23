@@ -261,6 +261,31 @@
         <div class="info-item">
             <label>
                 {% if language == "english" %}
+                    LANGUAGE:
+                {% elif language == "hindi" %}
+                    भाषा:
+                {% elif language == "mandarin" %}
+                    语言：
+                {% endif %}
+            </label>
+            <form method="POST" style="display: flex; width: 100%;">
+                {% csrf_token %}
+                <select name="language" class="data-field email-field" onchange="this.form.submit()">
+                    <option value="english" {% if language == "english" %}selected{% endif %}>
+                        English (English)
+                    </option>
+                    <option value="hindi" {% if language == "hindi" %}selected{% endif %}>
+                        Hindi (हिन्दी)
+                    </option>
+                    <option value="mandarin" {% if language == "mandarin" %}selected{% endif %}>
+                        Mandarin (中文)
+                    </option>
+                </select>
+            </form>
+         </div>
+        <div class="info-item">
+            <label>
+                {% if language == "english" %}
                     TOP GENRE:
                 {% elif language == "hindi" %}
                     शीर्ष श्रेणी:
