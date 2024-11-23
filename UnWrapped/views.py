@@ -868,6 +868,36 @@ def reset(request):
     return render(request, 'reset.html')
 
 
+def remove_vocals_phase_inversion(audio, sr):
+    """
+    Attempts to remove vocals from a stereo audio signal using phase inversion.
+
+    Parameters:
+    - audio: numpy array with shape (2, n_samples)
+    - sr: sample rate
+
+    Returns:
+    - accompaniment: numpy array with shape (n_samples,)
+    """
+    if audio.ndim != 2 or audio.shape[0] != 2:
+        raise ValueError("Audio must be a stereo signal with shape (2, n_samples).")
+
+    left_channel = audio[0]
+    right_channel = audio[1]
+
+    # Invert the right channel
+    inverted_right = -right_channel
+
+    # Combine channels to remove vocals
+    accompaniment = left_channel + inverted_right
+
+    # Normalize the accompaniment to prevent clipping
+    max_val = np.max(np.abs(accompaniment))
+    if max_val > 0:
+        accompaniment = accompaniment / max_val
+
+    return accompaniment
+
 
 def game(request):
     access_token = request.session.get('spotify_access_token')
@@ -898,121 +928,97 @@ def game(request):
         return redirect('home')
 
     # Step 3: Download the preview audio for the selected tracks
-    track1_audio = requests.get(track1_preview_url)
-    track2_audio = requests.get(track2_preview_url)
+    track1_audio_resp = requests.get(track1_preview_url)
+    track2_audio_resp = requests.get(track2_preview_url)
 
-    if track1_audio.status_code != 200 or track2_audio.status_code != 200:
+    if track1_audio_resp.status_code != 200 or track2_audio_resp.status_code != 200:
         return redirect('home')
 
-    # Step 4: Process and mix audio using librosa
     try:
-        """"# Load audio data
-        audio1, sr1 = librosa.load(BytesIO(track1_audio.content), sr=None)
-        audio2, sr2 = librosa.load(BytesIO(track2_audio.content), sr=None)
+        # Define a common sample rate
+        common_sr = 22050  # You can choose 44100 or another standard rate if preferred
 
-        # Analyze tempos
-        tempo1, _ = librosa.beat.beat_track(y=audio1, sr=sr1)
-        tempo2, _ = librosa.beat.beat_track(y=audio2, sr=sr2)
+        # Load audio data as stereo with a common sample rate
+        audio1, sr1 = librosa.load(BytesIO(track1_audio_resp.content), sr=common_sr, mono=False)
+        audio2, sr2 = librosa.load(BytesIO(track2_audio_resp.content), sr=common_sr, mono=False)
 
-        # Set a target tempo (average of both tracks)
-        target_tempo = (tempo1 + tempo2) / 2
+        # Ensure audio has two channels
+        if audio1.ndim != 2 or audio1.shape[0] != 2:
+            raise ValueError("Track 1 audio is not stereo.")
+        if audio2.ndim != 2 or audio2.shape[0] != 2:
+            raise ValueError("Track 2 audio is not stereo.")
 
-        # Resample audio to match target tempo
-        resampling_factor1 = target_tempo / tempo1
-        resampling_factor2 = target_tempo / tempo2
+        # Remove vocals using phase inversion
+        accompaniment1 = remove_vocals_phase_inversion(audio1, sr1)
+        accompaniment2 = remove_vocals_phase_inversion(audio2, sr2)
 
-        audio1_resampled = librosa.resample(audio1, orig_sr=sr1, target_sr=int(sr1 * resampling_factor1))
-        audio2_resampled = librosa.resample(audio2, orig_sr=sr2, target_sr=int(sr2 * resampling_factor2))
+        # Analyze tempos of accompaniments
+        tempo1, _ = librosa.beat.beat_track(y=accompaniment1, sr=sr1)
+        tempo2, _ = librosa.beat.beat_track(y=accompaniment2, sr=sr2)
 
+        # Ensure tempos are scalar floats
+        if isinstance(tempo1, np.ndarray):
+            tempo1 = float(tempo1)
+        if isinstance(tempo2, np.ndarray):
+            tempo2 = float(tempo2)
 
-        # Update sample rates after resampling
-        sr1_resampled = int(sr1 * resampling_factor1)
-        sr2_resampled = int(sr2 * resampling_factor2)
+        print(f"Track 1 Tempo: {tempo1} BPM")
+        print(f"Track 2 Tempo: {tempo2} BPM")
 
-        # Ensure both audio files have the same sample rate
-        if sr1_resampled != sr2_resampled:
-            raise ValueError("Sample rates of the two resampled audio files must match.")
+        # Set the target tempo to match the higher tempo
+        target_tempo = max(tempo1, tempo2)
+        print(f"Target Tempo: {target_tempo} BPM")
 
-        print("this worked!!")
+        # Calculate time stretching factors
+        if tempo1 < target_tempo:
+            stretch_factor1 = target_tempo / tempo1
+        else:
+            stretch_factor1 = 1.0
 
-        # Beat tracking on resampled audio
-        tempo1_resampled, beat_frames1 = librosa.beat.beat_track(y=audio1_resampled, sr=sr1_resampled)
-        tempo2_resampled, beat_frames2 = librosa.beat.beat_track(y=audio2_resampled, sr=sr2_resampled)
+        if tempo2 < target_tempo:
+            stretch_factor2 = target_tempo / tempo2
+        else:
+            stretch_factor2 = 1.0
 
-        print("this worked!!")
+        # Ensure stretch factors are scalar floats
+        stretch_factor1 = float(stretch_factor1)
+        stretch_factor2 = float(stretch_factor2)
 
-        beat_times1 = librosa.frames_to_time(beat_frames1, sr=sr1_resampled)
-        beat_times2 = librosa.frames_to_time(beat_frames2, sr=sr2_resampled)
+        print(f"Stretch Factor for Track 1: {stretch_factor1}")
+        print(f"Stretch Factor for Track 2: {stretch_factor2}")
 
-        first_beat_time1 = beat_times1[0]
-        first_beat_time2 = beat_times2[0]
+        # Apply time stretching to match tempos
+        accompaniment1_stretched = librosa.effects.time_stretch(accompaniment1, rate=stretch_factor1)
+        accompaniment2_stretched = librosa.effects.time_stretch(accompaniment2, rate=stretch_factor2)
 
-        # Convert first beat times to sample indices
-        first_beat_sample1 = int(first_beat_time1 * sr1_resampled)
-        first_beat_sample2 = int(first_beat_time2 * sr2_resampled)
+        # After time stretching, sample rates remain the same (common_sr)
 
-        # Trim the audio before the first beat
-        audio1_aligned = audio1_resampled[first_beat_sample1:]
-        audio2_aligned = audio2_resampled[first_beat_sample2:]
+        # Align the lengths by truncating to the minimum length
+        min_len = min(len(accompaniment1_stretched), len(accompaniment2_stretched))
+        accompaniment1_aligned = accompaniment1_stretched[:min_len]
+        accompaniment2_aligned = accompaniment2_stretched[:min_len]
 
-        # Pad or truncate to the shorter length
-        min_len = min(len(audio1_aligned), len(audio2_aligned))
-        audio1_aligned = audio1_aligned[:min_len]
-        audio2_aligned = audio2_aligned[:min_len]
+        # Mix the two accompaniment signals
+        mixed_accompaniment = (accompaniment1_aligned + accompaniment2_aligned) / 2
 
-        # Mix the two audio signals
-        mixed_audio = (audio1_aligned + audio2_aligned) / 2
+        # Normalize the final mix to prevent clipping
+        max_val = np.max(np.abs(mixed_accompaniment))
+        if max_val > 0:
+            final_mix_normalized = mixed_accompaniment / max_val
+        else:
+            final_mix_normalized = mixed_accompaniment
 
-        # Save the mixed audio to a buffer
+        # Save the final mixed audio to a buffer
         mixed_audio_buffer = BytesIO()
-        sf.write(mixed_audio_buffer, mixed_audio, sr1_resampled, format='WAV')
-        mixed_audio_buffer.seek(0)
-
-        # Encode the mixed audio to Base64
-        mixed_audio_base64 = base64.b64encode(mixed_audio_buffer.read()).decode('utf-8')"""
-
-
-
-        # Load audio data
-        audio1, sr1 = librosa.load(BytesIO(track1_audio.content), sr=None)
-        audio2, sr2 = librosa.load(BytesIO(track2_audio.content), sr=None)
-
-        # Analyze tempos
-        tempo1, _ = librosa.beat.beat_track(y=audio1, sr=sr1)
-        tempo2, _ = librosa.beat.beat_track(y=audio2, sr=sr2)
-
-        # Set a target tempo (average of both tracks)
-        target_tempo = (tempo1 + tempo2) / 2
-
-        # Resample audio to match target tempo
-        resampling_factor1 = target_tempo / tempo1
-        resampling_factor2 = target_tempo / tempo2
-
-        audio1_resampled = librosa.resample(audio1, orig_sr=sr1, target_sr=int(sr1 * resampling_factor1))
-        audio2_resampled = librosa.resample(audio2, orig_sr=sr2, target_sr=int(sr2 * resampling_factor2))
-
-        # Ensure both audio files have the same sample rate
-        if sr1 != sr2:
-            raise ValueError("Sample rates of the two audio files must match.")
-
-        # Pad or truncate to the shorter length
-        min_len = min(len(audio1_resampled), len(audio2_resampled))
-        audio1_resampled = audio1_resampled[:min_len]
-        audio2_resampled = audio2_resampled[:min_len]
-
-        # Mix the two audio signals
-        mixed_audio = (audio1_resampled + audio2_resampled) / 2
-
-        # Save the mixed audio to a buffer
-        mixed_audio_buffer = BytesIO()
-        sf.write(mixed_audio_buffer, mixed_audio, sr1, format='WAV')
+        sf.write(mixed_audio_buffer, final_mix_normalized, common_sr, format='WAV')
         mixed_audio_buffer.seek(0)
 
         # Encode the mixed audio to Base64
         mixed_audio_base64 = base64.b64encode(mixed_audio_buffer.read()).decode('utf-8')
 
     except Exception as e:
-            return redirect('home')
+        print(f"Error during audio processing: {e}")  # For debugging purposes
+        return redirect('home')
 
     # Step 5: Render the game template and pass the mixed audio and track names
     context = {
@@ -1021,6 +1027,280 @@ def game(request):
         'mixed_audio': mixed_audio_base64,  # Pass Base64 encoded audio
     }
 
-    #print(context)
-
     return render(request, 'game.html', context)
+
+
+
+def split_vocals_instrumentals(audio, sr):
+    """
+    Splits the input audio into vocals and instrumental components.
+
+    Parameters:
+    - audio: numpy array with shape (n_samples,)
+    - sr: sample rate
+
+    Returns:
+    - vocals: numpy array with shape (n_samples,)
+    - instrumental: numpy array with shape (n_samples,)
+    """
+    # Apply HPSS (Harmonic/Percussive Source Separation) to split vocals and instrumentals
+    harmonic, percussive = librosa.effects.hpss(audio)
+
+    # Assuming vocals are more present in the harmonic component and instrumental in the percussive component
+    vocals = harmonic
+    instrumental = percussive
+
+    return vocals, instrumental
+
+
+def game_split_vocals(request):
+    access_token = request.session.get('spotify_access_token')
+
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+
+    # Step 1: Fetch the user's top tracks
+    top_tracks_url = "https://api.spotify.com/v1/me/top/tracks?limit=10"
+    response = requests.get(top_tracks_url, headers=headers)
+
+    if response.status_code != 200:
+        return redirect('home')
+
+    top_tracks = response.json().get('items', [])
+
+    if len(top_tracks) == 0:
+        return redirect('home')
+
+    # Step 2: Pick one track from the top 10
+    track = random.choice(top_tracks)
+    track_preview_url = track.get('preview_url')
+
+    if not track_preview_url:
+        return redirect('home')
+
+    # Step 3: Download the preview audio for the selected track
+    track_audio_resp = requests.get(track_preview_url)
+
+    if track_audio_resp.status_code != 200:
+        return redirect('home')
+
+    try:
+        # Define a sample rate
+        sr = 22050  # You can choose 44100 or another standard rate if preferred
+
+        # Load audio data as mono with the given sample rate
+        audio, _ = librosa.load(BytesIO(track_audio_resp.content), sr=sr, mono=True)
+
+        # Split the audio into vocals and instrumental parts
+        vocals, instrumental = split_vocals_instrumentals(audio, sr)
+
+        # Save the vocals and instrumental audio to buffers
+        vocals_buffer = BytesIO()
+        instrumental_buffer = BytesIO()
+
+        sf.write(vocals_buffer, vocals, sr, format='WAV')
+        sf.write(instrumental_buffer, instrumental, sr, format='WAV')
+
+        # Encode the vocals and instrumental audio to Base64
+        vocals_buffer.seek(0)
+        instrumental_buffer.seek(0)
+
+        vocals_base64 = base64.b64encode(vocals_buffer.read()).decode('utf-8')
+        instrumental_base64 = base64.b64encode(instrumental_buffer.read()).decode('utf-8')
+
+    except Exception as e:
+        print(f"Error during audio processing: {e}")  # For debugging purposes
+        return redirect('home')
+
+    # Step 5: Render the game template and pass the vocals and instrumental audio and track name
+    context = {
+        'track_name': track.get('name'),
+        'vocals_audio': vocals_base64,  # Pass Base64 encoded vocals
+        'instrumental_audio': instrumental_base64,  # Pass Base64 encoded instrumental
+    }
+
+    return render(request, 'game_split_vocals.html', context)
+
+
+
+def game_adjust_pitch(request):
+    access_token = request.session.get('spotify_access_token')
+
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+
+    # Step 1: Fetch the user's top tracks
+    top_tracks_url = "https://api.spotify.com/v1/me/top/tracks?limit=10"
+    response = requests.get(top_tracks_url, headers=headers)
+
+    if response.status_code != 200:
+        return redirect('home')
+
+    top_tracks = response.json().get('items', [])
+
+    if len(top_tracks) == 0:
+        return redirect('home')
+
+    # Step 2: Pick one track from the top 10
+    track = random.choice(top_tracks)
+    track_preview_url = track.get('preview_url')
+
+    if not track_preview_url:
+        return redirect('home')
+
+    # Step 3: Download the preview audio for the selected track
+    track_audio_resp = requests.get(track_preview_url)
+
+    if track_audio_resp.status_code != 200:
+        return redirect('home')
+
+    try:
+        # Define a sample rate
+        sr = 22050  # You can choose 44100 or another standard rate if preferred
+
+        # Load audio data as mono with the given sample rate
+        audio, _ = librosa.load(BytesIO(track_audio_resp.content), sr=sr, mono=True)
+
+        # Step 4: Determine the key of the song
+        chroma = librosa.feature.chroma_cqt(y=audio, sr=sr)
+        chroma_mean = np.mean(chroma, axis=1)
+        notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+        original_key_index = np.argmax(chroma_mean)
+        original_key = notes[original_key_index]
+
+        # Step 5: Adjust the pitch of the audio based on user input (via a form)
+        pitch_shift_steps = int(request.GET.get('pitch_shift_steps', 0))  # Default is 0 semitones if not specified
+        audio_pitch_shifted = librosa.effects.pitch_shift(audio, sr=sr, n_steps=pitch_shift_steps)
+
+        # Save the pitch-shifted audio to a buffer
+        pitch_shifted_buffer = BytesIO()
+        sf.write(pitch_shifted_buffer, audio_pitch_shifted, sr, format='WAV')
+        pitch_shifted_buffer.seek(0)
+
+        # Encode the pitch-shifted audio to Base64
+        pitch_shifted_base64 = base64.b64encode(pitch_shifted_buffer.read()).decode('utf-8')
+
+    except Exception as e:
+        print(f"Error during audio processing: {e}")  # For debugging purposes
+        return redirect('home')
+
+    # Step 6: Render the game template and pass the pitch-shifted audio, track name, and original key
+    context = {
+        'track_name': track.get('name'),
+        'original_key': original_key,
+        'pitch_shifted_audio': pitch_shifted_base64,  # Pass Base64 encoded pitch-shifted audio
+        'pitch_shift_steps': pitch_shift_steps,  # Display how much the pitch was shifted
+    }
+
+    return render(request, 'game_adjust_pitch.html', context)
+
+
+
+def game_mix_pitch(request):
+
+    access_token = request.session.get('spotify_access_token')
+
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+
+    # Step 1: Fetch the user's top tracks
+    top_tracks_url = "https://api.spotify.com/v1/me/top/tracks?limit=50"
+    response = requests.get(top_tracks_url, headers=headers)
+
+    if response.status_code != 200:
+        return redirect('home')
+
+    top_tracks = response.json().get('items', [])
+
+    if len(top_tracks) < 2:
+        return redirect('home')
+
+    # Step 2: Pick two random tracks from the top 10
+    track1, track2 = random.sample(top_tracks, 2)
+    track1_preview_url = track1.get('preview_url')
+    track2_preview_url = track2.get('preview_url')
+
+    if not track1_preview_url or not track2_preview_url:
+        return redirect('home')
+
+    # Step 3: Download the preview audio for the selected tracks
+    track1_audio_resp = requests.get(track1_preview_url)
+    track2_audio_resp = requests.get(track2_preview_url)
+
+    if track1_audio_resp.status_code != 200 or track2_audio_resp.status_code != 200:
+        return redirect('home')
+
+    try:
+        # Define a sample rate
+        sr = 22050  # You can choose 44100 or another standard rate if preferred
+
+        # Load audio data as mono with the given sample rate
+        audio1, _ = librosa.load(BytesIO(track1_audio_resp.content), sr=sr, mono=True)
+        audio2, _ = librosa.load(BytesIO(track2_audio_resp.content), sr=sr, mono=True)
+
+        # Step 4: Determine the key of each song
+        chroma1 = librosa.feature.chroma_cqt(y=audio1, sr=sr)
+        chroma2 = librosa.feature.chroma_cqt(y=audio2, sr=sr)
+
+        chroma_mean1 = np.mean(chroma1, axis=1)
+        chroma_mean2 = np.mean(chroma2, axis=1)
+
+        notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+        key1_index = np.argmax(chroma_mean1)
+        key2_index = np.argmax(chroma_mean2)
+        key1 = notes[key1_index]
+        key2 = notes[key2_index]
+
+        # Step 5: Determine how many semitones to shift to match keys
+        semitone_shift = key2_index - key1_index
+
+        # Step 6: Adjust the pitch of one of the songs to match the other key
+        audio1_adjusted = librosa.effects.pitch_shift(audio1, sr=sr, n_steps=semitone_shift)
+
+        # Step 7: Make the volume of both songs the same
+        rms1 = np.sqrt(np.mean(audio1_adjusted**2))
+        rms2 = np.sqrt(np.mean(audio2**2))
+
+        if rms1 > 0:
+            audio1_adjusted = audio1_adjusted * (rms2 / rms1)
+
+        # Step 8: Align the lengths of the two audio clips by truncating to the minimum length
+        min_length = min(len(audio1_adjusted), len(audio2))
+        audio1_aligned = audio1_adjusted[:min_length]
+        audio2_aligned = audio2[:min_length]
+
+        # Step 9: Mix the two audio tracks together
+        mixed_audio = (audio1_aligned + audio2_aligned) / 2
+
+        # Normalize the final mix to prevent clipping
+        max_val = np.max(np.abs(mixed_audio))
+        if max_val > 0:
+            final_mix_normalized = mixed_audio / max_val
+        else:
+            final_mix_normalized = mixed_audio
+
+        # Save the final mixed audio to a buffer
+        mixed_audio_buffer = BytesIO()
+        sf.write(mixed_audio_buffer, final_mix_normalized, sr, format='WAV')
+        mixed_audio_buffer.seek(0)
+
+        # Encode the mixed audio to Base64
+        mixed_audio_base64 = base64.b64encode(mixed_audio_buffer.read()).decode('utf-8')
+
+    except Exception as e:
+        print(f"Error during audio processing: {e}")  # For debugging purposes
+        return redirect('home')
+
+    # Step 10: Render the game template and pass the mixed audio, track names, and original keys
+    context = {
+        'track1_name': track1.get('name'),
+        'track2_name': track2.get('name'),
+        'key1': key1,
+        'key2': key2,
+        'mixed_audio': mixed_audio_base64,  # Pass Base64 encoded mixed audio
+    }
+
+    return render(request, 'game_mix_pitch.html', context)

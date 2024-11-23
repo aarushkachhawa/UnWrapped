@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split Vocals and Instrumentals</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+        }
+
+        audio {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        h2 {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>{{ track_name }}</h2>
+        <p>Listen to the vocals and instrumental separately:</p>
+
+        <div class="audio-section">
+            <h3>Vocals</h3>
+            <audio controls>
+                <source src="data:audio/wav;base64,{{ vocals_audio }}" type="audio/wav">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+
+        <div class="audio-section">
+            <h3>Instrumental</h3>
+            <audio controls>
+                <source src="data:audio/wav;base64,{{ instrumental_audio }}" type="audio/wav">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+    </div>
+</body>
+</html>
