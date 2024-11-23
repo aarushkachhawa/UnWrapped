@@ -17,9 +17,7 @@
             <img src="{% static 'transition_slide/yellow_record.png' %}" class="record">
         </div>
 
-        <div class="insights-section">
-            <h2 class="insights-title">MORE MUSICAL INSIGHTS >>></h2>
-        </div>
+        <h2 class="insights-title">MORE MUSICAL INSIGHTS >>></h2>
     </div>
 </div>
 
@@ -27,7 +25,7 @@
     body {
         margin: 0;
         padding: 0;
-        background-color: #FFF;
+        background-color: #FCF8F1;
     }
 
     .main-container {
@@ -52,7 +50,7 @@
     .rainbow-container {
         position: relative;
         width: 100%;
-        height: 400px;
+        height: 1000px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -91,9 +89,9 @@
     }
 
     .record {
-        width: 200px;
-        height: 200px;
-        animation: spin_record 2s linear infinite;
+        width: var(--width, 200px);
+        height: var(--height, 200px);
+        animation: spin_record var(--animation-speed, 2s) linear infinite;
     }
 
     @keyframes spin_record {
@@ -115,6 +113,9 @@
         opacity: 0;
         animation: fadeIn 1s ease-in forwards;
         animation-delay: 4s;
+        position: absolute;
+        bottom: -500px;
+        z-index: 10;
     }
 
     @keyframes spin {
@@ -137,10 +138,50 @@
 </style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        setTimeout(function() {
-            window.location.href = '{% url "transition_one" %}';
-        }, 5000);
+    document.addEventListener('DOMContentLoaded', function () {
+        const record = document.querySelector('.record');
+        record.style.setProperty('--animation-speed', '2s');
+        record.style.setProperty('--width', '200px');
+        record.style.setProperty('--height', '200px');
+        let styles = window.getComputedStyle(record);
+        let rotationSpeed = styles.animationDuration;
+        rotationSpeed = parseFloat(rotationSpeed.slice(0,-1));
+        let currentWidth = parseFloat(styles.width.slice(0, -1));
+        let currentHeight = parseFloat(styles.height.slice(0, -1));
+
+        function rotationSpeedIncrease() {
+            console.log(rotationSpeed);
+            if (rotationSpeed > 0.5) {
+                rotationSpeed = Math.max(rotationSpeed - 0.001, 0.5);
+                record.style.setProperty('--animation-speed', `${rotationSpeed}s`);
+            }
+
+            currentWidth += 1;
+            currentHeight += 1;
+            record.style.setProperty('--width', `${currentWidth}px`);
+            record.style.setProperty('--height', `${currentHeight}px`);
+
+            requestAnimationFrame(rotationSpeedIncrease);
+        }
+
+        rotationSpeedIncrease();
+
+        fetch("{% url 'generate_wrap' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            }
+        }).then(response => response.json())
+        .then(data => {
+            if (data.status == 'done') {
+                console.log('generate_wrap done gathering data');
+                window.location.href = "/top_artist.html";
+            }
+        })
+        .catch(error => {
+            console.log('Error:', error);
+        });
     });
 </script>
 {% endblock %}
