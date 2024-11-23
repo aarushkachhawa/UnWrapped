@@ -35,14 +35,17 @@ def logout_view(request):
 
 @login_required
 def profile(request):
+    language = request.session.get('language', 'english')
     context = {
         'username': request.user.get_username(),
         'email': request.user.email
+        'language': language
     }
     return render(request, 'profile.html', context)
 
 def contactDevs(request):
-    return render(request, 'contact.html', {})
+    language = request.session.get('language', 'english')
+    return render(request, 'contact.html', {'language': language})
 
 def register(request):
     if request.user.is_authenticated:
