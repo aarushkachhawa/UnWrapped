@@ -1062,7 +1062,7 @@ def game_mix_pitch_2(request):
         # **Change 6:** Pitch one song up and one song down to match the base key
         audio_up_adjusted = librosa.effects.pitch_shift(audio_up, sr=sr, n_steps=semitone_shift_up)
         audio_down_adjusted = librosa.effects.pitch_shift(audio_down, sr=sr, n_steps=semitone_shift_down)
-        audio_base_adjusted = audio_base  # No shift needed for base track
+        audio_base_adjusted = librosa.effects.pitch_shift(audio_base, sr=sr, n_steps=12)  # No shift needed for base track
 
         # **Change 7:** Adjust volumes
         # Increase volume slightly for pitched-down song and decrease volume slightly for pitched-up song
@@ -1071,7 +1071,7 @@ def game_mix_pitch_2(request):
 
         audio_down_adjusted *= volume_increase_factor
         audio_up_adjusted *= volume_decrease_factor
-        audio_base *= 0.25
+        audio_base *= 0.8
         # audio_base_adjusted remains unchanged
 
         # Step 4.2: Normalize the volume of all tracks to prevent clipping and ensure balance
