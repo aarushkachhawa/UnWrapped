@@ -176,6 +176,8 @@ def getStats(request):
             artists[0]['images'][0]['url']
         ]
 
+
+
         top_songs_data = trackResponse.json()
         songs = top_songs_data.get('items', [])
         print("songs in getStats():", songs)
@@ -276,7 +278,7 @@ def calculate_top_artist_and_songs_slide(request):
 
     print("CALCULATED TOP ARTISTS")
 
-def top_artist_and_songs_slide(request):
+def top_artist_and_songs_slide(request, page= 'topArtistAndSongs.html'):
     context = {
         'top_artist': request.session['top_artist'],
         'top_songs': request.session['top_songs'],
@@ -285,7 +287,7 @@ def top_artist_and_songs_slide(request):
         'top_songs_urls': request.session['top_songs_urls']
     }
 
-    return render(request, 'topArtistAndSongs.html', context)
+    return render(request, page, context)
 
 
 @login_required
@@ -666,7 +668,27 @@ def calculate_analyze_seasonal_mood(request):
     request.session['image'] = response_json['images'][0]['url']
     request.session['season'] = curr_season
 
-def analyze_seasonal_mood(request):
+def analyze_seasonal_mood(request, page= 'seasonalMood.html'):
+    context = {
+        "mood1": request.session['mood1'],
+        "mood2": request.session['mood2'],
+        "mood3": request.session['mood3'],
+        "mood4": request.session['mood4'],
+        "mood5": request.session['mood5'],
+        "mood6": request.session['mood6'],
+        "song_artist1": request.session['song_artist1'],
+        "song_artist2": request.session['song_artist2'],
+        "song_artist3": request.session['song_artist3'],
+        "song_artist4": request.session['song_artist4'],
+        "song_artist5": request.session['song_artist5'],
+        "song_artist6": request.session['song_artist6'],
+        "image": request.session['image'],
+        "season": request.session['season'],
+    }
+    return render(request, page, context)
+
+
+def halloween_seasonal(request):
     context = {
         "mood1": request.session['mood1'],
         "mood2": request.session['mood2'],
@@ -684,7 +706,8 @@ def analyze_seasonal_mood(request):
         "season": request.session['season'],
     }
 
-    return render(request, 'seasonalMood.html', context)
+    return render(request, 'halloween_seasonal.html')
+
 
 def calculate_llm_insights_page(request):
     contentArr = analyze_clothing(request)
@@ -962,3 +985,37 @@ def reset(request):
             return render(request, 'reset.html')
 
     return render(request, 'reset.html', {'hideMenu': False})
+
+def halloween_ads(request):
+    return get_account_level(request, 'halloween_ads.html')
+
+def halloween_top_artist(request):
+    return top_artist_and_songs_slide(request, 'halloweenone.html')
+
+def christmas_top_artist(request):
+    return top_artist_and_songs_slide(request, 'christmasone.html')
+
+
+def halloween_seasonal(request):
+    context = {
+        "mood1": request.session['mood1'],
+        "mood2": request.session['mood2'],
+        "mood3": request.session['mood3'],
+        "mood4": request.session['mood4'],
+        "mood5": request.session['mood5'],
+        "mood6": request.session['mood6'],
+        "song_artist1": request.session['song_artist1'],
+        "song_artist2": request.session['song_artist2'],
+        "song_artist3": request.session['song_artist3'],
+        "song_artist4": request.session['song_artist4'],
+        "song_artist5": request.session['song_artist5'],
+        "song_artist6": request.session['song_artist6'],
+        "image": request.session['image'],
+        "season": request.session['season'],
+    }
+
+    return render(request, 'halloween_seasonal.html')
+
+
+
+
