@@ -1199,8 +1199,10 @@ def game_adjust_pitch(request):
 
 
 def game_mix_pitch(request):
-
     access_token = request.session.get('spotify_access_token')
+
+    if not access_token:
+        return render(request, 'game_mix_pitch.html', {'error': 'Spotify access token not found. Please log in again.'})
 
     headers = {
         "Authorization": f"Bearer {access_token}"
@@ -1211,37 +1213,37 @@ def game_mix_pitch(request):
     response = requests.get(top_tracks_url, headers=headers)
 
     if response.status_code != 200:
-        return redirect('home')
+        return render(request, 'game_mix_pitch.html', {'error': 'Failed to fetch top tracks from Spotify. Please try again later.'})
 
     top_tracks = response.json().get('items', [])
 
-    if len(top_tracks) < 2:
-        return redirect('home')
+    if len(top_tracks) < 12:
+        return render(request, 'game_mix_pitch.html', {'error': 'Not enough top tracks to play the game. Listen to more songs on Spotify!'})
 
-    # Step 2: Pick two random tracks from the top 10
-    track1, track2 = random.sample(top_tracks, 2)
-    track1_preview_url = track1.get('preview_url')
-    track2_preview_url = track2.get('preview_url')
-
-    if not track1_preview_url or not track2_preview_url:
-        return redirect('home')
-
-    # Step 3: Download the preview audio for the selected tracks
-    track1_audio_resp = requests.get(track1_preview_url)
-    track2_audio_resp = requests.get(track2_preview_url)
-
-    if track1_audio_resp.status_code != 200 or track2_audio_resp.status_code != 200:
-        return redirect('home')
-
+    # Step 2: Pick two random tracks for mixing
     try:
-        # Define a sample rate
-        sr = 22050  # You can choose 44100 or another standard rate if preferred
+        track1, track2 = random.sample(top_tracks, 2)
+        track1_name = track1.get('name')
+        track2_name = track2.get('name')
+        track1_preview_url = track1.get('preview_url')
+        track2_preview_url = track2.get('preview_url')
 
-        # Load audio data as mono with the given sample rate
-        audio1, _ = librosa.load(BytesIO(track1_audio_resp.content), sr=sr, mono=True)
-        audio2, _ = librosa.load(BytesIO(track2_audio_resp.content), sr=sr, mono=True)
+        if not track1_preview_url or not track2_preview_url:
+            return render(request, 'game_mix_pitch.html', {'error': 'One or both tracks are missing preview URLs. Please try again.'})
 
-        # Step 4: Determine the key of each song
+        # Step 3: Select 8 additional unique tracks for multiple-choice options
+        additional_tracks = random.sample([track for track in top_tracks if track != track1 and track != track2], 10)
+        additional_names = [track.get('name') for track in additional_tracks]
+
+        # Ensure the correct songs are included in the choices
+        song_choices = [track1_name, track2_name] + additional_names
+        random.shuffle(song_choices)  # Shuffle the order of options
+
+        # Step 4: Process audio
+        sr = 22050
+        audio1, _ = librosa.load(BytesIO(requests.get(track1_preview_url).content), sr=sr, mono=True)
+        audio2, _ = librosa.load(BytesIO(requests.get(track2_preview_url).content), sr=sr, mono=True)
+
         chroma1 = librosa.feature.chroma_cqt(y=audio1, sr=sr)
         chroma2 = librosa.feature.chroma_cqt(y=audio2, sr=sr)
 
@@ -1254,53 +1256,46 @@ def game_mix_pitch(request):
         key1 = notes[key1_index]
         key2 = notes[key2_index]
 
-        # Step 5: Determine how many semitones to shift to match keys
         semitone_shift = key2_index - key1_index
 
-        # Step 6: Adjust the pitch of one of the songs to match the other key
+        # Adjust the pitch of audio1 to match audio2's key
         audio1_adjusted = librosa.effects.pitch_shift(audio1, sr=sr, n_steps=semitone_shift)
 
-        # Step 7: Make the volume of both songs the same
+        # Make the volume of audio1 20% louder after pitch shifting
+        if semitone_shift < 0:
+            audio1_adjusted = audio1_adjusted * 1.2
+        else:
+            audio1_adjusted = audio1_adjusted * 0.9
+
+        # Calculate RMS to match overall volume levels
         rms1 = np.sqrt(np.mean(audio1_adjusted**2))
         rms2 = np.sqrt(np.mean(audio2**2))
-
         if rms1 > 0:
             audio1_adjusted = audio1_adjusted * (rms2 / rms1)
 
-        # Step 8: Align the lengths of the two audio clips by truncating to the minimum length
+        # Align lengths and mix tracks
         min_length = min(len(audio1_adjusted), len(audio2))
-        audio1_aligned = audio1_adjusted[:min_length]
-        audio2_aligned = audio2[:min_length]
+        mixed_audio = (audio1_adjusted[:min_length] + audio2[:min_length]) / 2
 
-        # Step 9: Mix the two audio tracks together
-        mixed_audio = (audio1_aligned + audio2_aligned) / 2
-
-        # Normalize the final mix to prevent clipping
+        # Normalize to prevent clipping
         max_val = np.max(np.abs(mixed_audio))
         if max_val > 0:
-            final_mix_normalized = mixed_audio / max_val
-        else:
-            final_mix_normalized = mixed_audio
+            mixed_audio = mixed_audio / max_val
 
-        # Save the final mixed audio to a buffer
+        # Save the mixed audio to a buffer
         mixed_audio_buffer = BytesIO()
-        sf.write(mixed_audio_buffer, final_mix_normalized, sr, format='WAV')
+        sf.write(mixed_audio_buffer, mixed_audio, sr, format='WAV')
         mixed_audio_buffer.seek(0)
-
-        # Encode the mixed audio to Base64
         mixed_audio_base64 = base64.b64encode(mixed_audio_buffer.read()).decode('utf-8')
 
     except Exception as e:
-        print(f"Error during audio processing: {e}")  # For debugging purposes
-        return redirect('home')
+        return render(request, 'game_mix_pitch.html', {'error': f'Error during audio processing: {e}'})
 
-    # Step 10: Render the game template and pass the mixed audio, track names, and original keys
+    # Step 5: Render the template
     context = {
-        'track1_name': track1.get('name'),
-        'track2_name': track2.get('name'),
-        'key1': key1,
-        'key2': key2,
-        'mixed_audio': mixed_audio_base64,  # Pass Base64 encoded mixed audio
+        'mixed_audio': mixed_audio_base64,
+        'song_choices': song_choices,  # All multiple-choice options
+        'correct_songs': [track1_name, track2_name]  # Correct answers
     }
 
     return render(request, 'game_mix_pitch.html', context)
