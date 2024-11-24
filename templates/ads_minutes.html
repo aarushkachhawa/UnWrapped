@@ -28,10 +28,13 @@
 
             body {
                 font-family: 'Notable', sans-serif;
-                background-color: #FCF8F1;
                 overflow: hidden;
-                background: url("{% static 'slide_3/ads_background.png' %}");
+                background: url("{% static 'ads_minutes/ads_background.png' %}");
                 background-size: cover;
+            }
+
+            body.dark-mode {
+                background: url("{% static 'ads_minutes/dark_mode_background.png' %}");
             }
 
             .top-right {
@@ -65,6 +68,10 @@
               font-size: 45px;
             }
 
+            body.dark-mode h1 {
+                color: #fbebeb;
+            }
+
             #top-line {
               margin-top: 175px;
             }
@@ -92,11 +99,35 @@
                 color: black;
             }
 
+            body.dark-mode p {
+                color: #a8a6a6;
+            }
+
         </style>
 
-        <img src="{% static 'ads_minutes/top_left_corner_rainbow.png' %}" alt="Rainbow" class="top-right">
-        <img src="{% static 'ads_minutes/top_left_corner_rainbow.png' %}" alt="Rainbow" class="bottom-quarter">
-        <img src="{% static 'ads_minutes/top_left_corner_rainbow.png' %}" alt="Rainbow" class="bottom-half">
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                if (localStorage.getItem('dark_mode') === 'on') {
+                    document.body.classList.add('dark-mode');
+                }
+
+                const dark_mode = localStorage.getItem('dark_mode') === 'on';
+                const rainbows = document.getElementsByClassName('rainbow');
+                if (dark_mode) {
+                    for (let i = 0; i < rainbows.length; i++) {
+                        rainbows[i].src = "{% static 'ads_minutes/dark_mode_rainbow.png' %}";
+                    }
+                } else {
+                    for (let i = 0; i < rainbows.length; i++) {
+                        rainbows[i].src = "{% static 'ads_minutes/top_left_corner_rainbow.png' %}";
+                    }
+                }
+            });
+        </script>
+
+        <img src="{% static 'ads_minutes/top_left_corner_rainbow.png' %}" alt="Rainbow" class="top-right rainbow">
+        <img src="{% static 'ads_minutes/top_left_corner_rainbow.png' %}" alt="Rainbow" class="bottom-quarter rainbow">
+        <img src="{% static 'ads_minutes/top_left_corner_rainbow.png' %}" alt="Rainbow" class="bottom-half rainbow">
 
 
         <div id="text-container">

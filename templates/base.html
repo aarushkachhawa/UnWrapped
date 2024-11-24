@@ -266,6 +266,11 @@
             border-radius: 50%;
         }
 
+        body.dark-mode .small-circle {
+            background-color: dimgray;
+        }
+
+
         .darker-small-circle {
             width: 8px;
             height: 8px;
@@ -273,16 +278,24 @@
             border-radius: 50%;
         }
 
+        body.dark-mode .darker-small-circle {
+            background-color: #d3d3d3;
+        }
+
 
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="menu-icon" onclick="toggleSidebar()">☰</div>
+        {% if hideMenu != False %}
+            <div class="menu-icon" onclick="toggleSidebar()">☰</div>
+        {% endif %}
+
         <div class="title">UNWRAPPED</div>
         <div class="dark-mode-div" id="dark-mode-btn">TOGGLE DARK MODE</div>
     </div>
 
+    {% if hideMenu != False %}
     <div class="sidebar" id="sidebar">
         <a href="{% url 'home' %}">Home</a>
         <a href="{% url 'top_artist' %}">Top Artists and Top Songs</a>
@@ -290,7 +303,9 @@
         <a href="{% url 'llm_insights_page' %}">LLM Insights</a>
         <a href="{% url 'contact' %}">Contact</a>
         <a href="{% url 'profile' %}">Profile</a>
+        <a href="{% url 'logout' %}">Logout</a>
     </div>
+    {% endif %}
 
 
     <script>
@@ -301,9 +316,41 @@
             container.classList.toggle('sidebar-active');
         }
 
-        document.getElementById('dark-mode-btn').onclick = function() {
+        document.getElementById('dark-mode-btn').onclick = function () {
             document.body.classList.toggle('dark-mode');
+
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('dark_mode', 'on');
+                console.log('dark mode on');
+            } else {
+                localStorage.setItem('dark_mode', 'off');
+                console.log("dark mode off");
+                console.log(localStorage.getItem('dark_mode'));
+            }
+
+            const rainbows = document.getElementsByClassName('rainbow');
+            const dark_mode = localStorage.getItem('dark_mode') === 'on';
+            if (dark_mode) {
+                for (let i = 0; i < rainbows.length; i++) {
+                    rainbows[i].src = "{% static 'slide_2/dark_mode_rainbow.png' %}";
+                }
+            } else {
+                for (let i = 0; i < rainbows.length; i++) {
+                    rainbows[i].src = "{% static 'slide_2/top_left_corner_rainbow.png' %}";
+                }
+            }
         };
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const rainbows = document.getElementsByClassName('rainbow');
+            if (localStorage.getItem('dark_mode') === 'on') {
+                document.body.classList.add('dark-mode');
+                console.log('dark mode on');
+                for (let i = 0; i < rainbows.length; i++) {
+                    rainbows[i].src = "{% static 'slide_2/dark_mode_rainbow.png' %}"
+                }
+            }
+        });
     </script>
 
     <div class="container">

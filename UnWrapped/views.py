@@ -14,6 +14,7 @@ from openai import OpenAI
 from .localSettings import OPENAI_API_KEY
 import json
 import os, random
+from UnWrapped.models import CustomWrap
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
@@ -67,7 +68,7 @@ def register(request):
             print(form.errors)
     else:
         form = CustomUserCreationForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'register.html', {'form': form, 'hideMenu': False})
 
 
 def login_view(request):
@@ -89,7 +90,7 @@ def login_view(request):
             messages.error(request, 'Invalid username or password.')
     else:
         form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'login.html', {'form': form, 'hideMenu': False})
 
 
 # Helper function to get Spotify tokens
@@ -266,20 +267,30 @@ def stats(request):
 
 
 @login_required
-def top_artist_and_songs_slide(request):
+def calculate_top_artist_and_songs_slide(request):
     # Fetch Spotify data (top artists and top songs)
     wrapped_data = getStats(request)
 
     print("top songs: ", wrapped_data['top_songs'])
 
+    request.session['top_artist'] = wrapped_data['top_artist_year']
+    request.session['top_songs'] = wrapped_data['top_songs']
+    request.session['top_songs_artists'] = wrapped_data['top_songs_artists']
+    request.session['image_url'] = wrapped_data['top_artist_year'][1]
+    request.session['top_songs_urls'] = wrapped_data['top_songs_urls']
+    request.session['top_songs_artists'] = wrapped_data['top_songs_artists']
+
+    print("CALCULATED TOP ARTISTS")
+
+def top_artist_and_songs_slide(request):
     context = {
-        'title': 'Top Artist and Top Songs of the Year',
-        'top_artist': wrapped_data['top_artist_year'],
-        'top_songs': wrapped_data['top_songs'],
-        'top_songs_artists': wrapped_data['top_songs_artists'],
+        'top_artist': request.session['top_artist'],
+        'top_songs': request.session['top_songs'],
+        'image': request.session['image_url'],
+        'top_songs_artists': request.session['top_songs_artists'],
+        'top_songs_urls': request.session['top_songs_urls']
     }
 
-    # Render a single template with both top artist and top songs
     return render(request, 'topArtistAndSongs.html', context)
 
 
@@ -317,14 +328,13 @@ def get_last_50_songs(request):
     for track in response_json['items']:
         songs_list.append(track)
 
-    return songs_list
+    request.session['songs_list'] = songs_list
 
 
 def calculate_ads(request):
     seconds_in_a_month = 2.628e+6
 
-    last_50_songs = get_last_50_songs(
-        request)  # we should make this only get called once when stats are calculated, for now tho we'll call it again here
+    last_50_songs = request.session['songs_list']
     oldest_time = datetime.fromisoformat(last_50_songs[-1]['played_at'][:-1])
     newest_time = datetime.fromisoformat(last_50_songs[0]['played_at'][:-1])
     time_dif = newest_time - oldest_time
@@ -342,12 +352,12 @@ def calculate_ads(request):
     ads_minutes = listening_hours_for_a_month * 3
 
     if ads_minutes > 360:
-        ads_minutes = "over 360"
+        ads_minutes = 360
 
     return ads_minutes
 
 
-def get_most_popular_artists(request, page = "slide_2.html"):
+def calculate_get_most_popular_artists(request):
     if 'spotify_access_token' not in request.session:
         return redirect(spotify_auth_url())
 
@@ -478,13 +488,22 @@ def get_most_popular_artists(request, page = "slide_2.html"):
 
     # print(top_3_artists)
 
+    request.session['top_3_artists'] = json.dumps(top_3_artists)
+    request.session['artist1'] = artist1
+    request.session['artist2'] = artist2
+    request.session['artist3'] = artist3
+
+
+def get_most_popular_artists(request, page = "slide_2.html"):
     context = {
-        'top_3_artists': json.dumps(top_3_artists),
-        'artist1': artist1,
-        'artist2': artist2,
-        'artist3': artist3,
+        'top_3_artists':  request.session['top_3_artists'],
+        'artist1': request.session['artist1'],
+        'artist2': request.session['artist2'],
+        'artist3': request.session['artist3'],
     }
+
     return render(request, page, context)
+
 
 @login_required
 def halloween_graph(request):
@@ -547,12 +566,12 @@ def get_recent_top_songs(request):
 
         tracks_url = response_json['next']
 
-    return songs_list
+    request.session['top_100_songs'] =  songs_list
 
 
-def analyze_seasonal_mood(request):
+def calculate_analyze_seasonal_mood(request):
     client = OpenAI(api_key=OPENAI_API_KEY)
-    songs_list = get_recent_top_songs(request)
+    songs_list = request.session['top_100_songs']
     songs = str(songs_list)
     print(songs)
     print('\n\n\n\n\n')
@@ -636,52 +655,76 @@ def analyze_seasonal_mood(request):
     else:
         curr_season = "autumn"
 
+    request.session['mood1'] = mood1
+    request.session['mood2'] = mood2
+    request.session['mood3'] = mood3
+    request.session['mood4'] = mood4
+    request.session['mood5'] = mood5
+    request.session['mood6'] = mood6
 
+    request.session['song_artist1'] = song_artist1
+    request.session['song_artist2'] = song_artist2
+    request.session['song_artist3'] = song_artist3
+    request.session['song_artist4'] = song_artist4
+    request.session['song_artist5'] = song_artist5
+    request.session['song_artist6'] = song_artist6
+
+    request.session['image'] = response_json['images'][0]['url']
+    request.session['season'] = curr_season
+
+def analyze_seasonal_mood(request):
     context = {
-        "mood1" : mood1,
-        "mood2" : mood2,
-        "mood3" : mood3,
-        "mood4" : mood4,
-        "mood5" : mood5,
-        "mood6" : mood6,
-        "song_artist1" : song_artist1,
-        "song_artist2" : song_artist2,
-        "song_artist3" : song_artist3,
-        "song_artist4" : song_artist4,
-        "song_artist5" : song_artist5,
-        "song_artist6" : song_artist6,
-        "image" : response_json['images'][0]['url'],
-        "season" : curr_season,
+        "mood1": request.session['mood1'],
+        "mood2": request.session['mood2'],
+        "mood3": request.session['mood3'],
+        "mood4": request.session['mood4'],
+        "mood5": request.session['mood5'],
+        "mood6": request.session['mood6'],
+        "song_artist1": request.session['song_artist1'],
+        "song_artist2": request.session['song_artist2'],
+        "song_artist3": request.session['song_artist3'],
+        "song_artist4": request.session['song_artist4'],
+        "song_artist5": request.session['song_artist5'],
+        "song_artist6": request.session['song_artist6'],
+        "image": request.session['image'],
+        "season": request.session['season'],
     }
 
     return render(request, 'seasonalMood.html', context)
 
-
-
-
-@login_required
-def llm_insights_page(request):
+def calculate_llm_insights_page(request):
     contentArr = analyze_clothing(request)
     mood = contentArr[0].split(": ")[1].lower()
     if mood not in ["restless", "bitersweet", "introspective", "overjoyed", "pensive"]:
         mood = "other"
     rootDir = f"llmInsights/{mood}/"
+    imagePath = f"llmInsights/{mood}.png"
     try:
-        imageList = [file for file in os.listdir(f"{STATICFILES_DIRS[0]}/llmInsights/{mood}") if file[len(file) - 3:].lower() == "jpg"]
+        imageList = [file for file in os.listdir(f"{STATICFILES_DIRS[0]}/llmInsights/{mood}") if
+                     file[len(file) - 3:].lower() == "jpg"]
         songPath = rootDir + random.choice(imageList)
     except:
         songPath = "llmInsights/other/" + "2014FHD.jpg"
+    request.session['content'] = contentArr
+    request.session['mood'] = mood
+    request.session['songPath'] = songPath
+    request.session['imagePath'] = imagePath
+
+
+@login_required
+def llm_insights_page(request):
     context = { # send mood in separately because of how horrible django's template functionality is :)
-        'content': contentArr,
-        'mood': mood,
-        'songPath': songPath,
+        'content': request.session['content'],
+        'mood': request.session['mood'],
+        'songPath': request.session['songPath'],
+        'imagePath': request.session['imagePath']
     }
     return render(request, 'LLMinsights.html', context)
 
 
 def analyze_clothing(request):
     client = OpenAI(api_key=OPENAI_API_KEY)
-    songs = str(get_recent_top_songs(request))
+    songs = str(request.session['top_100_songs'])
     print(songs)
     print('\n\n\n\n\n')
 
@@ -701,8 +744,8 @@ def analyze_clothing(request):
     return description.content.split(";")
 
 
-def night_owl(request):  # combine this into one calculate stats method so we don't need to call get last 50 songs multiple times
-    last_50_songs = get_last_50_songs(request)
+def calculate_night_owl(request):  # combine this into one calculate stats method so we don't need to call get last 50 songs multiple times
+    last_50_songs = request.session['songs_list']
 
     time_list = []
     for song in last_50_songs:
@@ -772,15 +815,23 @@ def night_owl(request):  # combine this into one calculate stats method so we do
     
     hour_hand_rotation = 360/12 * hour + 360/12/60 * minute
 
+    print(json.dumps(time_ranges))
+
+    request.session['latest_time'] = f"{hour}:{'0' if latest_time['minute'] < 10 else ''}{latest_time['minute']} {'AM' if latest_time['hour'] < 12 else 'PM'}"
+    request.session['time_ranges'] = json.dumps(time_ranges)
+    request.session['total_minutes'] = total_time
+    request.session['hour_hand_rotation'] = hour_hand_rotation - 90
+    request.session['minute_hand_rotation'] = minute_hand_rotation - 90
+
+def night_owl(request):
     context = {
-        "latest_time": f"{hour}:{'0' if latest_time['minute'] < 10 else ''}{latest_time['minute']} {'AM' if latest_time['hour'] < 12 else 'PM'}",
-        'time_ranges': json.dumps(time_ranges),
-        "total_minutes": total_time,
-        "hour_hand_rotation": hour_hand_rotation - 90,
-        "minute_hand_rotation": minute_hand_rotation - 90,
+        "latest_time": request.session['latest_time'],
+        'time_ranges': request.session['time_ranges'],
+        "total_minutes": request.session['total_minutes'],
+        "hour_hand_rotation": request.session['hour_hand_rotation'],
+        "minute_hand_rotation": request.session['minute_hand_rotation'],
     }
-    
-    print(context['time_ranges'])
+
     return render(request, 'slide_3.html', context)
 
 
@@ -800,7 +851,7 @@ def transition_one(request):
         messages.error(request, "An error occurred while loading the transition page.")
         return redirect('home')
 
-def get_account_level(request):
+def calculate_get_account_level(request):
     access_token = request.session.get('spotify_access_token')
 
     headers = {
@@ -822,23 +873,74 @@ def get_account_level(request):
     if response.status_code != 200:
         print(response.text, "Error: Can't get user's account status.")
         return redirect('home')
-
     response = response.json()
     print(response['product'])
-    if response['product'] == 'premium':
-        premium = True
+    if 'product' in response and response['product'] == 'premium':
+        request.session['premium'] = True
     else:
-        premium = False
+        request.session['premium'] = False
 
-    #print(premium)
+    request.session['ads_minutes'] = round(calculate_ads(request))
 
+def get_account_level(request):
     context = {
-        "premium": premium,
-        "ads_minutes": round(calculate_ads(request)),
+        "premium": request.session['premium'],
+        "ads_minutes": request.session['ads_minutes'],
+        "language": "english",
     }
 
     return render(request, 'ads_minutes.html', context)
 
+def generate_wrap(request):
+    calculate_top_artist_and_songs_slide(request)
+    get_last_50_songs(request)
+    calculate_get_account_level(request)
+    calculate_get_most_popular_artists(request)
+    get_recent_top_songs(request)
+    calculate_analyze_seasonal_mood(request)
+    calculate_llm_insights_page(request)
+    calculate_night_owl(request)
+
+    # save to model
+    wrap = CustomWrap(
+        user = request.user,
+        top_artist = request.session['top_artist'],
+        top_songs = request.session['top_songs'],
+        image_url = request.session['image_url'],
+        top_3_artists = request.session['top_3_artists'],
+        artist1 = request.session['artist1'],
+        artist2 = request.session['artist2'],
+        artist3 = request.session['artist3'],
+        mood1 = request.session['mood1'],
+        mood2=request.session['mood2'],
+        mood3=request.session['mood3'],
+        mood4=request.session['mood4'],
+        mood5=request.session['mood5'],
+        mood6=request.session['mood6'],
+        song_artist1 = request.session['song_artist1'],
+        song_artist2=request.session['song_artist2'],
+        song_artist3=request.session['song_artist3'],
+        song_artist4=request.session['song_artist4'],
+        song_artist5=request.session['song_artist5'],
+        song_artist6=request.session['song_artist6'],
+        image = request.session['image'],
+        season = request.session['season'],
+        content = request.session['content'],
+        mood = request.session['mood'],
+        songPath = request.session['songPath'],
+        latest_time = request.session['latest_time'],
+        time_ranges = request.session['time_ranges'],
+        total_minutes = request.session['total_minutes'],
+        hour_hand_rotation = request.session['hour_hand_rotation'],
+        minute_hand_rotation = request.session['minute_hand_rotation'],
+        premium = request.session['premium'],
+        ads_minutes = request.session['ads_minutes'],
+    )
+    wrap.save()
+
+    return JsonResponse({
+        "done": True
+    })
 
 def reset(request):
     if request.method == 'POST':
@@ -864,7 +966,6 @@ def reset(request):
             # Handle case where the username is not found
             messages.error(request, 'Username not found.')
             return render(request, 'reset.html')
-
     return render(request, 'reset.html')
 
 
@@ -1133,4 +1234,3 @@ def game_mix_pitch_2(request):
     }
 
     return render(request, 'game_mix_pitch.html', context)
-

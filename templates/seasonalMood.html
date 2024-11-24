@@ -105,6 +105,7 @@
             /*margin-right: 30px;*/
         }
 
+
         body.dark-mode {
             .small-record-mood, .small-record-artist {
                 color: white;
@@ -117,6 +118,10 @@
             font-size: 16px;
             width: 150px;
             /*margin-right: 30px;*/
+        }
+
+        .small-record-artist.dark-mode {
+            color: #d3d3d3;
         }
 
         .small-record-container1 {
@@ -188,16 +193,85 @@
 
     </style>
 
-    <img src="{% static 'topArtist/top_left_corner_rainbow.png' %}" class="top-corner-rainbow">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (localStorage.getItem('dark_mode') === 'on') {
+                document.body.classList.add('dark-mode');
+                console.log('dark mode on');
+            }
+
+            const dark_mode = localStorage.getItem('dark_mode') === 'on';
+            const text = document.getElementsByClassName('small-record-artist');
+            if (dark_mode) {
+                for (let i = 0; i < text.length; i++) {
+                    text[i].classList.add('dark-mode');
+                }
+            }
+
+            const moods = document.getElementsByClassName('small-record-mood');
+            if (dark_mode) {
+                for (let i = 0; i < moods.length; i++) {
+                    moods[i].classList.add('dark-mode');
+                }
+            }
+
+            const rainbows = document.getElementsByClassName('rainbow');
+            if (dark_mode) {
+                for (let i = 0; i < rainbows.length; i++) {
+                    rainbows[i].src = "{% static 'slide_2/dark_mode_rainbow.png' %}";
+                }
+            } else {
+                for (let i = 0; i < rainbows.length; i++) {
+                    rainbows[i].src = "{% static 'slide_2/top_left_corner_rainbow.png' %}";
+                }
+            }
+        });
+
+        document.getElementById('dark-mode-btn').onclick = function() {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('dark_mode', 'on');
+                console.log('dark mode on');
+            } else {
+                localStorage.setItem('dark_mode', 'off');
+                console.log("dark mode off");
+                console.log(localStorage.getItem('dark_mode'));
+            }
+
+            const text = document.getElementsByClassName('small-record-artist');
+            for (let i = 0; i < text.length; i++) {
+                text[i].classList.toggle('dark-mode');
+            }
+
+            const moods = document.getElementsByClassName('small-record-mood');
+            for (let i = 0; i < moods.length; i++) {
+                moods[i].classList.toggle('dark-mode');
+            }
+
+            const rainbows = document.getElementsByClassName('rainbow');
+            const dark_mode = localStorage.getItem('dark_mode') === 'on';
+            if (dark_mode) {
+                for (let i = 0; i < rainbows.length; i++) {
+                    rainbows[i].src = "{% static 'slide_2/dark_mode_rainbow.png' %}";
+                }
+            } else {
+                for (let i = 0; i < rainbows.length; i++) {
+                    rainbows[i].src = "{% static 'slide_2/top_left_corner_rainbow.png' %}";
+                }
+            }
+        }
+    </script>
+
+    <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" class="top-corner-rainbow rainbow">
 
     <img src={{image}} class="record-image">
 
     <div class="center-record">
         <svg width="400" height="400" viewBox="0 0 400 400">
-        <!-- Define a circular path for the text to follow -->
-        <defs>
-            <path id="textCircle" d="M 200, 200 m -150, 0 a 150,150 0 1,1 300,0 a 150,150 0 1,1 -300,0"/>
-            <path id="textCircleBottom" d="M 200, 200 m 150, 0 a 150,150 0 1,0 -300,0 a 150,150 0 1,0 300,0"/>
+            <!-- Define a circular path for the text to follow -->
+            <defs>
+                <path id="textCircle" d="M 200, 200 m -150, 0 a 150,150 0 1,1 300,0 a 150,150 0 1,1 -300,0"/>
+                <path id="textCircleBottom" d="M 200, 200 m 150, 0 a 150,150 0 1,0 -300,0 a 150,150 0 1,0 300,0"/>
         </defs>
 
         <!-- Text along the circular path -->
@@ -306,7 +380,7 @@
         <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button" alt="Forward Button">
     </a>
 
-    <img src="{% static 'topArtist/top_left_corner_rainbow.png' %}" class="bottom-corner-rainbow">
+    <img src="{% static 'topArtist/top_left_corner_rainbow.png' %}" class="bottom-corner-rainbow rainbow">
 
     {% endblock %}
 </body>

@@ -57,6 +57,11 @@
                 top: 125px;
             }
 
+            body.dark-mode .slide-title {
+                color: #5AABF3;
+                text-shadow: 1px 1px aliceblue;
+            }
+
             .total-minutes {
                 color: #C7443A;
                 font-size: 36px;
@@ -154,8 +159,20 @@
 
         </style>
 
-        <img src="{% static 'slide_3/top_left_corner_rainbow.png' %}" alt="Rainbow" class="top-left">
-        <img src="{% static 'slide_3/top_left_corner_rainbow.png' %}" alt="Rainbow" class="bottom-left">
+        <img src="{% static 'slide_3/top_left_corner_rainbow.png' %}" alt="Rainbow" class="top-left rainbow">
+        <img src="{% static 'slide_3/top_left_corner_rainbow.png' %}" alt="Rainbow" class="bottom-left rainbow">
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const dark_mode = localStorage.getItem('dark_mode') === 'on';
+                const rainbows = document.getElementsByClassName('rainbow');
+                if (dark_mode) {
+                    for (let i = 0; i < rainbows.length; i++) {
+                        rainbows[i].src = "{% static 'slide_3/dark_mode_rainbow.png' %}"
+                    }
+                }
+            });
+        </script>
 
         <div class="slide-title">Night Owl</div>
         <div class="overall-page">
@@ -175,6 +192,7 @@
 
             <script>
                 const xValues = [""]
+                const dark_mode = localStorage.getItem('dark_mode') === 'on'
                 const time_ranges = JSON.parse('{{ time_ranges | escapejs }}');
                 const ranges = Object.keys(time_ranges);
                 const range1 = ranges[0];
@@ -208,7 +226,6 @@
                     }
                 ]
                 document.addEventListener("DOMContentLoaded", function() {
-                    const fontColor = "#8b8484";
 
                     new Chart("hoursBarGraph", {
                     type: "bar",
@@ -224,7 +241,7 @@
                                 fontFamily: 'Notable',
                                 padding: 30,
                                 fontSize: 14,
-                                fontColor: fontColor,
+                                fontColor: dark_mode ? "#a8a6a6" : "#473924",
                                 boxWidth: 5,
                             }
                         },
@@ -233,13 +250,16 @@
                                 ticks: {
                                     fontFamily: 'Notable',
                                     fontSize: 15,
-                                    fontColor: fontColor,
+                                    fontColor: dark_mode ? "#a8a6a6" : "#473924",
                                 },
+                                gridLines: {
+                                    color: dark_mode ? "#a8a6a6" : "#473924",
+                                }
                             }],
                             yAxes: [{
                                 ticks: {
                                     fontFamily: 'Notable',
-                                    fontColor: fontColor,
+                                    fontColor: dark_mode ? "#a8a6a6" : "#473924",
                                     fontSize: 15,
                                     beginAtZero: true
                                 },
@@ -247,9 +267,12 @@
                                     display: true,
                                     labelString: "Minutes Listened",
                                     fontFamily: 'Notable',
-                                    fontColor: fontColor,
+                                    fontColor: dark_mode ? "#a8a6a6" : "#473924",
                                     fontSize: 20,
                                 },
+                                gridLines: {
+                                    color: dark_mode ? "#a8a6a6" : "#473924",
+                                }
                             }]
                         },
                         layout: {
