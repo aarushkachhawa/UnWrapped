@@ -991,115 +991,116 @@ def game_mix_pitch_2(request):
     top_tracks = response.json().get('items', [])
 
     # **Change 1:** Update minimum number of top tracks to accommodate three correct songs + decoys
-    required_tracks = 3 + 9
+    num_correct = 3
+    decoy_count = 13  # To maintain 16 total choices
+    required_tracks = num_correct + decoy_count
+
     if len(top_tracks) < required_tracks:
         return render(request, 'game_mix_pitch.html', {'error': 'Not enough top tracks to play the game. Listen to more songs on Spotify!'})
 
-    # Step 2: Pick three random tracks for mixing
+    # Step 2: Pick three unique tracks for mixing
     try:
-        # **Change 2:** Select three tracks instead of two
-        track1, track2, track3 = random.sample(top_tracks, 3)
-        track1_name = track1.get('name')
-        track2_name = track2.get('name')
-        track3_name = track3.get('name')
-        track1_preview_url = track1.get('preview_url')
-        track2_preview_url = track2.get('preview_url')
-        track3_preview_url = track3.get('preview_url')
+        # **Change 2:** Select three unique tracks
+        selected_tracks = random.sample(top_tracks, num_correct)
+        base_track, pitch_track_up, pitch_track_down = selected_tracks
+
+        base_track_name = base_track.get('name')
+        pitch_track_up_name = pitch_track_up.get('name')
+        pitch_track_down_name = pitch_track_down.get('name')
+
+        base_preview_url = base_track.get('preview_url')
+        pitch_preview_url_up = pitch_track_up.get('preview_url')
+        pitch_preview_url_down = pitch_track_down.get('preview_url')
 
         # **Change 3:** Ensure all three tracks have preview URLs
-        if not track1_preview_url or not track2_preview_url or not track3_preview_url:
+        if not base_preview_url or not pitch_preview_url_up or not pitch_preview_url_down:
             return render(request, 'game_mix_pitch.html', {'error': 'One or more tracks are missing preview URLs. Please try again.'})
 
-        # Step 3: Select 14 additional unique tracks for multiple-choice options
-        additional_tracks = random.sample(
-            [track for track in top_tracks if track not in [track1, track2, track3]],
-            9  # Number of decoys remains the same
-        )
-        additional_names = [track.get('name') for track in additional_tracks]
+        # Step 3: Select 13 additional unique tracks for multiple-choice options
+        remaining_tracks = [track for track in top_tracks if track not in selected_tracks]
+        decoy_tracks = random.sample(remaining_tracks, decoy_count)
+        decoy_song_names = [track.get('name') for track in decoy_tracks]
 
         # **Change 4:** Include three correct song names in choices
-        song_choices = [track1_name, track2_name, track3_name] + additional_names
+        song_choices = [base_track_name, pitch_track_up_name, pitch_track_down_name] + decoy_song_names
         random.shuffle(song_choices)  # Shuffle the order of options
 
         # Step 4: Process audio
-        sr = 22050
+        sr = 22050  # Sampling rate
 
         # **Change 5:** Load all three audio tracks
-        audio1, _ = librosa.load(BytesIO(requests.get(track1_preview_url).content), sr=sr, mono=True)
-        audio2, _ = librosa.load(BytesIO(requests.get(track2_preview_url).content), sr=sr, mono=True)
-        audio3, _ = librosa.load(BytesIO(requests.get(track3_preview_url).content), sr=sr, mono=True)
+        audio_base, _ = librosa.load(BytesIO(requests.get(base_preview_url).content), sr=sr, mono=True)
+        audio_up, _ = librosa.load(BytesIO(requests.get(pitch_preview_url_up).content), sr=sr, mono=True)
+        audio_down, _ = librosa.load(BytesIO(requests.get(pitch_preview_url_down).content), sr=sr, mono=True)
 
         # Extract chroma features to determine the key of each track
-        chroma1 = librosa.feature.chroma_cqt(y=audio1, sr=sr)
-        chroma2 = librosa.feature.chroma_cqt(y=audio2, sr=sr)
-        chroma3 = librosa.feature.chroma_cqt(y=audio3, sr=sr)
+        chroma_base = librosa.feature.chroma_cqt(y=audio_base, sr=sr)
+        chroma_up = librosa.feature.chroma_cqt(y=audio_up, sr=sr)
+        chroma_down = librosa.feature.chroma_cqt(y=audio_down, sr=sr)
 
-        chroma_mean1 = np.mean(chroma1, axis=1)
-        chroma_mean2 = np.mean(chroma2, axis=1)
-        chroma_mean3 = np.mean(chroma3, axis=1)
+        chroma_mean_base = np.mean(chroma_base, axis=1)
+        chroma_mean_up = np.mean(chroma_up, axis=1)
+        chroma_mean_down = np.mean(chroma_down, axis=1)
 
-        notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
-        key1_index = np.argmax(chroma_mean1)
-        key2_index = np.argmax(chroma_mean2)
-        key3_index = np.argmax(chroma_mean3)
-        key1 = notes[key1_index]
-        key2 = notes[key2_index]
-        key3 = notes[key3_index]
+        notes = ['C', 'C#', 'D', 'D#', 'E', 'F',
+                 'F#', 'G', 'G#', 'A', 'A#', 'B']
+        key_base_index = np.argmax(chroma_mean_base)
+        key_up_index = np.argmax(chroma_mean_up)
+        key_down_index = np.argmax(chroma_mean_down)
+        key_base = notes[key_base_index]
+        key_up = notes[key_up_index]
+        key_down = notes[key_down_index]
 
-        # Step 4.1: Select a random target key
-        random_key_index = random.randint(0, 11)  # Random integer between 0 and 11
-        random_key = notes[random_key_index]
+        # Step 4.1: Set the base key as the target key
+        target_key_index = key_base_index
+        target_key = key_base
 
-        # Calculate the semitone shifts needed for all three tracks to match the random key
-        semitone_shift1 = random_key_index - key1_index
-        semitone_shift2 = random_key_index - key2_index
-        semitone_shift3 = random_key_index - key3_index
+        # Calculate the semitone shifts needed for pitch_track_up and pitch_track_down to match the base key
+        semitone_shift_up = target_key_index - key_up_index
+        semitone_shift_down = target_key_index - key_down_index
 
-        # Step 4.2: Adjust the pitch of all audios to the random key
-        audio1_adjusted = librosa.effects.pitch_shift(audio1, sr=sr, n_steps=semitone_shift1)
-        audio2_adjusted = librosa.effects.pitch_shift(audio2, sr=sr, n_steps=semitone_shift2)
-        audio3_adjusted = librosa.effects.pitch_shift(audio3, sr=sr, n_steps=semitone_shift3)
+        # **Change 6:** Pitch one song up and one song down to match the base key
+        audio_up_adjusted = librosa.effects.pitch_shift(audio_up, sr=sr, n_steps=semitone_shift_up)
+        audio_down_adjusted = librosa.effects.pitch_shift(audio_down, sr=sr, n_steps=semitone_shift_down)
+        audio_base_adjusted = audio_base  # No shift needed for base track
 
-        # **Change 6:** Adjust volumes for all three audios based on semitone shifts
-        # A simple approach: more shift results in lower volume to balance
-        def adjust_volume(audio, semitone_shift):
-            if semitone_shift > 0:
-                return audio * (1.0 - 0.01 * semitone_shift)  # Decrease volume for positive shifts
-            else:
-                return audio * (1.0 + 0.01 * abs(semitone_shift))  # Increase volume for negative shifts
+        # **Change 7:** Adjust volumes
+        # Increase volume slightly for pitched-down song and decrease volume slightly for pitched-up song
+        volume_increase_factor = 1.4  # 5% increase
+        volume_decrease_factor = 0.9  # 5% decrease
 
-        #audio1_adjusted = adjust_volume(audio1_adjusted, semitone_shift1)
-        #audio2_adjusted = adjust_volume(audio2_adjusted, semitone_shift2)
-        #audio3_adjusted = adjust_volume(audio3_adjusted, semitone_shift3)
+        audio_down_adjusted *= volume_increase_factor
+        audio_up_adjusted *= volume_decrease_factor
+        audio_base *= 0.25
+        # audio_base_adjusted remains unchanged
 
-        # Calculate RMS to match overall volume levels across all three audios
-        rms1 = np.sqrt(np.mean(audio1_adjusted**2))
-        rms2 = np.sqrt(np.mean(audio2_adjusted**2))
-        rms3 = np.sqrt(np.mean(audio3_adjusted**2))
+        # Step 4.2: Normalize the volume of all tracks to prevent clipping and ensure balance
+        def normalize_audio(audio):
+            rms = np.sqrt(np.mean(audio**2))
+            if rms > 0:
+                return audio / rms
+            return audio
 
-        # Calculate the average RMS to normalize all audios to the same level
-        average_rms = np.mean([rms1, rms2, rms3])
+        audio_base_normalized = normalize_audio(audio_base_adjusted)
+        audio_up_normalized = normalize_audio(audio_up_adjusted)
+        audio_down_normalized = normalize_audio(audio_down_adjusted)
 
-        if rms1 > 0:
-            audio1_adjusted = audio1_adjusted * (average_rms / rms1)
-        if rms2 > 0:
-            audio2_adjusted = audio2_adjusted * (average_rms / rms2)
-        if rms3 > 0:
-            audio3_adjusted = audio3_adjusted * (average_rms / rms3)
+        # Step 4.3: Align lengths by padding shorter audios with zeros
+        max_length = max(len(audio_base_normalized),
+                         len(audio_up_normalized),
+                         len(audio_down_normalized))
 
-        # Align lengths by padding shorter audios with zeros
-        max_length = max(len(audio1_adjusted), len(audio2_adjusted), len(audio3_adjusted))
         def pad_audio(audio, target_length):
             if len(audio) < target_length:
                 return np.pad(audio, (0, target_length - len(audio)), 'constant')
             return audio[:target_length]
 
-        audio1_padded = pad_audio(audio1_adjusted, max_length)
-        audio2_padded = pad_audio(audio2_adjusted, max_length)
-        audio3_padded = pad_audio(audio3_adjusted, max_length)
+        audio_base_padded = pad_audio(audio_base_normalized, max_length)
+        audio_up_padded = pad_audio(audio_up_normalized, max_length)
+        audio_down_padded = pad_audio(audio_down_normalized, max_length)
 
-        # Mix all three tracks together by averaging
-        mixed_audio = (audio1_padded + audio2_padded + audio3_padded) / 3
+        # Step 4.4: Mix all three tracks together by averaging
+        mixed_audio = (audio_base_padded + audio_up_padded + audio_down_padded) / 3
 
         # Normalize to prevent clipping
         max_val = np.max(np.abs(mixed_audio))
@@ -1113,11 +1114,12 @@ def game_mix_pitch_2(request):
             start = random.randint(0, len(mixed_audio) - snippet_length)
             mixed_audio = mixed_audio[start:start + snippet_length]
 
-        # **Change 7:** Save the mixed audio to a buffer
+        # **Change 8:** Save the mixed audio to a buffer
         mixed_audio_buffer = BytesIO()
         sf.write(mixed_audio_buffer, mixed_audio, sr, format='WAV')
         mixed_audio_buffer.seek(0)
-        mixed_audio_base64 = base64.b64encode(mixed_audio_buffer.read()).decode('utf-8')
+        mixed_audio_base64 = base64.b64encode(
+            mixed_audio_buffer.read()).decode('utf-8')
 
     except Exception as e:
         return render(request, 'game_mix_pitch.html', {'error': f'Error during audio processing: {e}'})
@@ -1126,8 +1128,9 @@ def game_mix_pitch_2(request):
     context = {
         'mixed_audio': mixed_audio_base64,
         'song_choices': song_choices,  # All multiple-choice options
-        'correct_songs': [track1_name, track2_name, track3_name],  # Correct answers
-        'random_key': random_key  # Optionally display the random key used
+        'correct_songs': [base_track_name, pitch_track_up_name, pitch_track_down_name],  # Correct answers
+        'random_key': target_key  # Optionally display the target key used
     }
 
     return render(request, 'game_mix_pitch.html', context)
+
