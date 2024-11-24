@@ -62,7 +62,7 @@ def register(request):
             print(form.errors)
     else:
         form = CustomUserCreationForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'register.html', {'form': form, 'hideMenu': False})
 
 
 def login_view(request):
@@ -84,7 +84,7 @@ def login_view(request):
             messages.error(request, 'Invalid username or password.')
     else:
         form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'login.html', {'form': form, 'hideMenu': False})
 
 
 # Helper function to get Spotify tokens
@@ -961,4 +961,4 @@ def reset(request):
             messages.error(request, 'Username not found.')
             return render(request, 'reset.html')
 
-    return render(request, 'reset.html')
+    return render(request, 'reset.html', {'hideMenu': False})
