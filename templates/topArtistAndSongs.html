@@ -231,7 +231,39 @@
             width: 150px;
         }
 
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        body.fadeIn {
+            animation: fadeIn 1s;
+        }
+
+
     </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const rainbows = document.getElementsByClassName('rainbow');
+            if (localStorage.getItem('dark_mode') === 'on') {
+                document.body.classList.add('dark-mode');
+                console.log('dark mode on');
+                for (let i = 0; i < rainbows.length; i++) {
+                    rainbows[i].src = "{% static 'slide_2/dark_mode_rainbow.png' %}"
+                }
+            }
+
+            if (localStorage.getItem("from_transition_page") == "true") {
+                document.body.classList.add('fadeIn');
+            }
+            localStorage.setItem("from_transition_page", "false");
+        });
+    </script>
 
     <img src="{% static 'topArtist/top_left_corner_rainbow.png' %}" class="top-corner-rainbow">
 

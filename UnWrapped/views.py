@@ -926,7 +926,9 @@ def generate_wrap(request):
     )
     wrap.save()
 
-    return HttpResponse("generating wrap") # replace with render loading page
+    return JsonResponse({
+        "done": True
+    })
 
 def reset(request):
     if request.method == 'POST':

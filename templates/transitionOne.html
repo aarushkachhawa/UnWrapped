@@ -14,10 +14,10 @@
                 <path class="rainbow-path" d="M 0 150 L 100 150" stroke="#B5EAD7" stroke-width="25" fill="none"/>
             </svg>
 
-            <img src="{% static 'transition_slide/yellow_record.png' %}" class="record">
-        </div>
+            <img src="{% static 'transition_slide/yellow_record_cropped.png' %}" class="record">
 
-        <h2 class="insights-title">MORE MUSICAL INSIGHTS >>></h2>
+            <h2 id="generating_wrap">Generating Your Wrapped...</h2>
+        </div>
     </div>
 </div>
 
@@ -25,11 +25,11 @@
     body {
         margin: 0;
         padding: 0;
-        background-color: #FCF8F1;
+        overflow: hidden;
+        background: #FCF8F1;
     }
 
     .main-container {
-        background-color: #FFF;
         min-height: calc(100vh - 64px);
         width: 100%;
         display: flex;
@@ -62,7 +62,7 @@
         width: 100%;
         height: 200px;
         top: 50%;
-        transform: translateY(-50%);
+        transform: translateY(calc(-50% - 50px));
         left: 0;
     }
 
@@ -92,14 +92,19 @@
         width: var(--width, 200px);
         height: var(--height, 200px);
         animation: spin_record var(--animation-speed, 2s) linear infinite;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, calc(-50% - 50px));
+        transform-origin: center;
     }
 
     @keyframes spin_record {
         0% {
-            transform: rotate(0deg);
+            transform: translate(-50%, calc(-50% - 50px)) rotate(0deg);
         }
         100% {
-            transform: rotate(360deg);
+            transform: translate(-50%, calc(-50% - 50px)) rotate(360deg);
         }
     }
 
@@ -133,12 +138,38 @@
         }
         to {
             opacity: 1;
+            visibility: hidden;
         }
+    }
+
+    body.fadeOut {
+        animation: fadeOut 1s forwards;
+    }
+
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+        } to {
+            opacity: 0;
+        }
+    }
+
+    #generating_wrap {
+        color: #C64036;
+        text-shadow: -2px 2px #99A8E9;
+        position: absolute;
+        bottom: 300px;
+        font-size: 48px;
     }
 </style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        if (localStorage.getItem('dark_mode') === 'on') {
+            document.body.classList.add('dark-mode');
+            console.log('dark mode on');
+        }
+
         const record = document.querySelector('.record');
         record.style.setProperty('--animation-speed', '2s');
         record.style.setProperty('--width', '200px');
@@ -152,7 +183,7 @@
         function rotationSpeedIncrease() {
             console.log(rotationSpeed);
             if (rotationSpeed > 0.5) {
-                rotationSpeed = Math.max(rotationSpeed - 0.001, 0.5);
+                rotationSpeed = Math.max(rotationSpeed - 0.0015, 0.5);
                 record.style.setProperty('--animation-speed', `${rotationSpeed}s`);
             }
 
@@ -174,9 +205,14 @@
             }
         }).then(response => response.json())
         .then(data => {
-            if (data.status == 'done') {
+            if (data.done == true) {
                 console.log('generate_wrap done gathering data');
-                window.location.href = "/top_artist.html";
+                document.body.classList.add("fadeOut");
+                const text = document.getElementById('generating_wrap');
+                localStorage.setItem('from_transition_page', 'true');
+                setTimeout(() => {
+                    window.location.href = "/top_artist/";
+                }, 1000);
             }
         })
         .catch(error => {
