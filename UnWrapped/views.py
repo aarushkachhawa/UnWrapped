@@ -270,6 +270,8 @@ def calculate_top_artist_and_songs_slide(request):
     request.session['top_artist'] = wrapped_data['top_artist_year']
     request.session['top_songs'] = wrapped_data['top_songs']
     request.session['image_url'] = wrapped_data['top_artist_year'][1]
+    request.session['top_songs_urls'] = wrapped_data['top_songs_urls']
+    request.session['top_songs_artists'] = wrapped_data['top_songs_artists']
 
 def top_artist_and_songs_slide(request):
     context = {
@@ -277,6 +279,8 @@ def top_artist_and_songs_slide(request):
         'top_artist': request.session['top_artist'],
         'top_songs': request.session['top_songs'],
         'image': request.session['image_url'],
+        'top_songs_artists': request.session['top_songs_artists'],
+        'top_songs_urls': request.session['top_songs_urls']
     }
 
     return render(request, 'topArtistAndSongs.html', context)
