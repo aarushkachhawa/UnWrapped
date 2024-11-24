@@ -1007,8 +1007,11 @@ def game_mix_pitch(request):
         if not track1_preview_url or not track2_preview_url:
             return render(request, 'game_mix_pitch.html', {'error': 'One or both tracks are missing preview URLs. Please try again.'})
 
-        # Step 3: Select 8 additional unique tracks for multiple-choice options
-        additional_tracks = random.sample([track for track in top_tracks if track != track1 and track != track2], 10)
+        # Step 3: Select 10 additional unique tracks for multiple-choice options
+        additional_tracks = random.sample(
+            [track for track in top_tracks if track != track1 and track != track2],
+            10
+        )
         additional_names = [track.get('name') for track in additional_tracks]
 
         # Ensure the correct songs are included in the choices
@@ -1017,9 +1020,12 @@ def game_mix_pitch(request):
 
         # Step 4: Process audio
         sr = 22050
+
+        # Load both audio tracks
         audio1, _ = librosa.load(BytesIO(requests.get(track1_preview_url).content), sr=sr, mono=True)
         audio2, _ = librosa.load(BytesIO(requests.get(track2_preview_url).content), sr=sr, mono=True)
 
+        # Extract chroma features to determine the key of each track
         chroma1 = librosa.feature.chroma_cqt(y=audio1, sr=sr)
         chroma2 = librosa.feature.chroma_cqt(y=audio2, sr=sr)
 
@@ -1032,26 +1038,35 @@ def game_mix_pitch(request):
         key1 = notes[key1_index]
         key2 = notes[key2_index]
 
-        semitone_shift = key2_index - key1_index
+        # Step 4.1: Select a random target key
+        random_key_index = random.randint(0, 11)  # Random integer between 0 and 11
+        random_key = notes[random_key_index]
 
-        # Adjust the pitch of audio1 to match audio2's key
-        audio1_adjusted = librosa.effects.pitch_shift(audio1, sr=sr, n_steps=semitone_shift)
+        # Calculate the semitone shifts needed for both tracks to match the random key
+        semitone_shift1 = random_key_index - key1_index
+        semitone_shift2 = random_key_index - key2_index
 
-        # Make the volume of audio1 20% louder after pitch shifting
-        if semitone_shift < 0:
-            audio1_adjusted = audio1_adjusted * 1.2
+        # Step 4.2: Adjust the pitch of both audios to the random key
+        audio1_adjusted = librosa.effects.pitch_shift(audio1, sr=sr, n_steps=semitone_shift1)
+        audio2_adjusted = librosa.effects.pitch_shift(audio2, sr=sr, n_steps=semitone_shift2)
+
+
+        if semitone_shift1 > semitone_shift2:
+            audio1_adjusted *= 0.9
+            audio2_adjusted *= 1.1
         else:
-            audio1_adjusted = audio1_adjusted * 0.9
+            audio1_adjusted *= 1.1
+            audio2_adjusted *= 0.9
 
         # Calculate RMS to match overall volume levels
         rms1 = np.sqrt(np.mean(audio1_adjusted**2))
-        rms2 = np.sqrt(np.mean(audio2**2))
-        if rms1 > 0:
+        rms2 = np.sqrt(np.mean(audio2_adjusted**2))
+        if rms1 > 0 and rms2 > 0:
             audio1_adjusted = audio1_adjusted * (rms2 / rms1)
 
         # Align lengths and mix tracks
-        min_length = min(len(audio1_adjusted), len(audio2))
-        mixed_audio = (audio1_adjusted[:min_length] + audio2[:min_length]) / 2
+        min_length = min(len(audio1_adjusted), len(audio2_adjusted))
+        mixed_audio = (audio1_adjusted[:min_length] + audio2_adjusted[:min_length]) / 2
 
         # Normalize to prevent clipping
         max_val = np.max(np.abs(mixed_audio))
@@ -1071,7 +1086,8 @@ def game_mix_pitch(request):
     context = {
         'mixed_audio': mixed_audio_base64,
         'song_choices': song_choices,  # All multiple-choice options
-        'correct_songs': [track1_name, track2_name]  # Correct answers
+        'correct_songs': [track1_name, track2_name],  # Correct answers
+        'random_key': random_key  # Optionally display the random key used
     }
 
     return render(request, 'game_mix_pitch.html', context)
