@@ -28,4 +28,5 @@ urlpatterns = [
     path('halloween_graph/', views.halloween_graph, name='halloween_graph'),
     path('generate_wrap/', views.generate_wrap, name='generate_wrap'),
     path('reset/', views.reset, name='reset'), # For initiating the reset request (email input)
+    path('past_wraps/', views.past_wraps, name='past_wraps'),
 ]

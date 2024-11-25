@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Past Wraps</title>
+</head>
+<body>
+    {% block content %}
+    <style>
+        h1 {
+            font-size: 50px;
+            position: absolute;
+            top: 110px;
+            color: #E99F99;
+            text-shadow: -2px 2px #D80005;
+        }
+
+        #past-wraps-jukebox {
+            height: 600px;
+            width: 650px;
+            position: absolute;
+            top: 200px;
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+        h2 {
+            color: #FEFEFE;
+            font-size: 20px;
+            position: absolute;
+            top: 320px;
+        }
+    </style>
+    <h1>Past Wraps</h1>
+    <img src="{% static 'past_wraps/past_wraps_jukebox.png' %}" id="past-wraps-jukebox">
+    <h2>See wraps from:</h2>
+    {% endblock %}
+</body>
+</html>

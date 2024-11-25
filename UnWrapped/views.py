@@ -954,3 +954,15 @@ def reset(request):
             return render(request, 'reset.html')
 
     return render(request, 'reset.html')
+
+
+def past_wraps(request):
+    wraps = CustomWrap.objects.filter(user=request.user)
+    count = 0
+    for wrap in wraps:
+        count += 1
+        print(count)
+        print(wrap)
+        print('\n')
+
+    return HttpResponse(count)
