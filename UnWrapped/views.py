@@ -60,7 +60,7 @@ def profile(request):
 
 def contactDevs(request):
     language = request.session.get('language', 'english')
-    return render(request, 'contact.html', {'language': language})
+    return render(request, 'contact.html', {'language': 'english'})
 
 def register(request):
     language = request.session.get('language', 'english')
@@ -708,7 +708,7 @@ def calculate_analyze_seasonal_mood(request):
     request.session['image'] = response_json['images'][0]['url']
     request.session['season'] = curr_season
 
-def analyze_seasonal_mood(request, page= 'seasonalMood.html'):
+def analyze_seasonal_mood(request, page='seasonalMood.html', extra_context=None):
     context = {
         "mood1": request.session['mood1'],
         "mood2": request.session['mood2'],

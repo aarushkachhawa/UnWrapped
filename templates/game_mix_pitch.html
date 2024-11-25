@@ -8,9 +8,9 @@
                 {% if language == "english" %}
                     {{ error }}
                 {% elif language == "hindi" %}
-                    {{ error|translate_hindi }}
+                    त्रुटि
                 {% elif language == "mandarin" %}
-                    {{ error|translate_mandarin }}
+                    错误
                 {% endif %}
             </p>
         {% else %}
@@ -236,7 +236,7 @@
                 button.classList.remove('selected');
             } else {
                 if (selectedSongs.length === maxSelections) {
-                    alert(`{% if language == "english" %}You can only select up to ${maxSelections} song${maxSelections > 1 ? 's' : ''}.{% elif language == "hindi" %}आप केवल ${maxSelections} गाने चुन सकते हैं।{% elif language == "mandarin" %}您最多只能选择${maxSelections}首歌。{% endif %}`);
+                    alert(`You can only select up to ${maxSelections} song${maxSelections > 1 ? 's' : ''}.`);
                     return;
                 }
                 selectedSongs.push(song);
