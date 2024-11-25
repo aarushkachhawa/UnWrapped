@@ -880,6 +880,8 @@ def night_owl(request):
 
 @login_required
 def transition_one(request):
+    if 'spotify_access_token' not in request.session:
+        return redirect(spotify_auth_url())
     language = request.session.get('language', 'english')
     try:
         return render(request, 'transitionOne.html', {'language': language})
