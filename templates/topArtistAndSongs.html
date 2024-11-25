@@ -61,7 +61,7 @@
         /* Combined Title Styling */
         .page-title {
             font-size: 20px;
-            color: #D24E0D;
+            color: #C7443A;
             margin-bottom: 20px;
             text-align: center;
             margin-top: 20px;
@@ -259,14 +259,30 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            background-color: #4a773c;
+            background-color: dimgray;
             color: white;
             font-size: 1rem;
             transition: background-color 0.3s;
         }
 
         .play-btn:hover, .stop-btn:hover {
-            background-color: #3a5a2c;
+            background-color: #454545;
+        }
+
+        .right-align {
+            text-align: right;
+        }
+
+        body.dark-mode .red {
+            box-shadow: inset #C7443A 0 0 20px;
+        }
+
+        body.dark-mode .yellow {
+            box-shadow: inset #ECD101 0 0 20px;
+        }
+
+        body.dark-mode .blue {
+            box-shadow: inset #5AABF3 0 0 20px;
         }
 
     </style>
@@ -327,7 +343,7 @@
                     <div class="song-text-song">{{top_songs.0}}</div>
                     <div class="song-text-artist">{{top_songs_artists.0}}</div>
                     <div class="audio-controls">
-                        <button class="play-btn" onclick="toggleAudio(this)">
+                        <button class="play-btn red" onclick="toggleAudio(this)">
                             {% if language == "english" %}
                                 Play
                             {% elif language == "hindi" %}
@@ -336,7 +352,7 @@
                                 播放
                             {% endif %}
                         </button>
-                        <button class="stop-btn" onclick="stopAudio(this)">
+                        <button class="stop-btn red" onclick="stopAudio(this)">
                             {% if language == "english" %}
                                 Reset
                             {% elif language == "hindi" %}
@@ -351,11 +367,11 @@
             </div>
     
             <div class="small-record-container small-record-container2">
-                <div class="small-record-text">
+                <div class="small-record-text right-align">
                     <div class="song-text-song">{{top_songs.1}}</div>
-                    <div class="song-text-artist">{{top_songs_artists.1}}</div>
+                    <div class="song-text-artist right-align">{{top_songs_artists.1}}</div>
                     <div class="audio-controls">
-                        <button class="play-btn" onclick="toggleAudio(this)">
+                        <button class="play-btn yellow" onclick="toggleAudio(this)">
                             {% if language == "english" %}
                                 Play
                             {% elif language == "hindi" %}
@@ -364,7 +380,7 @@
                                 播放
                             {% endif %}
                         </button>
-                        <button class="stop-btn" onclick="stopAudio(this)">
+                        <button class="stop-btn yellow" onclick="stopAudio(this)">
                             {% if language == "english" %}
                                 Reset
                             {% elif language == "hindi" %}
@@ -385,7 +401,7 @@
                     <div class="song-text-song">{{top_songs.2}}</div>
                     <div class="song-text-artist">{{top_songs_artists.2}}</div>
                     <div class="audio-controls">
-                        <button class="play-btn" onclick="toggleAudio(this)">
+                        <button class="play-btn blue" onclick="toggleAudio(this)">
                             {% if language == "english" %}
                                 Play
                             {% elif language == "hindi" %}
@@ -394,7 +410,7 @@
                                 播放
                             {% endif %}
                         </button>
-                        <button class="stop-btn" onclick="stopAudio(this)">
+                        <button class="stop-btn blue" onclick="stopAudio(this)">
                             {% if language == "english" %}
                                 Reset
                             {% elif language == "hindi" %}
@@ -409,11 +425,11 @@
             </div>
     
             <div class="small-record-container small-record-container4">
-                <div class="small-record-text">
+                <div class="small-record-text right-align">
                     <div class="song-text-song">{{top_songs.3}}</div>
-                    <div class="song-text-artist">{{top_songs_artists.3}}</div>
+                    <div class="song-text-artist right-align">{{top_songs_artists.3}}</div>
                     <div class="audio-controls">
-                        <button class="play-btn" onclick="toggleAudio(this)">
+                        <button class="play-btn red" onclick="toggleAudio(this)">
                             {% if language == "english" %}
                                 Play
                             {% elif language == "hindi" %}
@@ -422,7 +438,7 @@
                                 播放
                             {% endif %}
                         </button>
-                        <button class="stop-btn" onclick="stopAudio(this)">
+                        <button class="stop-btn red" onclick="stopAudio(this)">
                             {% if language == "english" %}
                                 Reset
                             {% elif language == "hindi" %}
@@ -443,7 +459,7 @@
                     <div class="song-text-song">{{top_songs.4}}</div>
                     <div class="song-text-artist">{{top_songs_artists.4}}</div>
                     <div class="audio-controls">
-                        <button class="play-btn" onclick="toggleAudio(this)">
+                        <button class="play-btn yellow" onclick="toggleAudio(this)">
                             {% if language == "english" %}
                                 Play
                             {% elif language == "hindi" %}
@@ -452,7 +468,7 @@
                                 播放
                             {% endif %}
                         </button>
-                        <button class="stop-btn" onclick="stopAudio(this)">
+                        <button class="stop-btn yellow" onclick="stopAudio(this)">
                             {% if language == "english" %}
                                 Reset
                             {% elif language == "hindi" %}

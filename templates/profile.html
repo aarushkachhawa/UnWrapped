@@ -29,35 +29,6 @@
             max-width: 800px;
             position: relative;
         }
-        .rainbow-corner {
-            width: 80px;
-            height: 80px;
-            position: absolute;
-            opacity: 0.3;
-        }
-        .bottom-left {
-            bottom: -20px;
-            left: -20px;
-            background: conic-gradient(from 90deg, violet, indigo, blue, green, yellow, orange, red);
-            border-radius: 50%;
-        }
-        .bottom-right {
-            bottom: -20px;
-            right: -20px;
-            background: conic-gradient(from 180deg, violet, indigo, blue, green, yellow, orange, red);
-            border-radius: 50%;
-        }
-        .profileHeader {
-            background-color: #4ba3e3;
-            color: #ffd700;
-            padding: 1rem;
-            text-align: center;
-            margin: -2rem -2rem 2rem -2rem;
-            border-radius: 10px 10px 0 0;
-            font-size: 2rem;
-            font-weight: bold;
-            letter-spacing: 2px;
-        }
         .info-item {
             display: flex;
             align-items: center;
@@ -78,11 +49,19 @@
         .username-field { background-color: #e3f2fd; }
         .email-field { background-color: #e8f5e9; }
         .genre-field { background-color: #e8eaf6; }
-        .dark-mode {
-            .username-field, .email-field, .genre-field, .artist-field {
-                background-color: black;
-            }
+
+        body.dark-mode .email-field {
+            background-color: #65b1ab;
         }
+
+        body.dark-mode .username-field {
+            background-color: #6b7fff;
+        }
+
+        body.dark-mode .genre-field {
+            background-color: #87d0f8;
+        }
+
         .artist-item {
             display: flex;
             align-items: center;
@@ -99,6 +78,10 @@
             justify-content: center;
             color: #ffd700;
             font-weight: bold;
+        }
+
+        body.dark-mode .artist-number {
+            color: #000000;
         }
         .artist-field {
             background-color: #e3f2fd;
@@ -136,6 +119,11 @@
         .jukebox.turquoise {
             background: linear-gradient(145deg, #2a9d8f, #238577);
             border: 2px solid #238577;
+        }
+
+        body.dark-mode .jukebox.turquoise{
+            background: linear-gradient(145deg, #fb99a7, #ff7a8d);
+            border: 2px solid #ff7a8d;
         }
         .jukebox-top {
             width: 100%;
@@ -221,6 +209,10 @@
         .turquoise .jukebox-label {
             color: #2a9d8f;
         }
+
+        body.dark-mode .turquoise .jukebox-label {
+            color: #ff7a8d;
+        }
         .record-players {
             display: flex;  
             gap: 1.5rem;
@@ -229,7 +221,59 @@
         .pink {background-color: #ffcdd2;}
         .orange {background-color: #fff3e0;}
         .blue {background-color: #e3f2fd;}
+
+        body.dark-mode .teal { /* change these to pink in dark mode */
+            background-color: #ff7a8d;
+        }
+
+        body.dark-mode .orange { /* change these to teal in dark mode */
+            background-color: #65b1ab;
+        }
+
+        body.dark-mode .blue { /* change these to orange in dark mode */
+            background-color: #ffc86f;
+        }
+
+        body.dark-mode .pink-background { /* change these to blue in dark mode */
+            background-color: #81ccff;
+        }
+
+         body.dark-mode .teal-background { /* change these to pink in dark mode */
+            background-color: #ff7a8d;
+        }
+
+        body.dark-mode .orange-background { /* change these to teal in dark mode */
+            background-color: #65b1ab;
+        }
+
+        body.dark-mode .blue-background { /* change these to orange in dark mode */
+            background-color: #ffc86f;
+        }
+
+        body.dark-mode .pink { /* change these to blue in dark mode */
+            background-color: #81ccff;
+        }
+
+        .bottom-half {
+          position: absolute;
+          bottom: -100px;
+          left: 0;
+          width: 200px;
+          height: auto;
+          transform: rotate(180deg);
+        }
+
+        .top-right {
+          position: absolute;
+          top: -5px;
+          right: 0;
+          width: 200px;
+          height: auto;
+        }
     </style>
+
+    <img src="{% static 'ads_minutes/top_left_corner_rainbow.png' %}" alt="Rainbow" class="top-right rainbow">
+    <img src="{% static 'ads_minutes/top_left_corner_rainbow.png' %}" alt="Rainbow" class="bottom-half rainbow">
 
     <div class="profileContainer">
         <!-- <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="rainbow-corner bottom-right">
@@ -309,23 +353,23 @@
                     </label>
                 </div>
                 <div class="artist-item">
-                    <div class="artist-number">1</div>
-                    <div class="artist-field"></div>
+                    <div class="artist-number blue-background">1</div>
+                    <div class="artist-field blue"></div>
                 </div>
                 <div class="artist-item">
-                    <div class="artist-number">2</div>
+                    <div class="artist-number teal-background">2</div>
                     <div class="artist-field teal"></div>
                 </div>
                 <div class="artist-item">
-                    <div class="artist-number">3</div>
+                    <div class="artist-number pink-background">3</div>
                     <div class="artist-field pink"></div>
                 </div>
                 <div class="artist-item">
-                    <div class="artist-number">4</div>
+                    <div class="artist-number orange-background">4</div>
                     <div class="artist-field orange"></div>
                 </div>
                 <div class="artist-item">
-                    <div class="artist-number">5</div>
+                    <div class="artist-number blue-background">5</div>
                     <div class="artist-field blue"></div>
                 </div>
             </div>
