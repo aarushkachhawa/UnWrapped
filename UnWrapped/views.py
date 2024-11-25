@@ -990,9 +990,11 @@ def halloween_seasonal(request):
 def halloween_llm(request):
     return llm_insights_page(request, 'halloween_llm.html')
 
+def christmas_seasonal(request):
+    return analyze_seasonal_mood(request, 'christmas_seasonal.html')
 
-
-
+def christmas_llm(request):
+    return llm_insights_page(request, 'christmas_llm.html')
 
 def game_mix_pitch_1(request):
     access_token = request.session.get('spotify_access_token')
