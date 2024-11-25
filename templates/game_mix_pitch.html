@@ -4,13 +4,46 @@
 <body>
     <div class="container">
         {% if error %}
-            <p class="error">{{ error }}</p>
+            <p class="error">
+                {% if language == "english" %}
+                    {{ error }}
+                {% elif language == "hindi" %}
+                    त्रुटि
+                {% elif language == "mandarin" %}
+                    错误
+                {% endif %}
+            </p>
         {% else %}
-            <h2>Guess the Songs</h2>
+            <h2>
+                {% if language == "english" %}
+                    Guess the Songs
+                {% elif language == "hindi" %}
+                    गाने पहचानें
+                {% elif language == "mandarin" %}
+                    猜歌曲
+                {% endif %}
+            </h2>
+            
             {% if correct_songs|length == 2 %}
-                <p>Listen to the track and choose the <strong>two</strong> songs that are mashed together:</p>
+                <p>
+                    {% if language == "english" %}
+                        Listen to the track and choose the <strong>two</strong> songs that are mashed together:
+                    {% elif language == "hindi" %}
+                        ट्रैक सुनें और <strong>दो</strong> मिश्रित गानों को चुनें:
+                    {% elif language == "mandarin" %}
+                        听这首混音并选择被混合在一起的<strong>两首</strong>歌:
+                    {% endif %}
+                </p>
             {% elif correct_songs|length == 3 %}
-                <p>Listen to the track and choose the <strong>three</strong> songs that are mashed together:</p>
+                <p>
+                    {% if language == "english" %}
+                        Listen to the track and choose the <strong>three</strong> songs that are mashed together:
+                    {% elif language == "hindi" %}
+                        ट्रैक सुनें और <strong>तीन</strong> मिश्रित गानों को चुनें:
+                    {% elif language == "mandarin" %}
+                        听这首混音并选择被混合在一起的<strong>三首</strong>歌:
+                    {% endif %}
+                </p>
             {% endif %}
 
             <div class="audio-section">
@@ -26,10 +59,45 @@
                 {% endfor %}
             </div>
 
-            <button class="submit-btn" id="submit">Submit</button>
-            <button class="reset-btn" id="reset">Reset</button>
-            <button class="continue-btn" id="continue" onclick="location.href='{% url 'game2' %}'">Play with 3 Songs</button>
-            <button class="back-btn" id="back" onclick="location.href='{% url 'game' %}'">Play with 2 Songs</button>
+            <button class="submit-btn" id="submit">
+                {% if language == "english" %}
+                    Submit
+                {% elif language == "hindi" %}
+                    जमा करें
+                {% elif language == "mandarin" %}
+                    提交
+                {% endif %}
+            </button>
+            
+            <button class="reset-btn" id="reset">
+                {% if language == "english" %}
+                    Reset
+                {% elif language == "hindi" %}
+                    रीसेट
+                {% elif language == "mandarin" %}
+                    重置
+                {% endif %}
+            </button>
+            
+            <button class="continue-btn" id="continue">
+                {% if language == "english" %}
+                    Play with 3 Songs
+                {% elif language == "hindi" %}
+                    3 गानों के साथ खेलें
+                {% elif language == "mandarin" %}
+                    玩3首歌
+                {% endif %}
+            </button>
+            
+            <button class="back-btn" id="back">
+                {% if language == "english" %}
+                    Play with 2 Songs
+                {% elif language == "hindi" %}
+                    2 गानों के साथ खेलें
+                {% elif language == "mandarin" %}
+                    玩2首歌
+                {% endif %}
+            </button>
             <div class="message" id="message"></div>
         {% endif %}
     </div>

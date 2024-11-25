@@ -324,14 +324,18 @@
                 {{ form.password2 }}
             </div>
 
-            <div class="vinyl-inner">
-                {% if language == "english" %}
-                    JOIN
-                {% elif language == "hindi" %}
-                    शामिल हों
-                {% elif language == "mandarin" %}
-                    加入
-                {% endif %}
+            <div class="vinyl-record" onclick="document.forms[0].submit();">
+                <div class="vinyl-outer">
+                    <div class="vinyl-inner">
+                        {% if language == "english" %}
+                            JOIN
+                        {% elif language == "hindi" %}
+                            शामिल हों
+                        {% elif language == "mandarin" %}
+                            加入
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </form>
 
