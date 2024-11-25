@@ -444,13 +444,7 @@
                     <div class="song-text-artist">{{top_songs_artists.4}}</div>
                     <div class="audio-controls">
                         <button class="play-btn" onclick="toggleAudio(this)">
-                            {% if language == "english" %}
-                                Play
-                            {% elif language == "hindi" %}
-                                चलाएं
-                            {% elif language == "mandarin" %}
-                                播放
-                            {% endif %}
+                            play
                         </button>
                         <button class="stop-btn" onclick="stopAudio(this)">
                             {% if language == "english" %}
@@ -485,11 +479,13 @@
 
 
     <script>
+        const language = "{{ language }}"
         function toggleAudio(button) {
             const audio = button.parentElement.nextElementSibling;
+            
 
             // Stop all other audio
-            const allAudios = document.querySelectorAll('audio');
+            const allAudios = document.querySelectorAll('audio'); // THE COMMENTED CODE DOESN'T WORK BECAUSE LANGUAGE ISN'T THE SAME AS THE LANGUAGE BEING PASSED IN
             allAudios.forEach(a => {
                 if (a !== audio) {
                     a.pause();
