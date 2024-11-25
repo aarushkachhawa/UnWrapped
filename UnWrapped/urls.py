@@ -33,4 +33,7 @@ urlpatterns = [
     path('halloween_llm/', views.halloween_llm, name="halloween_llm"),
     path('generate_wrap/', views.generate_wrap, name='generate_wrap'),
     path('reset/', views.reset, name='reset'), # For initiating the reset request (email input)
+    path('game/', views.game_mix_pitch_1, name="game"),
+    path('game2/', views.game_mix_pitch_2, name="game2")
+
 ]
