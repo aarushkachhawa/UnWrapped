@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- <div class="main-container"></div> -->
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        margin-left: 0px;
+        margin-top: 100px; /* Push content below the header */
+        min-height: 100vh; /* Ensure it spans the full height of the viewport */
+        background-image: url("{% static 'transition_slide/transitionTwo.png' %}");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center 170%;
+    }
+
+    .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3rem;
+        width: 100%;
+    }
+
+    .rainbow-container {
+        position: relative;
+        width: 100%;
+        height: 1000px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+</style>
+
+<script>
+
+</script>
+{% endblock %}

@@ -885,6 +885,18 @@ def transition_one(request):
         messages.error(request, "An error occurred while loading the transition page.")
         return redirect('home')
 
+@login_required
+def transition_two(request):
+    if 'spotify_access_token' not in request.session:
+        return redirect(spotify_auth_url())
+    try:
+        return render(request, 'transitionTwo.html')
+
+    except Exception as e:
+        logger.error(f"Error in transition view: {e}")
+        messages.error(request, "An error occurred while loading the transition page.")
+        return redirect('home')
+
 def calculate_get_account_level(request):
     access_token = request.session.get('spotify_access_token')
 
