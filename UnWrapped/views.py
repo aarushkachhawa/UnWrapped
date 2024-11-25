@@ -1122,7 +1122,7 @@ def game_mix_pitch_1(request):
     context = {
         'mixed_audio': mixed_audio_base64,
         'song_choices': song_choices,  # All multiple-choice options
-        'correct_songs': [track1_name, track2_name]  # Correct answers
+        'correct_songs': [track1_name, track2_name]  # Correct answers,
     }
 
     return render(request, 'game_mix_pitch.html', context)

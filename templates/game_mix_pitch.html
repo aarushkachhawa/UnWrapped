@@ -45,6 +45,14 @@
         overflow: hidden;
     }
 
+    h2 {
+        margin-bottom: 10px;
+    }
+
+    strong {
+        color: #c4b3ff;
+    }
+
     .container {
         margin-top: 40px;
     }
@@ -68,11 +76,16 @@
         color: #FCF8F1;
         cursor: pointer;
         font-size: 14px;
-        transition: background-color 0.3s;
+        transition: background-color 0.3s, transform 0.2s ease-in-out;
         width: 275px;
         height: 100px;
         font-size: 16px;
         font-family: 'Notable', sans-serif;
+    }
+
+    .choices button:hover {
+        transform: translateY(-5px);
+        background-color: #B0B0B0;
     }
 
     .submit-btn,
