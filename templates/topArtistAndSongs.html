@@ -444,7 +444,13 @@
                     <div class="song-text-artist">{{top_songs_artists.4}}</div>
                     <div class="audio-controls">
                         <button class="play-btn" onclick="toggleAudio(this)">
-                            play
+                            {% if language == "english" %}
+                                Play
+                            {% elif language == "hindi" %}
+                                चलाएं
+                            {% elif language == "mandarin" %}
+                                播放
+                            {% endif %}
                         </button>
                         <button class="stop-btn" onclick="stopAudio(this)">
                             {% if language == "english" %}
