@@ -26,9 +26,11 @@ urlpatterns = [
     path('profile/', views.profile, name="profile"),
     path('contact/', views.contactDevs, name="contact"),
     path('halloween_graph/', views.halloween_graph, name='halloween_graph'),
+    path('christmas_graph/', views.christmas_graph, name='christmas_graph'),
     path('halloween_seasonal/', views.halloween_seasonal, name = 'halloween_seasonal'),
     path('halloween_top_artist/', views.halloween_top_artist, name='halloween_top_artist'),
     path('christmas_top_artist/', views.christmas_top_artist, name='christmas_top_artist'),
+    path('halloween_llm/', views.halloween_llm, name="halloween_llm"),
     path('generate_wrap/', views.generate_wrap, name='generate_wrap'),
     path('reset/', views.reset, name='reset'), # For initiating the reset request (email input)
 ]

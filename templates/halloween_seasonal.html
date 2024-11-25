@@ -21,7 +21,7 @@
 
         body {
             font-family: 'Notable', sans-serif;
-            background-color: #FCF8F1;
+            background-color: orange;
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center top 100px;
@@ -256,13 +256,13 @@
                 }
             } else {
                 for (let i = 0; i < rainbows.length; i++) {
-                    rainbows[i].src = "{% static 'slide_2/top_left_corner_rainbow.png' %}";
+                    rainbows[i].src = "{% static 'slide_2/spider_web.png' %}";
                 }
             }
         }
     </script>
 
-    <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" class="top-corner-rainbow rainbow">
+    <img src="{% static 'slide_2/spider_web.png' %}" class="top-corner-rainbow rainbow">
 
     <img src={{image}} class="record-image">
 

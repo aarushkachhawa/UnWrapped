@@ -504,6 +504,9 @@ def get_most_popular_artists(request, page = "slide_2.html"):
 @login_required
 def halloween_graph(request):
     return get_most_popular_artists(request, "halloween_graph.html")
+def christmas_graph(request):
+    return get_most_popular_artists(request, "christmasGraph.html")
+
 
 
 # used for your seasonal mood (get top 100 songs in the last ~1 month), gets top 100 songs and the artists
@@ -709,14 +712,14 @@ def calculate_llm_insights_page(request):
 
 
 @login_required
-def llm_insights_page(request):
+def llm_insights_page(request, page = 'LLMinsights.html'):
     context = { # send mood in separately because of how horrible django's template functionality is :)
         'content': request.session['content'],
         'mood': request.session['mood'],
         'songPath': request.session['songPath'],
         'imagePath': request.session['imagePath']
     }
-    return render(request, 'LLMinsights.html', context)
+    return render(request, page, context)
 
 
 def analyze_clothing(request):
@@ -975,26 +978,13 @@ def halloween_top_artist(request):
 def christmas_top_artist(request):
     return top_artist_and_songs_slide(request, 'christmasone.html')
 
-
 def halloween_seasonal(request):
-    context = {
-        "mood1": request.session['mood1'],
-        "mood2": request.session['mood2'],
-        "mood3": request.session['mood3'],
-        "mood4": request.session['mood4'],
-        "mood5": request.session['mood5'],
-        "mood6": request.session['mood6'],
-        "song_artist1": request.session['song_artist1'],
-        "song_artist2": request.session['song_artist2'],
-        "song_artist3": request.session['song_artist3'],
-        "song_artist4": request.session['song_artist4'],
-        "song_artist5": request.session['song_artist5'],
-        "song_artist6": request.session['song_artist6'],
-        "image": request.session['image'],
-        "season": request.session['season'],
-    }
+    return analyze_seasonal_mood(request, 'halloween_seasonal.html')
 
-    return render(request, 'halloween_seasonal.html')
+def halloween_llm(request):
+    return llm_insights_page(request, 'halloween_llm.html')
+
+
 
 
 

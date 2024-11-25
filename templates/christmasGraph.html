@@ -26,7 +26,7 @@
            background-repeat: no-repeat;
            background-size: cover;
            background-position: center top 100px;
-           background-color: orange;
+           background-color: red;
            overflow: hidden;
        }
 
@@ -39,7 +39,7 @@
        .title {
            font-size: 36px;
            font-weight: bold;
-           color: black;
+           color: darkgreen;
            text-shadow:
            -1px -1px 0 #C64036,
            1px -1px 0 #C64036,
@@ -74,7 +74,7 @@
        }
 
        .slide-title {
-           color: black;
+           color: darkgreen;
            font-size: 36px;
            text-align: center;
            margin-top: 115px;
@@ -117,8 +117,8 @@
 
         </script>
 
-        <img src="{% static 'slide_2/spider_web.png' %}" alt="Rainbow" class="top-left rainbow">
-        <img src="{% static 'slide_2/spider_web.png' %}" alt="Rainbow" class="bottom-right rainbow">
+        <img src="{% static 'slide_2/snowflake.png' %}" alt="Rainbow" class="top-left rainbow">
+        <img src="{% static 'slide_2/snowflake.png' %}" alt="Rainbow" class="bottom-right rainbow">
 
         <div class="slide-title">Your Top 3 Artists Over Time</div>
         <div class="chart-and-artists">
@@ -137,7 +137,7 @@
                     {
                         label: artist1,
                         data: top3Artists[artist1],
-                        borderColor: "#EF6E53",
+                        borderColor: "#8a71dd",
                         fill: false,
                     },
                     {
