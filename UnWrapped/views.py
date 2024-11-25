@@ -182,6 +182,8 @@ def getStats(request):
             artists[0]['images'][0]['url']
         ]
 
+
+
         top_songs_data = trackResponse.json()
         songs = top_songs_data.get('items', [])
         print("songs in getStats():", songs)
@@ -282,7 +284,7 @@ def calculate_top_artist_and_songs_slide(request):
 
     print("CALCULATED TOP ARTISTS")
 
-def top_artist_and_songs_slide(request):
+def top_artist_and_songs_slide(request, page= 'topArtistAndSongs.html'):
     context = {
         'top_artist': request.session['top_artist'],
         'top_songs': request.session['top_songs'],
@@ -291,7 +293,7 @@ def top_artist_and_songs_slide(request):
         'top_songs_urls': request.session['top_songs_urls']
     }
 
-    return render(request, 'topArtistAndSongs.html', context)
+    return render(request, page, context)
 
 
 @login_required
@@ -508,6 +510,9 @@ def get_most_popular_artists(request, page = "slide_2.html"):
 @login_required
 def halloween_graph(request):
     return get_most_popular_artists(request, "halloween_graph.html")
+def christmas_graph(request):
+    return get_most_popular_artists(request, "christmasGraph.html")
+
 
 
 # used for your seasonal mood (get top 100 songs in the last ~1 month), gets top 100 songs and the artists
@@ -672,7 +677,7 @@ def calculate_analyze_seasonal_mood(request):
     request.session['image'] = response_json['images'][0]['url']
     request.session['season'] = curr_season
 
-def analyze_seasonal_mood(request):
+def analyze_seasonal_mood(request, page= 'seasonalMood.html'):
     context = {
         "mood1": request.session['mood1'],
         "mood2": request.session['mood2'],
@@ -689,8 +694,9 @@ def analyze_seasonal_mood(request):
         "image": request.session['image'],
         "season": request.session['season'],
     }
+    return render(request, page, context)
 
-    return render(request, 'seasonalMood.html', context)
+
 
 def calculate_llm_insights_page(request):
     contentArr = analyze_clothing(request)
@@ -712,14 +718,14 @@ def calculate_llm_insights_page(request):
 
 
 @login_required
-def llm_insights_page(request):
+def llm_insights_page(request, page = 'LLMinsights.html'):
     context = { # send mood in separately because of how horrible django's template functionality is :)
         'content': request.session['content'],
         'mood': request.session['mood'],
         'songPath': request.session['songPath'],
         'imagePath': request.session['imagePath']
     }
-    return render(request, 'LLMinsights.html', context)
+    return render(request, page, context)
 
 
 def analyze_clothing(request):
@@ -965,9 +971,30 @@ def reset(request):
         except User.DoesNotExist:
             # Handle case where the username is not found
             messages.error(request, 'Username not found.')
-            return render(request, 'reset.html')
-    return render(request, 'reset.html')
+            return render(request, 'reset.html', {'hideMenu': False})
+          
+    return render(request, 'reset.html', {'hideMenu': False})
 
+def halloween_ads(request):
+    return get_account_level(request, 'halloween_ads.html')
+
+def halloween_top_artist(request):
+    return top_artist_and_songs_slide(request, 'halloweenone.html')
+
+def christmas_top_artist(request):
+    return top_artist_and_songs_slide(request, 'christmasone.html')
+
+def halloween_seasonal(request):
+    return analyze_seasonal_mood(request, 'halloween_seasonal.html')
+
+def halloween_llm(request):
+    return llm_insights_page(request, 'halloween_llm.html')
+
+def christmas_seasonal(request):
+    return analyze_seasonal_mood(request, 'christmas_seasonal.html')
+
+def christmas_llm(request):
+    return llm_insights_page(request, 'christmas_llm.html')
 
 def game_mix_pitch_1(request):
     access_token = request.session.get('spotify_access_token')

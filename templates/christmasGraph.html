@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UnWrapped</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Notable&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    {% block content %}
+
+    <style>
+        * {
+           box-sizing: border-box;
+           margin: 0;
+           padding: 0;
+       }
+
+       body {
+           font-family: 'Notable', sans-serif;
+           background-repeat: no-repeat;
+           background-size: cover;
+           background-position: center top 100px;
+           background-color: red;
+           overflow: hidden;
+       }
+
+       .menu-icon {
+           color: #ECD101;
+           font-size: 65px;
+           padding: 0 40px;
+       }
+
+       .title {
+           font-size: 36px;
+           font-weight: bold;
+           color: darkgreen;
+           text-shadow:
+           -1px -1px 0 #C64036,
+           1px -1px 0 #C64036,
+           -1px 1px 0 #C64036,
+           1px 1px 0 #C64036;
+           text-align: center;
+           flex-grow: 1;
+       }
+
+       .profile {
+           color: #ECD101;
+           font-size: 20px;
+           padding: 0 30px;
+           margin-top: 30px;
+       }
+
+       .top-left {
+           position: absolute;
+           top: -50px;
+           left: -150px;
+           width: 300px;
+           height: auto;
+       }
+
+       .bottom-right {
+           position: absolute;
+           bottom: -150px;
+           right: -150px;
+           width: 300px;
+           height: auto;
+           transform: rotate(180deg);
+       }
+
+       .slide-title {
+           color: darkgreen;
+           font-size: 36px;
+           text-align: center;
+           margin-top: 115px;
+           padding-bottom: 25px;
+           flex-grow: 1;
+       }
+
+       .chart-and-artists {
+           display: flex;
+           flex-direction: row;
+           align-items: flex-start;
+           justify-content: center;
+           gap: 20px
+       }
+
+       .artist-record {
+           width: 70px;
+           height: auto;
+           padding-right: 10px;
+       }
+
+       .artist-label {
+           font-size: 22px;
+           padding-right: 20px;
+       }
+
+       .artist {
+           display: flex;
+           align-items: center;
+           padding-bottom: 50px;
+       }
+
+       .chart-legend {
+           padding-top: 50px;
+       }
+   </style>
+
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+
+        </script>
+
+        <img src="{% static 'slide_2/snowflake.png' %}" alt="Rainbow" class="top-left rainbow">
+        <img src="{% static 'slide_2/snowflake.png' %}" alt="Rainbow" class="bottom-right rainbow">
+
+        <div class="slide-title">Your Top 3 Artists Over Time</div>
+        <div class="chart-and-artists">
+            <canvas id="artistRankings" style="width:100%;max-width:1000px"></canvas>
+            <script>
+                const dark_mode = localStorage.getItem('dark_mode') === 'on'
+                const top3Artists = JSON.parse('{{ top_3_artists | escapejs }}');
+                const artists = Object.keys(top3Artists);
+                const artist1 = artists[0];
+                const artist2 = artists[1];
+                const artist3 = artists[2];
+
+                const xValues = [["over the", "last year"], ["over the last", "six months"], ["over the", "last month"]];
+
+                const datasets = [
+                    {
+                        label: artist1,
+                        data: top3Artists[artist1],
+                        borderColor: "#8a71dd",
+                        fill: false,
+                    },
+                    {
+                        label: artist2,
+                        data: top3Artists[artist2],
+                        borderColor: "#DDC371",
+                        fill: false,
+                    },
+                    {
+                        label: artist3,
+                        data: top3Artists[artist3],
+                        borderColor: "#2A9D90",
+                        fill: false,
+                    },
+                ];
+
+                document.addEventListener("DOMContentLoaded", function() {
+                new Chart("artistRankings", {
+                    type: "line",
+                    data: {
+                        labels: xValues,
+                        datasets: datasets
+                    },
+                    options: {
+                        legend: {
+                            display: false,
+                        },
+                        scales: {
+                            xAxes: [{
+                                ticks: {
+                                    fontFamily: 'Notable',
+                                    fontSize: 15,
+                                    fontColor: dark_mode ? "#a8a6a6" : "#473924",
+                                },
+                                gridLines: {
+                                    color: dark_mode ? "#a8a6a6" : "#473924",
+                                }
+                            }],
+                            yAxes: [{
+                                ticks: {
+                                    fontFamily: 'Notable',
+                                    fontColor: dark_mode ? "#a8a6a6" : "#473924",
+                                    fontSize: 15,
+                                    reverse: true,
+                                },
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: "Ranking",
+                                    fontFamily: 'Notable',
+                                    fontColor: dark_mode ? "#a8a6a6" : "#473924",
+                                    fontSize: 21,
+                                },
+                                gridLines: {
+                                    color: dark_mode ? "#a8a6a6" : "#473924",
+                                }
+                            }]
+                        },
+                        layout: {
+                            padding: {
+                                left: 70,
+                                right: 70,
+                                bottom: 70,
+                                top: 40
+                            }
+                        }
+                    }
+                });
+
+                // on button click change the axes colors
+            })
+            </script>
+
+            <div class="chart-legend">
+                <div class="artist">
+                    <img src="{% static 'slide_2/salmon_record.png' %}" class="artist-record">
+                    <label class="artist-label">{{artist1}}</label>
+                </div>
+                <div class="artist">
+                    <img src="{% static 'slide_2/gold_record.png' %}" class="artist-record">
+                    <label class="artist-label">{{artist2}}</label>
+                </div>
+                <div class="artist">
+                    <img src="{% static 'slide_2/teal_record.png' %}" class="artist-record">
+                    <label class="artist-label">{{artist3}}</label>
+                </div>
+            </div>
+        </div>
+
+    <a href="{% url 'slide_3' %}">
+        <img src="{% static 'topArtist/triangle_button.png' %}" class="forward-triangle-button" alt="Forward Button">
+    </a>
+
+
+
+    <div class="circle-container">
+        <div class="small-circle"></div>
+        <div class="darker-small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+    </div>
+    </div>
+
+    <a href="{% url 'top_artist' %}">
+        <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button" alt="Backward Button">
+    </a>
+
+    {% endblock %}
+</body>
+</html>
