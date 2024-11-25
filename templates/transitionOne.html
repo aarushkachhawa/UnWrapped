@@ -16,7 +16,15 @@
 
             <img src="{% static 'transition_slide/yellow_record_cropped.png' %}" class="record">
 
-            <h2 id="generating_wrap">Generating Your Wrapped...</h2>
+            <h2 id="generating_wrap">
+                {% if language == "english" %}
+                    Generating Your Wrapped...
+                {% elif language == "hindi" %}
+                    आपका रैप्ड जनरेट हो रहा है...
+                {% elif language == "mandarin" %}
+                    正在生成您的回顾...
+                {% endif %}
+             </h2>
         </div>
     </div>
 </div>
