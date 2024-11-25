@@ -18,6 +18,12 @@ from UnWrapped.models import CustomWrap
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
+from pydub import AudioSegment
+from io import BytesIO
+import base64
+import librosa
+import soundfile as sf
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +68,7 @@ def register(request):
             print(form.errors)
     else:
         form = CustomUserCreationForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'register.html', {'form': form, 'hideMenu': False})
 
 
 def login_view(request):
@@ -84,7 +90,7 @@ def login_view(request):
             messages.error(request, 'Invalid username or password.')
     else:
         form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'login.html', {'form': form, 'hideMenu': False})
 
 
 # Helper function to get Spotify tokens
@@ -269,14 +275,20 @@ def calculate_top_artist_and_songs_slide(request):
 
     request.session['top_artist'] = wrapped_data['top_artist_year']
     request.session['top_songs'] = wrapped_data['top_songs']
+    request.session['top_songs_artists'] = wrapped_data['top_songs_artists']
     request.session['image_url'] = wrapped_data['top_artist_year'][1]
+    request.session['top_songs_urls'] = wrapped_data['top_songs_urls']
+    request.session['top_songs_artists'] = wrapped_data['top_songs_artists']
+
+    print("CALCULATED TOP ARTISTS")
 
 def top_artist_and_songs_slide(request):
     context = {
-        'title': 'Top Artist and Top Songs of the Year',
         'top_artist': request.session['top_artist'],
         'top_songs': request.session['top_songs'],
         'image': request.session['image_url'],
+        'top_songs_artists': request.session['top_songs_artists'],
+        'top_songs_urls': request.session['top_songs_urls']
     }
 
     return render(request, 'topArtistAndSongs.html', context)
@@ -926,7 +938,9 @@ def generate_wrap(request):
     )
     wrap.save()
 
-    return HttpResponse("generating wrap") # replace with render loading page
+    return JsonResponse({
+        "done": True
+    })
 
 def reset(request):
     if request.method == 'POST':
@@ -952,7 +966,6 @@ def reset(request):
             # Handle case where the username is not found
             messages.error(request, 'Username not found.')
             return render(request, 'reset.html')
-
     return render(request, 'reset.html')
 
 
@@ -966,3 +979,269 @@ def past_wraps(request):
         print('\n')
 
     return HttpResponse(count)
+
+def game_mix_pitch_1(request):
+    access_token = request.session.get('spotify_access_token')
+
+    if not access_token:
+        return render(request, 'game_mix_pitch.html', {'error': 'Spotify access token not found. Please log in again.'})
+
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+
+    # Step 1: Fetch the user's top tracks
+    top_tracks_url = "https://api.spotify.com/v1/me/top/tracks?limit=50"
+    response = requests.get(top_tracks_url, headers=headers)
+
+    if response.status_code != 200:
+        return render(request, 'game_mix_pitch.html', {'error': 'Failed to fetch top tracks from Spotify. Please try again later.'})
+
+    top_tracks = response.json().get('items', [])
+
+    if len(top_tracks) < 12:
+        return render(request, 'game_mix_pitch.html', {'error': 'Not enough top tracks to play the game. Listen to more songs on Spotify!'})
+
+    # Step 2: Pick two random tracks for mixing
+    try:
+        track1, track2 = random.sample(top_tracks, 2)
+        track1_name = track1.get('name')
+        track2_name = track2.get('name')
+        track1_preview_url = track1.get('preview_url')
+        track2_preview_url = track2.get('preview_url')
+
+        if not track1_preview_url or not track2_preview_url:
+            return render(request, 'game_mix_pitch.html', {'error': 'One or both tracks are missing preview URLs. Please try again.'})
+
+        # Step 3: Select 8 additional unique tracks for multiple-choice options
+        additional_tracks = random.sample([track for track in top_tracks if track != track1 and track != track2], 10)
+        additional_names = [track.get('name') for track in additional_tracks]
+
+        # Ensure the correct songs are included in the choices
+        song_choices = [track1_name, track2_name] + additional_names
+        random.shuffle(song_choices)  # Shuffle the order of options
+
+        # Step 4: Process audio
+        sr = 22050
+        audio1, _ = librosa.load(BytesIO(requests.get(track1_preview_url).content), sr=sr, mono=True)
+        audio2, _ = librosa.load(BytesIO(requests.get(track2_preview_url).content), sr=sr, mono=True)
+
+        chroma1 = librosa.feature.chroma_cqt(y=audio1, sr=sr)
+        chroma2 = librosa.feature.chroma_cqt(y=audio2, sr=sr)
+
+        chroma_mean1 = np.mean(chroma1, axis=1)
+        chroma_mean2 = np.mean(chroma2, axis=1)
+
+        notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+        key1_index = np.argmax(chroma_mean1)
+        key2_index = np.argmax(chroma_mean2)
+        key1 = notes[key1_index]
+        key2 = notes[key2_index]
+
+        semitone_shift = key2_index - key1_index
+
+        # Adjust the pitch of audio1 to match audio2's key
+        audio1_adjusted = librosa.effects.pitch_shift(audio1, sr=sr, n_steps=semitone_shift)
+
+        # Make the volume of audio1 20% louder after pitch shifting
+        if semitone_shift < 0:
+            audio1_adjusted = audio1_adjusted * 1.2
+        else:
+            audio1_adjusted = audio1_adjusted * 0.9
+
+        # Calculate RMS to match overall volume levels
+        rms1 = np.sqrt(np.mean(audio1_adjusted**2))
+        rms2 = np.sqrt(np.mean(audio2**2))
+        if rms1 > 0:
+            audio1_adjusted = audio1_adjusted * (rms2 / rms1)
+
+        # Align lengths and mix tracks
+        min_length = min(len(audio1_adjusted), len(audio2))
+        mixed_audio = (audio1_adjusted[:min_length] + audio2[:min_length]) / 2
+
+        # Normalize to prevent clipping
+        max_val = np.max(np.abs(mixed_audio))
+        if max_val > 0:
+            mixed_audio = mixed_audio / max_val
+
+        # Save the mixed audio to a buffer
+        mixed_audio_buffer = BytesIO()
+        sf.write(mixed_audio_buffer, mixed_audio, sr, format='WAV')
+        mixed_audio_buffer.seek(0)
+        mixed_audio_base64 = base64.b64encode(mixed_audio_buffer.read()).decode('utf-8')
+
+    except Exception as e:
+        return render(request, 'game_mix_pitch.html', {'error': f'Error during audio processing: {e}'})
+
+    # Step 5: Render the template
+    context = {
+        'mixed_audio': mixed_audio_base64,
+        'song_choices': song_choices,  # All multiple-choice options
+        'correct_songs': [track1_name, track2_name]  # Correct answers
+    }
+
+    return render(request, 'game_mix_pitch.html', context)
+
+
+def game_mix_pitch_2(request):
+    access_token = request.session.get('spotify_access_token')
+
+    if not access_token:
+        return render(request, 'game_mix_pitch.html', {'error': 'Spotify access token not found. Please log in again.'})
+
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+
+    # Step 1: Fetch the user's top tracks
+    top_tracks_url = "https://api.spotify.com/v1/me/top/tracks?limit=50"
+    response = requests.get(top_tracks_url, headers=headers)
+
+    if response.status_code != 200:
+        return render(request, 'game_mix_pitch.html', {'error': 'Failed to fetch top tracks from Spotify. Please try again later.'})
+
+    top_tracks = response.json().get('items', [])
+
+    # **Change 1:** Update minimum number of top tracks to accommodate three correct songs + decoys
+    num_correct = 3
+    decoy_count = 13  # To maintain 16 total choices
+    required_tracks = num_correct + decoy_count
+
+    if len(top_tracks) < required_tracks:
+        return render(request, 'game_mix_pitch.html', {'error': 'Not enough top tracks to play the game. Listen to more songs on Spotify!'})
+
+    # Step 2: Pick three unique tracks for mixing
+    try:
+        # **Change 2:** Select three unique tracks
+        selected_tracks = random.sample(top_tracks, num_correct)
+        base_track, pitch_track_up, pitch_track_down = selected_tracks
+
+        base_track_name = base_track.get('name')
+        pitch_track_up_name = pitch_track_up.get('name')
+        pitch_track_down_name = pitch_track_down.get('name')
+
+        base_preview_url = base_track.get('preview_url')
+        pitch_preview_url_up = pitch_track_up.get('preview_url')
+        pitch_preview_url_down = pitch_track_down.get('preview_url')
+
+        # **Change 3:** Ensure all three tracks have preview URLs
+        if not base_preview_url or not pitch_preview_url_up or not pitch_preview_url_down:
+            return render(request, 'game_mix_pitch.html', {'error': 'One or more tracks are missing preview URLs. Please try again.'})
+
+        # Step 3: Select 13 additional unique tracks for multiple-choice options
+        remaining_tracks = [track for track in top_tracks if track not in selected_tracks]
+        decoy_tracks = random.sample(remaining_tracks, decoy_count)
+        decoy_song_names = [track.get('name') for track in decoy_tracks]
+
+        # **Change 4:** Include three correct song names in choices
+        song_choices = [base_track_name, pitch_track_up_name, pitch_track_down_name] + decoy_song_names
+        random.shuffle(song_choices)  # Shuffle the order of options
+
+        # Step 4: Process audio
+        sr = 22050  # Sampling rate
+
+        # **Change 5:** Load all three audio tracks
+        audio_base, _ = librosa.load(BytesIO(requests.get(base_preview_url).content), sr=sr, mono=True)
+        audio_up, _ = librosa.load(BytesIO(requests.get(pitch_preview_url_up).content), sr=sr, mono=True)
+        audio_down, _ = librosa.load(BytesIO(requests.get(pitch_preview_url_down).content), sr=sr, mono=True)
+
+        # Extract chroma features to determine the key of each track
+        chroma_base = librosa.feature.chroma_cqt(y=audio_base, sr=sr)
+        chroma_up = librosa.feature.chroma_cqt(y=audio_up, sr=sr)
+        chroma_down = librosa.feature.chroma_cqt(y=audio_down, sr=sr)
+
+        chroma_mean_base = np.mean(chroma_base, axis=1)
+        chroma_mean_up = np.mean(chroma_up, axis=1)
+        chroma_mean_down = np.mean(chroma_down, axis=1)
+
+        notes = ['C', 'C#', 'D', 'D#', 'E', 'F',
+                 'F#', 'G', 'G#', 'A', 'A#', 'B']
+        key_base_index = np.argmax(chroma_mean_base)
+        key_up_index = np.argmax(chroma_mean_up)
+        key_down_index = np.argmax(chroma_mean_down)
+        key_base = notes[key_base_index]
+        key_up = notes[key_up_index]
+        key_down = notes[key_down_index]
+
+        # Step 4.1: Set the base key as the target key
+        target_key_index = key_base_index
+        target_key = key_base
+
+        # Calculate the semitone shifts needed for pitch_track_up and pitch_track_down to match the base key
+        semitone_shift_up = target_key_index - key_up_index
+        semitone_shift_down = target_key_index - key_down_index
+
+        # **Change 6:** Pitch one song up and one song down to match the base key
+        audio_up_adjusted = librosa.effects.pitch_shift(audio_up, sr=sr, n_steps=semitone_shift_up)
+        audio_down_adjusted = librosa.effects.pitch_shift(audio_down, sr=sr, n_steps=semitone_shift_down)
+        audio_base_adjusted = librosa.effects.pitch_shift(audio_base, sr=sr, n_steps=12)  # No shift needed for base track
+
+        # **Change 7:** Adjust volumes
+        # Increase volume slightly for pitched-down song and decrease volume slightly for pitched-up song
+        volume_increase_factor = 1.4  # 5% increase
+        volume_decrease_factor = 0.9  # 5% decrease
+
+        audio_down_adjusted *= volume_increase_factor
+        audio_up_adjusted *= volume_decrease_factor
+        audio_base *= 0.8
+        # audio_base_adjusted remains unchanged
+
+        # Step 4.2: Normalize the volume of all tracks to prevent clipping and ensure balance
+        def normalize_audio(audio):
+            rms = np.sqrt(np.mean(audio**2))
+            if rms > 0:
+                return audio / rms
+            return audio
+
+        audio_base_normalized = normalize_audio(audio_base_adjusted)
+        audio_up_normalized = normalize_audio(audio_up_adjusted)
+        audio_down_normalized = normalize_audio(audio_down_adjusted)
+
+        # Step 4.3: Align lengths by padding shorter audios with zeros
+        max_length = max(len(audio_base_normalized),
+                         len(audio_up_normalized),
+                         len(audio_down_normalized))
+
+        def pad_audio(audio, target_length):
+            if len(audio) < target_length:
+                return np.pad(audio, (0, target_length - len(audio)), 'constant')
+            return audio[:target_length]
+
+        audio_base_padded = pad_audio(audio_base_normalized, max_length)
+        audio_up_padded = pad_audio(audio_up_normalized, max_length)
+        audio_down_padded = pad_audio(audio_down_normalized, max_length)
+
+        # Step 4.4: Mix all three tracks together by averaging
+        mixed_audio = (audio_base_padded + audio_up_padded + audio_down_padded) / 3
+
+        # Normalize to prevent clipping
+        max_val = np.max(np.abs(mixed_audio))
+        if max_val > 0:
+            mixed_audio = mixed_audio / max_val
+
+        # **Optional:** Use only a snippet of the mixed audio (e.g., 15 seconds)
+        snippet_duration_seconds = 15  # Duration of the snippet in seconds
+        snippet_length = int(snippet_duration_seconds * sr)
+        if len(mixed_audio) > snippet_length:
+            start = random.randint(0, len(mixed_audio) - snippet_length)
+            mixed_audio = mixed_audio[start:start + snippet_length]
+
+        # **Change 8:** Save the mixed audio to a buffer
+        mixed_audio_buffer = BytesIO()
+        sf.write(mixed_audio_buffer, mixed_audio, sr, format='WAV')
+        mixed_audio_buffer.seek(0)
+        mixed_audio_base64 = base64.b64encode(
+            mixed_audio_buffer.read()).decode('utf-8')
+
+    except Exception as e:
+        return render(request, 'game_mix_pitch.html', {'error': f'Error during audio processing: {e}'})
+
+    # Step 5: Render the template
+    context = {
+        'mixed_audio': mixed_audio_base64,
+        'song_choices': song_choices,  # All multiple-choice options
+        'correct_songs': [base_track_name, pitch_track_up_name, pitch_track_down_name],  # Correct answers
+        'random_key': target_key  # Optionally display the target key used
+    }
+
+    return render(request, 'game_mix_pitch.html', context)
