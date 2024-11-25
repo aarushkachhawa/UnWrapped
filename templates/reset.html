@@ -5,7 +5,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Password</title>
+    <title>
+        {% if language == "english" %}
+            Reset Password
+        {% elif language == "hindi" %}
+            पासवर्ड रीसेट करें
+        {% elif language == "mandarin" %}
+            重置密码
+        {% endif %}
+    </title>
     <link href="https://fonts.googleapis.com/css2?family=Notable&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -96,22 +104,62 @@
     </style>
 
     <div class="reset-container">
-        <h2>Reset Your Password</h2>
+        <h2>
+            {% if language == "english" %}
+                Reset Your Password
+            {% elif language == "hindi" %}
+                अपना पासवर्ड रीसेट करें
+            {% elif language == "mandarin" %}
+                重置您的密码
+            {% endif %}
+        </h2>
         <form method="POST">
             {% csrf_token %}
             <div class="form-group">
-                <label for="id_username">Username:</label>
+                <label for="id_username">
+                    {% if language == "english" %}
+                        Username:
+                    {% elif language == "hindi" %}
+                        उपयोगकर्ता नाम:
+                    {% elif language == "mandarin" %}
+                        用户名：
+                    {% endif %}
+                </label>
                 <input type="text" name="username" id="id_username" required>
             </div>
             <div class="form-group">
-                <label for="id_new_password">New Password:</label>
+                <label for="id_new_password">
+                    {% if language == "english" %}
+                        New Password:
+                    {% elif language == "hindi" %}
+                        नया पासवर्ड:
+                    {% elif language == "mandarin" %}
+                        新密码：
+                    {% endif %}
+                </label>
                 <input type="password" name="new_password" id="id_new_password" required>
             </div>
-            <button type="submit" class="reset-button">Reset Password</button>
+            <button type="submit" class="reset-button">
+                {% if language == "english" %}
+                    Reset Password
+                {% elif language == "hindi" %}
+                    पासवर्ड रीसेट करें
+                {% elif language == "mandarin" %}
+                    重置密码
+                {% endif %}
+            </button>
         </form>
 
         <div class="back-link">
-            <a href="{% url 'login' %}">Go Back</a>
+            <a href="{% url 'login' %}">
+                {% if language == "english" %}
+                    Go Back
+                {% elif language == "hindi" %}
+                    वापस जाएं
+                {% elif language == "mandarin" %}
+                    返回
+                {% endif %}
+            </a>
         </div>
     </div>
     {% endblock %}

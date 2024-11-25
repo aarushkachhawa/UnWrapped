@@ -3,7 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wrapped Stats</title>
+    <title>
+        {% if language == "english" %}
+            Wrapped Stats
+        {% elif language == "hindi" %}
+            रैप्ड आँकड़े
+        {% elif language == "mandarin" %}
+            统计数据
+        {% endif %}
+    </title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -183,7 +191,15 @@
 <body>
     <div class="container">
         <!-- Title -->
-        <h1 class="title">SLIDE #1: TOP ARTIST & TOP 5 SONGS</h1>
+        <h1 class="title">
+            {% if language == "english" %}
+                SLIDE #1: TOP ARTIST & TOP 5 SONGS
+            {% elif language == "hindi" %}
+                स्लाइड #1: शीर्ष कलाकार और शीर्ष 5 गाने
+            {% elif language == "mandarin" %}
+                幻灯片 #1：最佳艺术家和前5首歌
+            {% endif %}
+        </h1>
 
         <!-- Main blue container -->
         <div class="blue-container">
@@ -207,7 +223,15 @@
                 </svg>
 
                 <!-- Subtitle -->
-                <h2 class="subtitle">YOUR TOP ARTIST & TOP 5 SONGS</h2>
+                <h2 class="subtitle">
+                    {% if language == "english" %}
+                        YOUR TOP ARTIST & TOP 5 SONGS
+                    {% elif language == "hindi" %}
+                        आपका शीर्ष कलाकार और शीर्ष 5 गाने
+                    {% elif language == "mandarin" %}
+                        您最喜欢的艺术家和前5首歌
+                    {% endif %}
+                </h2>
 
                 <!-- Artist section -->
                 <div class="artist-section">

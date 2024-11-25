@@ -247,28 +247,89 @@
             {% endif %}
         </h1>
 
-        <p> Hello! Our project was made for Georgia Tech's CS 2340 class. We built this app using Django and the Spotify API. Our team utilized Agile Scrum Methadology.</p>
+        <p>
+            {% if language == "english" %}
+                Hello! Our project was made for Georgia Tech's CS 2340 class. We built this app using Django and the Spotify API. Our team utilized Agile Scrum Methodology.
+            {% elif language == "hindi" %}
+                नमस्ते! हमारा प्रोजेक्ट जॉर्जिया टेक के CS 2340 क्लास के लिए बनाया गया था। हमने इस ऐप को Django और Spotify API का उपयोग करके बनाया है। हमारी टीम ने एजाइल स्क्रम मेथोडोलॉजी का उपयोग किया।
+            {% elif language == "mandarin" %}
+                您好！这是我们为佐治亚理工学院CS 2340课程制作的项目。我们使用Django和Spotify API构建了这个应用程序。我们的团队采用敏捷Scrum方法论。
+            {% endif %}
+        </p>
+        
+        <!-- Team Roles -->
         <ul>
-            <li> Scrum Master: Anya </li>
-            <li> Product Owner: Aditi </li>
-            <li> Developers: Aarush, Atharva, and Pranav </li>
+            {% if language == "english" %}
+                <li>Scrum Master: Anya</li>
+                <li>Product Owner: Aditi</li>
+                <li>Developers: Aarush, Atharva, and Pranav</li>
+            {% elif language == "hindi" %}
+                <li>स्क्रम मास्टर: Anya</li>
+                <li>प्रोडक्ट ओनर: Aditi</li>
+                <li>डेवलपर्स: Aarush, Atharva, और Pranav</li>
+            {% elif language == "mandarin" %}
+                <li>Scrum主管：Anya</li>
+                <li>产品负责人：Aditi</li>
+                <li>开发人员：Aarush, Atharva, 和 Pranav</li>
+            {% endif %}
         </ul>
-        <p> The goal of this project was to create a product similar to Spotify's end-of-year Wrapped, but with some unique analytics. We included: </p>
+        
+        <!-- Project Goal -->
+        <p>
+            {% if language == "english" %}
+                The goal of this project was to create a product similar to Spotify's end-of-year Wrapped, but with some unique analytics. We included:
+            {% elif language == "hindi" %}
+                इस प्रोजेक्ट का उद्देश्य Spotify के वार्षिक Wrapped जैसा प्रोडक्ट बनाना था, लेकिन कुछ अनूठे विश्लेषण के साथ। हमने शामिल किया:
+            {% elif language == "mandarin" %}
+                这个项目的目标是创建一个类似Spotify年终Wrapped的产品，但增加了一些独特的分析功能。我们包含了：
+            {% endif %}
+        </p>
+        
+        <!-- Features List -->
         <ul>
-            <li> your top artist </li>
-            <li> your top songs </li>
-            <li> what times of day you listened to songs </li>
-            <li> time spent listening to ads </li>
-            <li> some AI generated descriptions of your music taste using your Spotify listening data </li>
-            <li> an of course, the ability to save this information and look at it later! </li>
+            {% if language == "english" %}
+                <li>your top artist</li>
+                <li>your top songs</li>
+                <li>what times of day you listened to songs</li>
+                <li>time spent listening to ads</li>
+                <li>some AI generated descriptions of your music taste using your Spotify listening data</li>
+                <li>and of course, the ability to save this information and look at it later!</li>
+            {% elif language == "hindi" %}
+                <li>आपका टॉप आर्टिस्ट</li>
+                <li>आपके टॉप गाने</li>
+                <li>दिन के किस समय आप गाने सुनते हैं</li>
+                <li>विज्ञापन सुनने में बिताया गया समय</li>
+                <li>आपके Spotify सुनने के डेटा का उपयोग करके AI द्वारा जनरेट किए गए आपकी संगीत पसंद के विवरण</li>
+                <li>और निश्चित रूप से, इस जानकारी को सेव करने और बाद में देखने की क्षमता!</li>
+            {% elif language == "mandarin" %}
+                <li>您最喜欢的艺术家</li>
+                <li>您最喜欢的歌曲</li>
+                <li>一天中您听歌的时间段</li>
+                <li>听广告的时间</li>
+                <li>使用您的Spotify收听数据生成的AI音乐品味描述</li>
+                <li>当然，还可以保存这些信息供以后查看！</li>
+            {% endif %}
         </ul>
+        
         <hr>
-        <p> If you have any questions, feel free to email us! </p>
-        <li> Atharva Khandelwal: akhandelwal73@gatech.edu </li>
-        <li> Aditi Koratpallikar: akoratpa3@gatech.edu </li>
-        <li> Anya Khosla: akhosla32@gatech.edu </li>
-        <li> Aarush Kachhawa: akachhawa3@gatech.edu </li>
-        <li> Pranav Kadekodi: pkadekodi3@gatech.edu </li>
+        
+        <!-- Contact Section -->
+        <p>
+            {% if language == "english" %}
+                If you have any questions, feel free to email us!
+            {% elif language == "hindi" %}
+                यदि आपके कोई प्रश्न हैं, तो हमें ईमेल करने में संकोच न करें!
+            {% elif language == "mandarin" %}
+                如果您有任何问题，请随时给我们发送电子邮件！
+            {% endif %}
+        </p>
+        
+        <!-- Keep email list unchanged as these are proper nouns -->
+        <li>Atharva Khandelwal: akhandelwal73@gatech.edu</li>
+        <li>Aditi Koratpallikar: akoratpa3@gatech.edu</li>
+        <li>Anya Khosla: akhosla32@gatech.edu</li>
+        <li>Aarush Kachhawa: akachhawa3@gatech.edu</li>
+        <li>Pranav Kadekodi: pkadekodi3@gatech.edu</li>
         
         <!-- <p>
             {% if language == "english" %}
