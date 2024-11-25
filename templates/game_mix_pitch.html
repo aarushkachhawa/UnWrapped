@@ -113,6 +113,14 @@
         overflow: hidden;
     }
 
+    h2 {
+        margin-bottom: 10px;
+    }
+
+    strong {
+        color: #c4b3ff;
+    }
+
     .container {
         margin-top: 40px;
     }
@@ -136,11 +144,16 @@
         color: #FCF8F1;
         cursor: pointer;
         font-size: 14px;
-        transition: background-color 0.3s;
+        transition: background-color 0.3s, transform 0.2s ease-in-out;
         width: 275px;
         height: 100px;
         font-size: 16px;
         font-family: 'Notable', sans-serif;
+    }
+
+    .choices button:hover {
+        transform: translateY(-5px);
+        background-color: #B0B0B0;
     }
 
     .submit-btn,
@@ -172,12 +185,12 @@
     }
 
     .submit-btn {
-        background-color: #007BFF;
+        background-color: #5AABF3;
         margin-top: 20px;
     }
 
     .reset-btn {
-        background-color: #FF4500;
+        background-color: #EF6E53;
     }
 
     .submit-btn, .reset-btn, .continue-btn, .back-btn{
@@ -189,35 +202,35 @@
     }
 
     .continue-btn {
-        background-color: #800080;
+        background-color: #c4b3ff;
         color: white;
         position: absolute;
         left: calc(50% + 130px);
-        top: 619px
+        top: 628px
     }
 
     .back-btn {
-        background-color: #17a2b8;
+        background-color: #c4b3ff;
         color: white;
         position: absolute;
         left: calc(50% + 130px);
-        top: 729px
+        top: 738px
     }
 
     .submit-btn:hover {
-        background-color: #0056b3;
+        background-color: #3d90d9;
     }
 
     .reset-btn:hover {
-        background-color: #e03e00;
+        background-color: #cf5138;
     }
 
     .continue-btn:hover {
-        background-color: #6a006a;
+        background-color: #b4a6de;
     }
 
     .back-btn:hover {
-        background-color: #117a8b;
+        background-color: #b4a6de;
     }
 </style>
 {% endblock %}
@@ -229,72 +242,77 @@
     const maxSelections = correctSongs.length;
 
     document.querySelectorAll('#choices button').forEach(button => {
-        button.addEventListener('click', () => {
-            const song = button.getAttribute('data-song');
-            if (selectedSongs.includes(song)) {
-                selectedSongs = selectedSongs.filter(s => s !== song);
-                button.classList.remove('selected');
-            } else {
-                if (selectedSongs.length === maxSelections) {
-                    alert(`You can only select up to ${maxSelections} song${maxSelections > 1 ? 's' : ''}.`);
-                    return;
-                }
-                selectedSongs.push(song);
-                button.classList.add('selected');
+    button.addEventListener('click', () => {
+        const song = button.getAttribute('data-song');
+
+        if (selectedSongs.includes(song)) {
+            // Deselect the song
+            selectedSongs = selectedSongs.filter(s => s !== song);
+            button.classList.remove('selected');
+        } else {
+            if (selectedSongs.length === maxSelections) {
+                // Deselect the first selected song to make room for the new one
+                const firstSelected = selectedSongs.shift();
+                const firstButton = document.querySelector(`button[data-song="${firstSelected}"]`);
+                if (firstButton) firstButton.classList.remove('selected');
             }
-        });
+            // Select the new song
+            selectedSongs.push(song);
+            button.classList.add('selected');
+        }
+    });
     });
 
     document.getElementById('submit').addEventListener('click', () => {
-        const messageElement = document.getElementById('message');
-        if (selectedSongs.length !== maxSelections) {
-            messageElement.textContent = `Please select exactly ${maxSelections} song${maxSelections > 1 ? 's' : ''}.`;
-            messageElement.style.color = 'orange';
-            return;
-        }
+    const messageElement = document.getElementById('message');
+    if (selectedSongs.length !== maxSelections) {
+        messageElement.textContent = `Please select exactly ${maxSelections} song${maxSelections > 1 ? 's' : ''}.`;
+        messageElement.style.color = 'orange';
+        return;
+    }
 
-        const correctCount = selectedSongs.filter(song => correctSongs.includes(song)).length;
-        if (correctCount === maxSelections) {
-            messageElement.textContent = `${maxSelections}/${maxSelections} correct! Well done!`;
-            messageElement.style.color = 'green';
-            highlightCorrect();
-            {% if correct_songs|length == 2 %}
-                document.getElementById('continue').style.display = 'inline-block';
-            {% elif correct_songs|length == 3 %}
-                document.getElementById('back').style.display = 'inline-block';
-            {% endif %}
-        } else {
-            messageElement.textContent = `${correctCount}/${maxSelections} correct`;
-            messageElement.style.color = correctCount > 0 ? 'orange' : 'red';
-            highlightIncorrect();
-        }
+    const correctCount = selectedSongs.filter(song => correctSongs.includes(song)).length;
+    if (correctCount === maxSelections) {
+        messageElement.textContent = `${maxSelections}/${maxSelections} correct! Well done!`;
+        messageElement.style.color = 'green';
+        highlightCorrect();
+        {% if correct_songs|length == 2 %}
+            document.getElementById('continue').style.display = 'inline-block';
+        {% elif correct_songs|length == 3 %}
+            document.getElementById('back').style.display = 'inline-block';
+        {% endif %}
+    } else {
+        messageElement.textContent = `${correctCount}/${maxSelections} correct`;
+        messageElement.style.color = correctCount > 0 ? 'orange' : 'red';
+        highlightIncorrect();
+    }
     });
 
     document.getElementById('reset').addEventListener('click', () => {
-        window.location.reload();
+    window.location.reload();
     });
 
     function highlightIncorrect() {
-        document.querySelectorAll('#choices button').forEach(button => {
-            const song = button.getAttribute('data-song');
-            if (!correctSongs.includes(song) && selectedSongs.includes(song)) {
-                button.classList.add('incorrect');
-            }
-            if (correctSongs.includes(song)) {
-                button.classList.add('correct');
-            }
-            button.disabled = true;
-        });
+    document.querySelectorAll('#choices button').forEach(button => {
+        const song = button.getAttribute('data-song');
+        if (!correctSongs.includes(song) && selectedSongs.includes(song)) {
+            button.classList.add('incorrect');
+        }
+        if (correctSongs.includes(song)) {
+            button.classList.add('correct');
+        }
+        button.disabled = true;
+    });
     }
 
     function highlightCorrect() {
-        document.querySelectorAll('#choices button').forEach(button => {
-            const song = button.getAttribute('data-song');
-            if (correctSongs.includes(song)) {
-                button.classList.add('correct');
-            }
-            button.disabled = true;
-        });
+    document.querySelectorAll('#choices button').forEach(button => {
+        const song = button.getAttribute('data-song');
+        if (correctSongs.includes(song)) {
+            button.classList.add('correct');
+        }
+        button.disabled = true;
+    });
     }
     {% endif %}
 </script>

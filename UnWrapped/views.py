@@ -1137,6 +1137,7 @@ def game_mix_pitch_1(request):
     # Step 5: Render the template
     context = {
         'mixed_audio': mixed_audio_base64,
+
         'song_choices': song_choices,
         'correct_songs': [track1_name, track2_name],
         'language': language
