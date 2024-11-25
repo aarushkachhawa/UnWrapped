@@ -6,7 +6,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register Page - Unwrapped</title>
+    <title>
+        {% if language == "english" %}
+            Register Page - Unwrapped
+        {% elif language == "hindi" %}
+            पंजीकरण पेज - अनरैप्ड
+        {% elif language == "mandarin" %}
+            注册页面 - 解封
+        {% endif %}
+    </title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Notable&display=swap" rel="stylesheet">
@@ -252,31 +260,78 @@
             </div>
         {% endif %}
 
-        <h2 class="register-heading">REGISTER!</h2>
+        <h2 class="register-heading">
+            {% if language == "english" %}
+                REGISTER!
+            {% elif language == "hindi" %}
+                पंजीकरण करें!
+            {% elif language == "mandarin" %}
+                注册！
+            {% endif %}
+        </h2>
 
         <form method="POST" action="{% url 'register' %}">
             {% csrf_token %}
             <div class="form-group">
-                <label>USERNAME:</label>
+                <label>
+                    {% if language == "english" %}
+                        USERNAME:
+                    {% elif language == "hindi" %}
+                        उपयोगकर्ता नाम:
+                    {% elif language == "mandarin" %}
+                        用户名：
+                    {% endif %}
+                </label>
                 {{ form.username }}
             </div>
+            
             <div class="form-group">
-                <label>EMAIL:</label>
+                <label>
+                    {% if language == "english" %}
+                        EMAIL:
+                    {% elif language == "hindi" %}
+                        ईमेल:
+                    {% elif language == "mandarin" %}
+                        邮箱：
+                    {% endif %}
+                </label>
                 {{ form.name }}
             </div>
+            
             <div class="form-group">
-                <label>PASSWORD:</label>
+                <label>
+                    {% if language == "english" %}
+                        PASSWORD:
+                    {% elif language == "hindi" %}
+                        पासवर्ड:
+                    {% elif language == "mandarin" %}
+                        密码：
+                    {% endif %}
+                </label>
                 {{ form.password1 }}
             </div>
+            
             <div class="form-group">
-                <label>CONFIRM:</label>
+                <label>
+                    {% if language == "english" %}
+                        CONFIRM:
+                    {% elif language == "hindi" %}
+                        पुष्टि करें:
+                    {% elif language == "mandarin" %}
+                        确认：
+                    {% endif %}
+                </label>
                 {{ form.password2 }}
             </div>
 
-            <div class="vinyl-record" onclick="document.forms[0].submit();">
-                <div class="vinyl-outer">
-                    <div class="vinyl-inner">JOIN</div>
-                </div>
+            <div class="vinyl-inner">
+                {% if language == "english" %}
+                    JOIN
+                {% elif language == "hindi" %}
+                    शामिल हों
+                {% elif language == "mandarin" %}
+                    加入
+                {% endif %}
             </div>
         </form>
 

@@ -1,10 +1,26 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Song Player</title>
+    <title>
+        {% if language == "english" %}
+            Song Player
+        {% elif language == "hindi" %}
+            गाना प्लेयर
+        {% elif language == "mandarin" %}
+            音乐播放器
+        {% endif %}
+    </title>
   </head>
   <body>
-    <h1>Song Player</h1>
+    <h1>
+        {% if language == "english" %}
+            Song Player
+        {% elif language == "hindi" %}
+            गाना प्लेयर
+        {% elif language == "mandarin" %}
+            音乐播放器
+        {% endif %}
+    </h1>
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
     <script>
         window.onSpotifyWebPlaybackSDKReady = () => {
