@@ -31,4 +31,5 @@ urlpatterns = [
     path('past_wraps/', views.past_wraps, name='past_wraps'),
     path('game/', views.game_mix_pitch_1, name="game"),
     path('game2/', views.game_mix_pitch_2, name="game2"),
+    path('wrap_id_to_session/', views.wrap_id_to_session, name='wrap_id_to_session'),
 ]

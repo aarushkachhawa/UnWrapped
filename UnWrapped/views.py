@@ -1,3 +1,5 @@
+from calendar import month
+
 import requests
 from django.db.models.functions import NullIf
 from django.http import JsonResponse, HttpResponse
@@ -283,6 +285,9 @@ def calculate_top_artist_and_songs_slide(request):
     print("CALCULATED TOP ARTISTS")
 
 def top_artist_and_songs_slide(request):
+    print(request.session['top_artist'])
+    print(type(request.session['top_artist']))
+
     context = {
         'top_artist': request.session['top_artist'],
         'top_songs': request.session['top_songs'],
@@ -290,6 +295,10 @@ def top_artist_and_songs_slide(request):
         'top_songs_artists': request.session['top_songs_artists'],
         'top_songs_urls': request.session['top_songs_urls']
     }
+
+    print(context['top_artist'])
+    print(type(context['top_artist']))
+    print(context['top_artist'][0])
 
     return render(request, 'topArtistAndSongs.html', context)
 
@@ -970,15 +979,42 @@ def reset(request):
 
 
 def past_wraps(request):
-    wraps = CustomWrap.objects.filter(user=request.user)
-    count = 0
-    for wrap in wraps:
-        count += 1
-        print(count)
-        print(wrap)
-        print('\n')
+    month_to_word_dict = {
+        1: "Jan",
+        2: "Feb",
+        3: "Mar",
+        4: "Apr",
+        5: "May",
+        6: "Jun",
+        7: "Jul",
+        8: "Aug",
+        9: "Sep",
+        10: "Oct",
+        11: "Nov",
+        12: "Dec",
+    }
 
-    return HttpResponse(count)
+    wraps = CustomWrap.objects.filter(user=request.user)
+    wrap_list = []
+    for wrap in wraps:
+        date_string = ""
+        date = wrap.wrapDate.date()
+        date_string += month_to_word_dict[date.month]
+        date_string += f" {date.day}, {date.year}"
+
+        wrap_list.append(
+            {
+                'id': wrap.id,
+                'words': date_string,
+            }
+        )
+
+    context = {
+        "wrap_list": wrap_list,
+        "num_wraps": len(wrap_list),
+    }
+
+    return render(request, 'past_wraps.html', context)
 
 def game_mix_pitch_1(request):
     access_token = request.session.get('spotify_access_token')
@@ -1245,3 +1281,50 @@ def game_mix_pitch_2(request):
     }
 
     return render(request, 'game_mix_pitch.html', context)
+
+
+def wrap_id_to_session(request):
+    body = json.loads(request.body)
+    wrap_id = body['wrap_id']
+    wrap = CustomWrap.objects.filter(id=wrap_id).first()
+    print('\n\n\n\n', wrap)
+
+    without_brackets = wrap.top_artist[1:-1]
+    print(without_brackets)
+
+    without_brackets = without_brackets.split(', ')
+    without_brackets[0] = without_brackets[0][1:-1]
+    without_brackets[1] = without_brackets[1][1:-1]
+    print(type(without_brackets))
+    request.session['top_artist'] = without_brackets
+    request.session['top_songs'] = wrap.top_songs
+    request.session['image_url'] = wrap.image_url
+    request.session['top_3_artists'] = wrap.top_3_artists
+    request.session['artist1'] = wrap.artist1
+    request.session['artist2'] = wrap.artist2
+    request.session['artist3'] = wrap.artist3
+    request.session['mood1'] = wrap.mood1
+    request.session['mood2'] = wrap.mood2
+    request.session['mood3'] = wrap.mood3
+    request.session['mood4'] = wrap.mood4
+    request.session['mood5'] = wrap.mood5
+    request.session['mood6'] = wrap.mood6
+    request.session['song_artist1'] = wrap.song_artist1
+    request.session['song_artist2'] = wrap.song_artist2
+    request.session['song_artist3'] = wrap.song_artist3
+    request.session['song_artist4'] = wrap.song_artist4
+    request.session['song_artist5'] = wrap.song_artist5
+    request.session['song_artist6'] = wrap.song_artist6
+    request.session['image'] = wrap.image
+    request.session['season'] = wrap.season
+    request.session['content'] = wrap.content
+    request.session['mood'] = wrap.mood
+    request.session['songPath'] = wrap.songPath
+    request.session['latest_time'] = wrap.latest_time
+    request.session['time_ranges'] = wrap.time_ranges
+    request.session['total_minutes'] = wrap.total_minutes
+    request.session['hour_hand_rotation'] = wrap.hour_hand_rotation
+    request.session['minute_hand_rotation'] = wrap.minute_hand_rotation
+    request.session['premium'] = wrap.premium
+    request.session['ads_minutes'] = wrap.ads_minutes
+    return JsonResponse({})

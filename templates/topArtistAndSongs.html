@@ -426,6 +426,10 @@
             audio.currentTime = 0;
             button.previousElementSibling.innerText = "Play"; // Reset play button text
         }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            console.log({{top_artist}});
+        });
     </script>
 
     {% endblock %}
