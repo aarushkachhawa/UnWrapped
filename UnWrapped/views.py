@@ -895,7 +895,7 @@ def transition_two(request):
     if 'spotify_access_token' not in request.session:
         return redirect(spotify_auth_url())
     try:
-        return render(request, 'transitionTwo.html')
+        return render(request, 'transitionTwo.html', {'language': request.session.get('language', 'english')})
 
     except Exception as e:
         logger.error(f"Error in transition view: {e}")
