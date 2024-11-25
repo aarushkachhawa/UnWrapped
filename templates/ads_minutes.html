@@ -131,13 +131,33 @@
 
 
         <div id="text-container">
-          <h1 id="top-line">You Avoided Approximately</h1>
-          <h1 id="ads-minutes">{{ads_minutes}} Minutes</h1>
-          <h1>of ads this week</h1>
-          {% if premium %}
-            <p>Spotify premium really coming in clutch here!</p>
-          {% else %}
-            <p>How many times have you heard “Want a break from the ads?”</p>
+          {% if language == "english" %}
+            <h1 id="top-line">You Avoided Approximately</h1>
+            <h1 id="ads-minutes">{{ads_minutes}} Minutes</h1>
+            <h1>of ads this week</h1>
+            {% if premium %}
+              <p>Spotify premium really coming in clutch here!</p>
+            {% else %}
+              <p>How many times have you heard “Want a break from the ads?”</p>
+            {% endif %}
+          {% elif language == "hindi" %}
+            <h1 id="top-line">आपने लगभग बचा लिया</h1>
+            <h1 id="ads-minutes">{{ads_minutes}} मिनट</h1>
+            <h1>इस सप्ताह के विज्ञापनों से</h1>
+            {% if premium %}
+              <p>स्पॉटिफाई प्रीमियम यहाँ वास्तव में मददगार साबित हुआ!</p>
+            {% else %}
+              <p>कितनी बार आपने सुना है "क्या आप विज्ञापनों से एक ब्रेक चाहते हैं?"</p>
+            {% endif %}
+          {% elif language == "mandarin" %}
+            <h1 id="top-line">本周您大约避免了</h1>
+            <h1 id="ads-minutes">{{ads_minutes}} 分钟</h1>
+            <h1>的广告时间</h1>
+            {% if premium %}
+              <p>Spotify会员真的很给力！</p>
+            {% else %}
+              <p>您听过多少次"要不要休息一下广告？"</p>
+            {% endif %}
           {% endif %}
         </div>
 

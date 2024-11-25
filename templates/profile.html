@@ -235,21 +235,78 @@
         <!-- <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="rainbow-corner bottom-right">
         <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="rainbow-corner bottom-left"> -->
         <div class="info-item">
-            <label>USERNAME:</label>
+            <label>
+                {% if language == "english" %}
+                    USERNAME:
+                {% elif language == "hindi" %}
+                    उपयोगकर्ता नाम:
+                {% elif language == "mandarin" %}
+                    用户名：
+                {% endif %}
+            </label>
             <div class="data-field username-field">{{ username }}</div>
         </div>
         <div class="info-item">
-            <label>EMAIL:</label>
+            <label>
+                {% if language == "english" %}
+                    EMAIL:
+                {% elif language == "hindi" %}
+                    ईमेल:
+                {% elif language == "mandarin" %}
+                    邮箱：
+                {% endif %}
+            </label>
             <div class="data-field email-field">{{ email }}</div>
         </div>
         <div class="info-item">
-            <label>TOP GENRE:</label>
+            <label>
+                {% if language == "english" %}
+                    LANGUAGE:
+                {% elif language == "hindi" %}
+                    भाषा:
+                {% elif language == "mandarin" %}
+                    语言：
+                {% endif %}
+            </label>
+            <form method="POST" style="display: flex; width: 100%;">
+                {% csrf_token %}
+                <select name="language" class="data-field email-field" onchange="this.form.submit()">
+                    <option value="english" {% if language == "english" %}selected{% endif %}>
+                        English (English)
+                    </option>
+                    <option value="hindi" {% if language == "hindi" %}selected{% endif %}>
+                        Hindi (हिन्दी)
+                    </option>
+                    <option value="mandarin" {% if language == "mandarin" %}selected{% endif %}>
+                        Mandarin (中文)
+                    </option>
+                </select>
+            </form>
+         </div>
+        <div class="info-item">
+            <label>
+                {% if language == "english" %}
+                    TOP GENRE:
+                {% elif language == "hindi" %}
+                    शीर्ष श्रेणी:
+                {% elif language == "mandarin" %}
+                    最爱流派：
+                {% endif %}
+            </label>
             <div class="data-field genre-field"></div>
         </div>
         <div class="bottom-section">
             <div class="top-artists">
                 <div class="info-item">
-                    <label>TOP FIVE ARTISTS</label>
+                    <label>
+                        {% if language == "english" %}
+                            TOP FIVE ARTISTS
+                        {% elif language == "hindi" %}
+                            शीर्ष पांच कलाकार
+                        {% elif language == "mandarin" %}
+                            五大最爱艺术家
+                        {% endif %}
+                    </label>
                 </div>
                 <div class="artist-item">
                     <div class="artist-number">1</div>
@@ -284,7 +341,15 @@
                         <div class="control"></div>
                         <div class="control"></div>
                     </div>
-                    <div class="jukebox-label">PAST WRAPS!</div>
+                    <div class="jukebox-label">
+                        {% if language == "english" %}
+                            PAST WRAPS!
+                        {% elif language == "hindi" %}
+                            पिछले रैप्स!
+                        {% elif language == "mandarin" %}
+                            往期回顾！
+                        {% endif %}
+                    </div>
                 </div>
                 <a href="{% url 'slide_2' %}" style="text-decoration: none;">
                 <div class="jukebox turquoise">
@@ -298,7 +363,15 @@
                         <div class="control"></div>
                         <div class="control"></div>
                     </div>
-                    <div class="jukebox-label">MONTHLY TRENDS</div>  
+                    <div class="jukebox-label">
+                        {% if language == "english" %}
+                            MONTHLY TRENDS
+                        {% elif language == "hindi" %}
+                            मासिक रुझान
+                        {% elif language == "mandarin" %}
+                            月度趋势
+                        {% endif %}
+                    </div> 
                 </div>
                 </a>
             </div>

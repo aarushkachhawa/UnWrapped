@@ -46,14 +46,20 @@ def logout_view(request):
 
 @login_required
 def profile(request):
+    if request.method == "POST" and 'language' in request.POST:
+        request.session['language'] = request.POST.get('language')
+
+    language = request.session.get('language', 'english')
     context = {
         'username': request.user.get_username(),
-        'email': request.user.email
+        'email': request.user.email,
+        'language': language
     }
     return render(request, 'profile.html', context)
 
 def contactDevs(request):
-    return render(request, 'contact.html', {})
+    language = request.session.get('language', 'english')
+    return render(request, 'contact.html', {'language': language})
 
 def register(request):
     if request.user.is_authenticated:
@@ -74,6 +80,9 @@ def register(request):
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('home')
+
+    language = request.session.get('language', 'english')
+
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -90,7 +99,7 @@ def login_view(request):
             messages.error(request, 'Invalid username or password.')
     else:
         form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form, 'hideMenu': False})
+    return render(request, 'login.html', {'form': form, 'hideMenu': False, 'language': language})
 
 
 # Helper function to get Spotify tokens
@@ -497,13 +506,30 @@ def calculate_get_most_popular_artists(request):
 
 
 def get_most_popular_artists(request, page = "slide_2.html"):
+    language = request.session.get('language', 'english')
+
+    time_labels = {
+        'english': [["over the", "last year"], ["over the last", "six months"], ["over the", "last month"]],
+        'hindi': [["पिछले", "साल में"], ["पिछले", "छह महीने में"], ["पिछले", "महीने में"]],
+        'mandarin': [["过去", "一年"], ["过去", "六个月"], ["过去", "一个月"]]
+    }
+
+    ranking_labels = {
+        'english': "Ranking",
+        'hindi': "स्थान",
+        'mandarin': "排名"
+    }
+
     context = {
-        'top_3_artists':  request.session['top_3_artists'],
+        'top_3_artists': request.session['top_3_artists'],
         'artist1': request.session['artist1'],
         'artist2': request.session['artist2'],
         'artist3': request.session['artist3'],
+        'language': language,
+        'time_labels': json.dumps(time_labels[language]),
+        'ranking_label': ranking_labels[language]
     }
-
+    
     return render(request, page, context)
 
 
@@ -830,12 +856,14 @@ def calculate_night_owl(request):  # combine this into one calculate stats metho
     request.session['minute_hand_rotation'] = minute_hand_rotation - 90
 
 def night_owl(request):
+    language = request.session.get('language', 'english')
     context = {
         "latest_time": request.session['latest_time'],
         'time_ranges': request.session['time_ranges'],
         "total_minutes": request.session['total_minutes'],
         "hour_hand_rotation": request.session['hour_hand_rotation'],
         "minute_hand_rotation": request.session['minute_hand_rotation'],
+        "language": language
     }
 
     return render(request, 'slide_3.html', context)
@@ -889,10 +917,11 @@ def calculate_get_account_level(request):
     request.session['ads_minutes'] = round(calculate_ads(request))
 
 def get_account_level(request):
+    language = request.session.get('language', 'english')
     context = {
         "premium": request.session['premium'],
         "ads_minutes": request.session['ads_minutes'],
-        "language": "english",
+        "language": language,
     }
 
     return render(request, 'ads_minutes.html', context)
