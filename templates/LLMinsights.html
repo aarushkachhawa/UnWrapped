@@ -74,10 +74,14 @@
         /* Combined Title Styling */
         .page-title {
             font-size: 24px;
-            color: #D24E0D;
+            color: #C7443A;
             margin-bottom: 20px;
             text-align: center;
             margin-top: 10px;
+        }
+
+        body.dark-mode .page-title {
+            text-shadow: rgb(205, 204, 204) -2px 2px;
         }
 
         /* Layout for Artist and Songs Side by Side */
@@ -117,6 +121,10 @@
         .artist-vinyl {
             width: 160px;
             height: 390px;
+        }
+
+        body.dark-mode .artist-image {
+            box-shadow: -5px 5px 20px #777676;
         }
 
         .top-artist-section h2 {
