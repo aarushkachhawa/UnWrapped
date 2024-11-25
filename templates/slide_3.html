@@ -174,7 +174,15 @@
             });
         </script>
 
-        <div class="slide-title">Night Owl</div>
+        <div class="slide-title">
+            {% if language == "english" %}
+                Night Owl
+            {% elif language == "hindi" %}
+                रात का पंछी
+            {% elif language == "mandarin" %}
+                夜猫子
+            {% endif %}
+        </div>
         <div class="overall-page">
             <div class="left-section">
                 <img src="{% static 'slide_3/clock_base.png' %}" alt="Clock" id="clock-base">
@@ -182,18 +190,44 @@
                 <div class="hour-hand"> </div>
                 <div class="circle"> </div>
                 <h1 class="latest-time">{{latest_time}}</h1>
-                <p>the latest time you were<br>listening to music recently</p>
+                <p>
+                    {% if language == "english" %}
+                        the latest time you were<br>listening to music recently
+                    {% elif language == "hindi" %}
+                        हाल ही में आप सबसे देर तक<br>संगीत सुन रहे थे
+                    {% elif language == "mandarin" %}
+                        您最近最晚<br>听音乐的时间
+                    {% endif %}
+                </p>
             </div>
             <div class="right-section">
-                <h1 class="total-minutes">{{total_minutes}} minutes</h1>
+                <h1 class="total-minutes">
+                    {{total_minutes}} 
+                    {% if language == "english" %}
+                        minutes
+                    {% elif language == "hindi" %}
+                        मिनट
+                    {% elif language == "mandarin" %}
+                        分钟
+                    {% endif %}
+                </h1>
                 <canvas id="hoursBarGraph" style="width:100%;max-width:800px"></canvas>
-                <p>the amount of minutes of music you listened to recently...</p>
+                <p>
+                    {% if language == "english" %}
+                        the amount of minutes of music you listened to recently...
+                    {% elif language == "hindi" %}
+                        हाल ही में आपने कितने मिनट संगीत सुना...
+                    {% elif language == "mandarin" %}
+                        您最近听音乐的分钟数...
+                    {% endif %}
+                </p>
             </div>
 
             <script>
                 const xValues = [""]
                 const dark_mode = localStorage.getItem('dark_mode') === 'on'
                 const time_ranges = JSON.parse('{{ time_ranges | escapejs }}');
+                const language = "{{language}}";
                 const ranges = Object.keys(time_ranges);
                 const range1 = ranges[0];
                 const range2 = ranges[1];
@@ -201,25 +235,33 @@
                 const range4 = ranges[3];
                 const datasets = [
                     {
-                        label: "Midnight to 6 AM",
+                        label: language === "english" ? "Midnight to 6 AM" : 
+                            language === "hindi" ? "रात 12 बजे से सुबह 6 बजे तक" : 
+                            "午夜至早上6点",
                         data: [time_ranges[range1]],
                         backgroundColor: "#2A9D90",
                         fill: true,
                     },
                     {
-                        label: "6 AM to Noon",
+                        label: language === "english" ? "6 AM to Noon" : 
+                            language === "hindi" ? "सुबह 6 बजे से दोपहर तक" : 
+                            "早上6点至中午",
                         data: [time_ranges[range2]],
                         backgroundColor: "#E99F99",
                         fill: true,
                     },
                     {
-                        label: "Noon to 6 PM",
+                        label: language === "english" ? "Noon to 6 PM" : 
+                            language === "hindi" ? "दोपहर से शाम 6 बजे तक" : 
+                            "中午至下午6点",
                         data: [time_ranges[range3]],
                         backgroundColor: "#5AABF3",
                         fill: true,
                     },
                     {
-                        label: "6 PM to Midnight",
+                        label: language === "english" ? "6 PM to Midnight" : 
+                            language === "hindi" ? "शाम 6 बजे से रात 12 बजे तक" : 
+                            "下午6点至午夜",
                         data: [time_ranges[range4]],
                         backgroundColor: "#E9C999",
                         fill: true,
@@ -265,7 +307,9 @@
                                 },
                                 scaleLabel: {
                                     display: true,
-                                    labelString: "Minutes Listened",
+                                    labelString: language === "english" ? "Minutes Listened" :
+                                                language === "hindi" ? "सुने गए मिनट" : 
+                                                "收听分钟数",
                                     fontFamily: 'Notable',
                                     fontColor: dark_mode ? "#a8a6a6" : "#473924",
                                     fontSize: 20,

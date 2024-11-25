@@ -237,7 +237,15 @@
     <div class="contactContainer">
         <!-- <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="rainbow-corner bottom-right">
         <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="rainbow-corner bottom-left"> -->
-        <h1> Contact </h1>
+        <h1>
+            {% if language == "english" %}
+                Contact
+            {% elif language == "hindi" %}
+                संपर्क
+            {% elif language == "mandarin" %}
+                联系我们
+            {% endif %}
+        </h1>
 
         <p> Hello! Our project was made for Georgia Tech's CS 2340 class. We built this app using Django and the Spotify API. Our team utilized Agile Scrum Methadology.</p>
         <ul>
@@ -261,6 +269,16 @@
         <li> Anya Khosla: akhosla32@gatech.edu </li>
         <li> Aarush Kachhawa: akachhawa3@gatech.edu </li>
         <li> Pranav Kadekodi: pkadekodi3@gatech.edu </li>
+        
+        <!-- <p>
+            {% if language == "english" %}
+                Hello! Our project was made for Georgia Tech's CS 2340 class. We built this app using Django and the Spotify API.
+            {% elif language == "hindi" %}
+                नमस्ते! हमारा प्रोजेक्ट जॉर्जिया टेक के CS 2340 क्लास के लिए बनाया गया था। हमने इस ऐप को Django और Spotify API का उपयोग करके बनाया है।
+            {% elif language == "mandarin" %}
+                您好！这是我们为佐治亚理工学院CS 2340课程制作的项目。我们使用Django和Spotify API构建了这个应用程序。
+            {% endif %}
+        </p> -->
 
     </div>
     {% endblock %}
