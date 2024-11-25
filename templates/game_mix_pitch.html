@@ -1,172 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guess the Songs</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
+{% extends "base.html" %}
 
-        .container {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 600px; /* Increased width to accommodate more buttons */
-            width: 90%; /* Ensure responsiveness on smaller screens */
-        }
-
-        audio {
-            width: 100%;
-            margin: 10px 0;
-        }
-
-        h2, p {
-            color: #333;
-        }
-
-        .choices {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr); /* Fixed 4 columns for a 4x4 grid */
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            background-color: #A9A9A9;
-            color: white;
-            font-size: 14px;
-            transition: background-color 0.3s;
-        }
-
-        button.selected {
-            background-color: #6c757d; /* Changed to indicate selection */
-        }
-
-        button.correct {
-            background-color: #28a745;
-        }
-
-        button.incorrect {
-            background-color: #dc3545;
-        }
-
-        .message {
-            margin-top: 15px;
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .submit-btn {
-            background-color: #007BFF;
-            margin-top: 15px;
-            padding: 10px 30px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .submit-btn:hover {
-            background-color: #0056b3;
-        }
-
-        .reset-btn {
-            background-color: #FF4500;
-            margin-top: 15px;
-            padding: 10px 30px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .reset-btn:hover {
-            background-color: #e03e00;
-        }
-
-        .continue-btn {
-            background-color: #800080;
-            margin-top: 15px;
-            padding: 10px 30px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            display: none; /* Hidden by default */
-        }
-
-        .continue-btn:hover {
-            background-color: #1e7e34;
-        }
-
-        .back-btn {
-            background-color: #17a2b8;
-            margin-top: 15px;
-            padding: 10px 30px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            display: none; /* Hidden by default */
-        }
-
-        .back-btn:hover {
-            background-color: #117a8b;
-        }
-
-        .error {
-            color: red;
-            font-weight: bold;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 600px) {
-            .choices {
-                grid-template-columns: repeat(3, 1fr); /* 3 columns on smaller screens */
-            }
-
-            button {
-                font-size: 12px;
-                padding: 8px 16px;
-            }
-
-            .submit-btn, .reset-btn, .continue-btn, .back-btn {
-                padding: 8px 20px;
-                font-size: 14px;
-            }
-        }
-    </style>
-</head>
+{% block content %}
 <body>
     <div class="container">
         {% if error %}
             <p class="error">{{ error }}</p>
         {% else %}
             <h2>Guess the Songs</h2>
-            <!-- **Change 1:** Dynamic instruction based on the number of correct songs -->
             {% if correct_songs|length == 2 %}
                 <p>Listen to the track and choose the <strong>two</strong> songs that are mashed together:</p>
             {% elif correct_songs|length == 3 %}
@@ -181,7 +21,6 @@
             </div>
 
             <div class="choices" id="choices">
-                <!-- Dynamically generate buttons for song choices -->
                 {% for song in song_choices %}
                     <button data-song="{{ song }}">{{ song }}</button>
                 {% endfor %}
@@ -189,118 +28,208 @@
 
             <button class="submit-btn" id="submit">Submit</button>
             <button class="reset-btn" id="reset">Reset</button>
-            <!-- **Change 8:** Add Continue and Back buttons -->
             <button class="continue-btn" id="continue" onclick="location.href='{% url 'game2' %}'">Play with 3 Songs</button>
             <button class="back-btn" id="back" onclick="location.href='{% url 'game' %}'">Play with 2 Songs</button>
             <div class="message" id="message"></div>
         {% endif %}
     </div>
 
-    <script>
-        {% if not error %}
-        // **Change 2:** Retrieve the correct songs from the context
-        const correctSongs = {{ correct_songs|safe }};
-        let selectedSongs = [];
+{% block extra_style %}
+<style>
 
-        // **Change 3:** Dynamically set the maximum number of selections based on the number of correct songs
-        const maxSelections = correctSongs.length;
+    body {
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center top 100px;
+        background-color: #FCF8F1;
+        overflow: hidden;
+    }
 
-        // Add event listeners for the choice buttons
+    .container {
+        margin-top: 40px;
+    }
+
+    .audio-section {
+        margin-top: 30px;
+    }
+
+    .choices {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-top: 30px;
+    }
+
+    .choices button {
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #C0C0C0;
+        color: #FCF8F1;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s;
+        width: 275px;
+        height: 100px;
+        font-size: 16px;
+        font-family: 'Notable', sans-serif;
+    }
+
+    .submit-btn,
+    .reset-btn,
+    .continue-btn,
+    .back-btn {
+        margin-top: 10px;
+    }
+
+    .continue-btn,
+    .back-btn {
+        display: none;
+    }
+
+    .message {
+        margin-top: 10px;
+    }
+
+    .choices button.selected {
+        background-color: #6c757d;
+    }
+
+    .choices button.correct {
+        background-color: #28a745;
+    }
+
+    .choices button.incorrect {
+        background-color: #dc3545;
+    }
+
+    .submit-btn {
+        background-color: #007BFF;
+        margin-top: 20px;
+    }
+
+    .reset-btn {
+        background-color: #FF4500;
+    }
+
+    .submit-btn, .reset-btn, .continue-btn, .back-btn{
+        color: white;
+        width: 200px;
+        height: 30px;
+        border-radius: 5px;
+        border: none;
+    }
+
+    .continue-btn {
+        background-color: #800080;
+        color: white;
+        position: absolute;
+        left: calc(50% + 130px);
+        top: 619px
+    }
+
+    .back-btn {
+        background-color: #17a2b8;
+        color: white;
+        position: absolute;
+        left: calc(50% + 130px);
+        top: 729px
+    }
+
+    .submit-btn:hover {
+        background-color: #0056b3;
+    }
+
+    .reset-btn:hover {
+        background-color: #e03e00;
+    }
+
+    .continue-btn:hover {
+        background-color: #6a006a;
+    }
+
+    .back-btn:hover {
+        background-color: #117a8b;
+    }
+</style>
+{% endblock %}
+
+<script>
+    {% if not error %}
+    const correctSongs = {{ correct_songs|safe }};
+    let selectedSongs = [];
+    const maxSelections = correctSongs.length;
+
+    document.querySelectorAll('#choices button').forEach(button => {
+        button.addEventListener('click', () => {
+            const song = button.getAttribute('data-song');
+            if (selectedSongs.includes(song)) {
+                selectedSongs = selectedSongs.filter(s => s !== song);
+                button.classList.remove('selected');
+            } else {
+                if (selectedSongs.length === maxSelections) {
+                    alert(`You can only select up to ${maxSelections} song${maxSelections > 1 ? 's' : ''}.`);
+                    return;
+                }
+                selectedSongs.push(song);
+                button.classList.add('selected');
+            }
+        });
+    });
+
+    document.getElementById('submit').addEventListener('click', () => {
+        const messageElement = document.getElementById('message');
+        if (selectedSongs.length !== maxSelections) {
+            messageElement.textContent = `Please select exactly ${maxSelections} song${maxSelections > 1 ? 's' : ''}.`;
+            messageElement.style.color = 'orange';
+            return;
+        }
+
+        const correctCount = selectedSongs.filter(song => correctSongs.includes(song)).length;
+        if (correctCount === maxSelections) {
+            messageElement.textContent = `${maxSelections}/${maxSelections} correct! Well done!`;
+            messageElement.style.color = 'green';
+            highlightCorrect();
+            {% if correct_songs|length == 2 %}
+                document.getElementById('continue').style.display = 'inline-block';
+            {% elif correct_songs|length == 3 %}
+                document.getElementById('back').style.display = 'inline-block';
+            {% endif %}
+        } else {
+            messageElement.textContent = `${correctCount}/${maxSelections} correct`;
+            messageElement.style.color = correctCount > 0 ? 'orange' : 'red';
+            highlightIncorrect();
+        }
+    });
+
+    document.getElementById('reset').addEventListener('click', () => {
+        window.location.reload();
+    });
+
+    function highlightIncorrect() {
         document.querySelectorAll('#choices button').forEach(button => {
-            button.addEventListener('click', () => {
-                const song = button.getAttribute('data-song');
-
-                if (selectedSongs.includes(song)) {
-                    // **Change 4:** Deselect the song
-                    selectedSongs = selectedSongs.filter(s => s !== song);
-                    button.classList.remove('selected');
-                } else {
-                    if (selectedSongs.length === maxSelections) {
-                        // Optional: Provide feedback when maximum selections are reached
-                        alert(`You can only select up to ${maxSelections} song${maxSelections > 1 ? 's' : ''}.`);
-                        return;
-                    }
-                    selectedSongs.push(song);
-                    button.classList.add('selected');
-                }
-            });
-        });
-
-        // Submit button functionality
-        document.getElementById('submit').addEventListener('click', () => {
-            const messageElement = document.getElementById('message');
-
-            // **Change 5:** Validate if the correct number of songs are selected
-            if (selectedSongs.length !== maxSelections) {
-                messageElement.textContent = `Please select exactly ${maxSelections} song${maxSelections > 1 ? 's' : ''}.`;
-                messageElement.style.color = 'orange';
-                return;
+            const song = button.getAttribute('data-song');
+            if (!correctSongs.includes(song) && selectedSongs.includes(song)) {
+                button.classList.add('incorrect');
             }
-
-            // **Change 6:** Check how many correct songs are selected
-            const correctCount = selectedSongs.filter(song => correctSongs.includes(song)).length;
-
-            // **Change 7:** Provide feedback based on the number of correct selections
-            if (correctCount === 0) {
-                messageElement.textContent = `0/${maxSelections} correct`;
-                messageElement.style.color = 'red';
-                highlightIncorrect();
-            } else if (correctCount < maxSelections) {
-                messageElement.textContent = `${correctCount}/${maxSelections} correct`;
-                // Set color based on correctness ratio
-                const percentage = (correctCount / maxSelections) * 100;
-                if (percentage < 50) {
-                    messageElement.style.color = 'red';
-                } else if (percentage < 100) {
-                    messageElement.style.color = 'orange';
-                }
-                highlightIncorrect();
-            } else if (correctCount === maxSelections) {
-                messageElement.textContent = `${maxSelections}/${maxSelections} correct! Well done!`;
-                messageElement.style.color = 'green';
-                highlightCorrect();
-
-                // **Change 9:** Display the appropriate continuation button based on the number of correct songs
-                {% if correct_songs|length == 2 %}
-                    document.getElementById('continue').style.display = 'inline-block';
-                {% elif correct_songs|length == 3 %}
-                    document.getElementById('back').style.display = 'inline-block';
-                {% endif %}
+            if (correctSongs.includes(song)) {
+                button.classList.add('correct');
             }
+            button.disabled = true;
         });
+    }
 
-        // Reset button functionality
-        document.getElementById('reset').addEventListener('click', () => {
-            window.location.reload(); // Reload the page to reset everything
+    function highlightCorrect() {
+        document.querySelectorAll('#choices button').forEach(button => {
+            const song = button.getAttribute('data-song');
+            if (correctSongs.includes(song)) {
+                button.classList.add('correct');
+            }
+            button.disabled = true;
         });
+    }
+    {% endif %}
+</script>
 
-        // Function to highlight incorrect selections after submission
-        function highlightIncorrect() {
-            document.querySelectorAll('#choices button').forEach(button => {
-                const song = button.getAttribute('data-song');
-                if (!correctSongs.includes(song) && selectedSongs.includes(song)) {
-                    button.classList.add('incorrect');
-                }
-                if (correctSongs.includes(song)) {
-                    button.classList.add('correct');
-                }
-                // Disable all buttons after submission
-                button.disabled = true;
-            });
-        }
-
-        // Function to highlight correct selections when all are correct
-        function highlightCorrect() {
-            document.querySelectorAll('#choices button').forEach(button => {
-                const song = button.getAttribute('data-song');
-                if (correctSongs.includes(song)) {
-                    button.classList.add('correct');
-                }
-                // Disable all buttons after submission
-                button.disabled = true;
-            });
-        }
-        {% endif %}
-    </script>
 </body>
-</html>
+{% endblock %}
