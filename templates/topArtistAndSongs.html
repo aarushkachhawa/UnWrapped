@@ -485,11 +485,13 @@
 
 
     <script>
+        const language = "{{ language }}"
         function toggleAudio(button) {
             const audio = button.parentElement.nextElementSibling;
+            
 
             // Stop all other audio
-            const allAudios = document.querySelectorAll('audio');
+            const allAudios = document.querySelectorAll('audio'); // THE COMMENTED CODE DOESN'T WORK BECAUSE LANGUAGE ISN'T THE SAME AS THE LANGUAGE BEING PASSED IN
             allAudios.forEach(a => {
                 if (a !== audio) {
                     a.pause();
