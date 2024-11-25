@@ -688,26 +688,6 @@ def analyze_seasonal_mood(request, page= 'seasonalMood.html'):
     return render(request, page, context)
 
 
-def halloween_seasonal(request):
-    context = {
-        "mood1": request.session['mood1'],
-        "mood2": request.session['mood2'],
-        "mood3": request.session['mood3'],
-        "mood4": request.session['mood4'],
-        "mood5": request.session['mood5'],
-        "mood6": request.session['mood6'],
-        "song_artist1": request.session['song_artist1'],
-        "song_artist2": request.session['song_artist2'],
-        "song_artist3": request.session['song_artist3'],
-        "song_artist4": request.session['song_artist4'],
-        "song_artist5": request.session['song_artist5'],
-        "song_artist6": request.session['song_artist6'],
-        "image": request.session['image'],
-        "season": request.session['season'],
-    }
-
-    return render(request, 'halloween_seasonal.html')
-
 
 def calculate_llm_insights_page(request):
     contentArr = analyze_clothing(request)
@@ -1015,7 +995,6 @@ def halloween_seasonal(request):
     }
 
     return render(request, 'halloween_seasonal.html')
-
 
 
 

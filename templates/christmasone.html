@@ -1,4 +1,11 @@
 {% extends 'base.html' %}
+{% block extra_css %}
+<style>
+    .navbar {
+        background-color: black !important;
+    }
+</style>
+{% endblock %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -25,7 +32,7 @@
 
         body {
             font-family: 'Notable', sans-serif;
-            background-color: #FFA500;
+            background-color: #FF1100;
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center top;
@@ -53,7 +60,7 @@
         /* Combined Title Styling */
         .page-title {
             font-size: 20px;
-            color: black;
+            color: darkgreen;
             margin-bottom: 20px;
             text-align: center;
             margin-top: 20px;
@@ -95,7 +102,7 @@
 
         .top-artist-section h2 {
             font-size: 32px;
-            color: black;
+            color: darkgreen;
             text-shadow: 2px 2px 4px rgba(199, 58, 68, 1);
             margin-top: 500px;
         }
@@ -208,7 +215,7 @@
 
         .song-text-song {
             font-size: 20px;
-            color: #000000;
+            color: darkgreen;
             text-overflow: ellipsis;
         }
 
@@ -281,8 +288,8 @@
         });
     </script>
 
-    <img src="{% static 'slide_2/spider_web.png' %}" alt="Rainbow" class="top-left rainbow">
-    <img src="{% static 'slide_2/spider_web.png' %}" alt="Rainbow" class="bottom-right rainbow">
+    <img src="{% static 'slide_2/snowflake.png' %}" alt="Rainbow" class="top-left rainbow">
+    <img src="{% static 'slide_2/snowflake.png' %}" alt="Rainbow" class="bottom-right rainbow">
 
     <!-- Page Title -->
     <div class="page-title">
