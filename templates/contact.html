@@ -217,10 +217,20 @@
             width: 100%;
             max-width: 800px;
             position: relative;
-            text-align: center;
             h1 {
                 margin-bottom: 50px;
+                text-align: center;
             }
+            ul {
+                margin-left: 40px;
+            }
+            hr {
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+        }
+        p, li {
+            font-family: Verdana, Geneva, Tahoma, sans-serif
         }
     </style>
 
@@ -229,7 +239,28 @@
         <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="rainbow-corner bottom-left"> -->
         <h1> Contact </h1>
 
-        <p> Hello! Our project was made for Georgia Tech's CS 2340 class. We built this app using Django and the Spotify API. </p>
+        <p> Hello! Our project was made for Georgia Tech's CS 2340 class. We built this app using Django and the Spotify API. Our team utilized Agile Scrum Methadology.</p>
+        <ul>
+            <li> Scrum Master: Anya </li>
+            <li> Product Owner: Aditi </li>
+            <li> Developers: Aarush, Atharva, and Pranav </li>
+        </ul>
+        <p> The goal of this project was to create a product similar to Spotify's end-of-year Wrapped, but with some unique analytics. We included: </p>
+        <ul>
+            <li> your top artist </li>
+            <li> your top songs </li>
+            <li> what times of day you listened to songs </li>
+            <li> time spent listening to ads </li>
+            <li> some AI generated descriptions of your music taste using your Spotify listening data </li>
+            <li> an of course, the ability to save this information and look at it later! </li>
+        </ul>
+        <hr>
+        <p> If you have any questions, feel free to email us! </p>
+        <li> Atharva Khandelwal: akhandelwal73@gatech.edu </li>
+        <li> Aditi Koratpallikar: akoratpa3@gatech.edu </li>
+        <li> Anya Khosla: akhosla32@gatech.edu </li>
+        <li> Aarush Kachhawa: akachhawa3@gatech.edu </li>
+        <li> Pranav Kadekodi: pkadekodi3@gatech.edu </li>
 
     </div>
     {% endblock %}

@@ -31,4 +31,7 @@ urlpatterns = [
     path('christmas_top_artist/', views.christmas_top_artist, name='christmas_top_artist'),
     path('generate_wrap/', views.generate_wrap, name='generate_wrap'),
     path('reset/', views.reset, name='reset'), # For initiating the reset request (email input)
+    path('game/', views.game_mix_pitch_1, name="game"),
+    path('game2/', views.game_mix_pitch_2, name="game2")
+
 ]
