@@ -174,72 +174,77 @@
     const maxSelections = correctSongs.length;
 
     document.querySelectorAll('#choices button').forEach(button => {
-        button.addEventListener('click', () => {
-            const song = button.getAttribute('data-song');
-            if (selectedSongs.includes(song)) {
-                selectedSongs = selectedSongs.filter(s => s !== song);
-                button.classList.remove('selected');
-            } else {
-                if (selectedSongs.length === maxSelections) {
-                    alert(`You can only select up to ${maxSelections} song${maxSelections > 1 ? 's' : ''}.`);
-                    return;
-                }
-                selectedSongs.push(song);
-                button.classList.add('selected');
+    button.addEventListener('click', () => {
+        const song = button.getAttribute('data-song');
+
+        if (selectedSongs.includes(song)) {
+            // Deselect the song
+            selectedSongs = selectedSongs.filter(s => s !== song);
+            button.classList.remove('selected');
+        } else {
+            if (selectedSongs.length === maxSelections) {
+                // Deselect the first selected song to make room for the new one
+                const firstSelected = selectedSongs.shift();
+                const firstButton = document.querySelector(`button[data-song="${firstSelected}"]`);
+                if (firstButton) firstButton.classList.remove('selected');
             }
-        });
+            // Select the new song
+            selectedSongs.push(song);
+            button.classList.add('selected');
+        }
+    });
     });
 
     document.getElementById('submit').addEventListener('click', () => {
-        const messageElement = document.getElementById('message');
-        if (selectedSongs.length !== maxSelections) {
-            messageElement.textContent = `Please select exactly ${maxSelections} song${maxSelections > 1 ? 's' : ''}.`;
-            messageElement.style.color = 'orange';
-            return;
-        }
+    const messageElement = document.getElementById('message');
+    if (selectedSongs.length !== maxSelections) {
+        messageElement.textContent = `Please select exactly ${maxSelections} song${maxSelections > 1 ? 's' : ''}.`;
+        messageElement.style.color = 'orange';
+        return;
+    }
 
-        const correctCount = selectedSongs.filter(song => correctSongs.includes(song)).length;
-        if (correctCount === maxSelections) {
-            messageElement.textContent = `${maxSelections}/${maxSelections} correct! Well done!`;
-            messageElement.style.color = 'green';
-            highlightCorrect();
-            {% if correct_songs|length == 2 %}
-                document.getElementById('continue').style.display = 'inline-block';
-            {% elif correct_songs|length == 3 %}
-                document.getElementById('back').style.display = 'inline-block';
-            {% endif %}
-        } else {
-            messageElement.textContent = `${correctCount}/${maxSelections} correct`;
-            messageElement.style.color = correctCount > 0 ? 'orange' : 'red';
-            highlightIncorrect();
-        }
+    const correctCount = selectedSongs.filter(song => correctSongs.includes(song)).length;
+    if (correctCount === maxSelections) {
+        messageElement.textContent = `${maxSelections}/${maxSelections} correct! Well done!`;
+        messageElement.style.color = 'green';
+        highlightCorrect();
+        {% if correct_songs|length == 2 %}
+            document.getElementById('continue').style.display = 'inline-block';
+        {% elif correct_songs|length == 3 %}
+            document.getElementById('back').style.display = 'inline-block';
+        {% endif %}
+    } else {
+        messageElement.textContent = `${correctCount}/${maxSelections} correct`;
+        messageElement.style.color = correctCount > 0 ? 'orange' : 'red';
+        highlightIncorrect();
+    }
     });
 
     document.getElementById('reset').addEventListener('click', () => {
-        window.location.reload();
+    window.location.reload();
     });
 
     function highlightIncorrect() {
-        document.querySelectorAll('#choices button').forEach(button => {
-            const song = button.getAttribute('data-song');
-            if (!correctSongs.includes(song) && selectedSongs.includes(song)) {
-                button.classList.add('incorrect');
-            }
-            if (correctSongs.includes(song)) {
-                button.classList.add('correct');
-            }
-            button.disabled = true;
-        });
+    document.querySelectorAll('#choices button').forEach(button => {
+        const song = button.getAttribute('data-song');
+        if (!correctSongs.includes(song) && selectedSongs.includes(song)) {
+            button.classList.add('incorrect');
+        }
+        if (correctSongs.includes(song)) {
+            button.classList.add('correct');
+        }
+        button.disabled = true;
+    });
     }
 
     function highlightCorrect() {
-        document.querySelectorAll('#choices button').forEach(button => {
-            const song = button.getAttribute('data-song');
-            if (correctSongs.includes(song)) {
-                button.classList.add('correct');
-            }
-            button.disabled = true;
-        });
+    document.querySelectorAll('#choices button').forEach(button => {
+        const song = button.getAttribute('data-song');
+        if (correctSongs.includes(song)) {
+            button.classList.add('correct');
+        }
+        button.disabled = true;
+    });
     }
     {% endif %}
 </script>
