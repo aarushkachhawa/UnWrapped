@@ -187,10 +187,13 @@
                 record.style.setProperty('--animation-speed', `${rotationSpeed}s`);
             }
 
-            currentWidth += 1;
-            currentHeight += 1;
-            record.style.setProperty('--width', `${currentWidth}px`);
-            record.style.setProperty('--height', `${currentHeight}px`);
+            if (currentWidth < 700 && currentHeight < 700) {
+                currentWidth += 1;
+                currentHeight += 1;
+                record.style.setProperty('--width', `${currentWidth}px`);
+                record.style.setProperty('--height', `${currentHeight}px`);
+            }
+            
 
             requestAnimationFrame(rotationSpeedIncrease);
         }
