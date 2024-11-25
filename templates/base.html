@@ -293,7 +293,15 @@
         {% endif %}
 
         <div class="title">UNWRAPPED</div>
-        <div class="dark-mode-div" id="dark-mode-btn">TOGGLE DARK MODE</div>
+        <div class="dark-mode-div" id="dark-mode-btn">
+            {% if language == "english" %}
+                TOGGLE DARK MODE
+            {% elif language == "hindi" %}
+                डार्क मोड टॉगल करें
+            {% elif language == "mandarin" %}
+                切换深色模式
+            {% endif %}
+        </div>
     </div>
 
     {% if hideMenu != False %}
