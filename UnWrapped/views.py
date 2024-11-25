@@ -40,6 +40,7 @@ SPOTIFY_BASE_URL = "https://api.spotify.com/v1/me"
 
 
 def logout_view(request):
+    language = request.session.get('language', 'english')
     logout(request)
     messages.info(request, "You have successfully logged out.")
     return redirect('login')
@@ -62,6 +63,7 @@ def contactDevs(request):
     return render(request, 'contact.html', {'language': language})
 
 def register(request):
+    language = request.session.get('language', 'english')
     if request.user.is_authenticated:
         return redirect('home')
     if request.method == 'POST':
@@ -74,14 +76,13 @@ def register(request):
             print(form.errors)
     else:
         form = CustomUserCreationForm()
-    return render(request, 'register.html', {'form': form, 'hideMenu': False})
+    return render(request, 'register.html', {'form': form, 'hideMenu': False, 'language': language})
 
 
 def login_view(request):
+    language = request.session.get('language', 'english')
     if request.user.is_authenticated:
         return redirect('home')
-
-    language = request.session.get('language', 'english')
 
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -147,9 +148,11 @@ def spotify_auth_url():
 
 @login_required
 def home(request):
+    language = request.session.get('language', 'english')
     if 'spotify_access_token' not in request.session:
         return redirect(spotify_auth_url())
     context = getStats(request)
+    context['language'] = language
     return render(request, 'home.html', context)
 
 
@@ -241,16 +244,13 @@ def spotify_callback(request):
 
 @login_required
 def stats(request):
+    language = request.session.get('language', 'english')
     if 'spotify_access_token' not in request.session:
         return redirect(spotify_auth_url())
 
     wrappedData = getStats(request)
-
-    # Example Spotify data in the stats page
     songContent = list(zip(wrappedData['top_songs'], wrappedData['top_songs_urls']))
-
-    print(songContent)
-
+    
     slides = [
         {
             'title': 'Top Artists of the Year',
@@ -265,13 +265,13 @@ def stats(request):
         {
             'title': 'Top Artist This Year',
             'content': [wrappedData['top_artist_year']],
-            # top_artist_year is a single value and the slides expect a list
             'additionalData': None
         },
     ]
 
     context = {
-        'slides': slides
+        'slides': slides,
+        'language': language
     }
 
     return render(request, 'stats.html', context)
@@ -293,15 +293,17 @@ def calculate_top_artist_and_songs_slide(request):
 
     print("CALCULATED TOP ARTISTS")
 
-def top_artist_and_songs_slide(request, page= 'topArtistAndSongs.html'):
+def top_artist_and_songs_slide(request, page='topArtistAndSongs.html', extra_context=None):
     context = {
         'top_artist': request.session['top_artist'],
         'top_songs': request.session['top_songs'],
         'image': request.session['image_url'],
         'top_songs_artists': request.session['top_songs_artists'],
-        'top_songs_urls': request.session['top_songs_urls']
+        'top_songs_urls': request.session['top_songs_urls'],
+        'language': request.session.get('language', 'english')
     }
-
+    if extra_context:
+        context.update(extra_context)
     return render(request, page, context)
 
 
