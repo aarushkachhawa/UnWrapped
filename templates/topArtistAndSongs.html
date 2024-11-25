@@ -528,7 +528,9 @@
             const audio = button.parentElement.nextElementSibling;
             audio.pause();
             audio.currentTime = 0;
-            button.previousElementSibling.innerText = "Play"; // Reset play button text
+            button.previousElementSibling.innerText = language === "english" ? "Play" : 
+                                language === "hindi" ? "चलाएं" : 
+                                "播放"; // Reset play button text
         }
     </script>
 
