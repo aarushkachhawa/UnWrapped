@@ -40,6 +40,7 @@ SPOTIFY_BASE_URL = "https://api.spotify.com/v1/me"
 
 
 def logout_view(request):
+    language = request.session.get('language', 'english')
     logout(request)
     messages.info(request, "You have successfully logged out.")
     return redirect('login')
@@ -59,9 +60,10 @@ def profile(request):
 
 def contactDevs(request):
     language = request.session.get('language', 'english')
-    return render(request, 'contact.html', {'language': language})
+    return render(request, 'contact.html', {'language': 'english'})
 
 def register(request):
+    language = request.session.get('language', 'english')
     if request.user.is_authenticated:
         return redirect('home')
     if request.method == 'POST':
@@ -74,14 +76,13 @@ def register(request):
             print(form.errors)
     else:
         form = CustomUserCreationForm()
-    return render(request, 'register.html', {'form': form, 'hideMenu': False})
+    return render(request, 'register.html', {'form': form, 'hideMenu': False, 'language': language})
 
 
 def login_view(request):
+    language = request.session.get('language', 'english')
     if request.user.is_authenticated:
         return redirect('home')
-
-    language = request.session.get('language', 'english')
 
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -147,9 +148,11 @@ def spotify_auth_url():
 
 @login_required
 def home(request):
+    language = request.session.get('language', 'english')
     if 'spotify_access_token' not in request.session:
         return redirect(spotify_auth_url())
     context = getStats(request)
+    context['language'] = language
     return render(request, 'home.html', context)
 
 
@@ -241,16 +244,13 @@ def spotify_callback(request):
 
 @login_required
 def stats(request):
+    language = request.session.get('language', 'english')
     if 'spotify_access_token' not in request.session:
         return redirect(spotify_auth_url())
 
     wrappedData = getStats(request)
-
-    # Example Spotify data in the stats page
     songContent = list(zip(wrappedData['top_songs'], wrappedData['top_songs_urls']))
-
-    print(songContent)
-
+    
     slides = [
         {
             'title': 'Top Artists of the Year',
@@ -265,13 +265,13 @@ def stats(request):
         {
             'title': 'Top Artist This Year',
             'content': [wrappedData['top_artist_year']],
-            # top_artist_year is a single value and the slides expect a list
             'additionalData': None
         },
     ]
 
     context = {
-        'slides': slides
+        'slides': slides,
+        'language': language
     }
 
     return render(request, 'stats.html', context)
@@ -293,15 +293,17 @@ def calculate_top_artist_and_songs_slide(request):
 
     print("CALCULATED TOP ARTISTS")
 
-def top_artist_and_songs_slide(request, page= 'topArtistAndSongs.html'):
+def top_artist_and_songs_slide(request, page='topArtistAndSongs.html', extra_context=None):
     context = {
         'top_artist': request.session['top_artist'],
         'top_songs': request.session['top_songs'],
         'image': request.session['image_url'],
         'top_songs_artists': request.session['top_songs_artists'],
-        'top_songs_urls': request.session['top_songs_urls']
+        'top_songs_urls': request.session['top_songs_urls'],
+        'language': request.session.get('language', 'english')
     }
-
+    if extra_context:
+        context.update(extra_context)
     return render(request, page, context)
 
 
@@ -505,9 +507,9 @@ def calculate_get_most_popular_artists(request):
     request.session['artist3'] = artist3
 
 
-def get_most_popular_artists(request, page = "slide_2.html"):
+def get_most_popular_artists(request, page='slide_2.html', extra_context=None):
     language = request.session.get('language', 'english')
-
+    
     time_labels = {
         'english': [["over the", "last year"], ["over the last", "six months"], ["over the", "last month"]],
         'hindi': [["पिछले", "साल में"], ["पिछले", "छह महीने में"], ["पिछले", "महीने में"]],
@@ -530,6 +532,8 @@ def get_most_popular_artists(request, page = "slide_2.html"):
         'ranking_label': ranking_labels[language]
     }
     
+    if extra_context:
+        context.update(extra_context)
     return render(request, page, context)
 
 
@@ -597,7 +601,8 @@ def get_recent_top_songs(request):
 
         tracks_url = response_json['next']
 
-    request.session['top_100_songs'] =  songs_list
+    request.session['top_100_songs'] = songs_list
+
 
 
 def calculate_analyze_seasonal_mood(request):
@@ -703,7 +708,7 @@ def calculate_analyze_seasonal_mood(request):
     request.session['image'] = response_json['images'][0]['url']
     request.session['season'] = curr_season
 
-def analyze_seasonal_mood(request, page= 'seasonalMood.html'):
+def analyze_seasonal_mood(request, page='seasonalMood.html', extra_context=None):
     context = {
         "mood1": request.session['mood1'],
         "mood2": request.session['mood2'],
@@ -719,7 +724,10 @@ def analyze_seasonal_mood(request, page= 'seasonalMood.html'):
         "song_artist6": request.session['song_artist6'],
         "image": request.session['image'],
         "season": request.session['season'],
+        "language": request.session.get('language', 'english')
     }
+    if extra_context:
+        context.update(extra_context)
     return render(request, page, context)
 
 
@@ -744,15 +752,17 @@ def calculate_llm_insights_page(request):
 
 
 @login_required
-def llm_insights_page(request, page = 'LLMinsights.html'):
-    context = { # send mood in separately because of how horrible django's template functionality is :)
+def llm_insights_page(request, page='LLMinsights.html', extra_context=None):
+    context = {
         'content': request.session['content'],
         'mood': request.session['mood'],
         'songPath': request.session['songPath'],
-        'imagePath': request.session['imagePath']
+        'imagePath': request.session['imagePath'],
+        'language': request.session.get('language', 'english')
     }
+    if extra_context:
+        context.update(extra_context)
     return render(request, page, context)
-
 
 def analyze_clothing(request):
     client = OpenAI(api_key=OPENAI_API_KEY)
@@ -865,20 +875,27 @@ def night_owl(request):
         "minute_hand_rotation": request.session['minute_hand_rotation'],
         "language": language
     }
-
     return render(request, 'slide_3.html', context)
 
 
 @login_required
 def transition_one(request):
-    """
-    Renders the transition page with music player animation.
-    """
     if 'spotify_access_token' not in request.session:
         return redirect(spotify_auth_url())
-
+    language = request.session.get('language', 'english')
     try:
-        return render(request, 'transitionOne.html')
+        return render(request, 'transitionOne.html', {'language': language})
+    except Exception as e:
+        logger.error(f"Error in transition view: {e}")
+        messages.error(request, "An error occurred while loading the transition page.")
+        return redirect('home')
+
+@login_required
+def transition_two(request):
+    if 'spotify_access_token' not in request.session:
+        return redirect(spotify_auth_url())
+    try:
+        return render(request, 'transitionTwo.html')
 
     except Exception as e:
         logger.error(f"Error in transition view: {e}")
@@ -916,15 +933,16 @@ def calculate_get_account_level(request):
 
     request.session['ads_minutes'] = round(calculate_ads(request))
 
-def get_account_level(request):
+def get_account_level(request, page='ads_minutes.html', extra_context=None):
     language = request.session.get('language', 'english')
     context = {
         "premium": request.session['premium'],
         "ads_minutes": request.session['ads_minutes'],
         "language": language,
     }
-
-    return render(request, 'ads_minutes.html', context)
+    if extra_context:
+        context.update(extra_context)
+    return render(request, page, context)
 
 def generate_wrap(request):
     calculate_top_artist_and_songs_slide(request)
@@ -978,54 +996,52 @@ def generate_wrap(request):
     })
 
 def reset(request):
+    language = request.session.get('language', 'english')
     if request.method == 'POST':
         username = request.POST.get('username')
         new_password = request.POST.get('new_password')
-
-        # Use get_user_model() to get the custom user model
         User = get_user_model()
-
         try:
-            # Find user by username
             user = User.objects.get(username=username)
-
-            # Update the password and hash it
             user.password = make_password(new_password)
             user.save()
-
-            # Redirect or show success message
             messages.success(request, 'Your password has been reset successfully.')
-            return redirect('login')  # Redirect to login page after resetting password
-
+            return redirect('login')
         except User.DoesNotExist:
-            # Handle case where the username is not found
             messages.error(request, 'Username not found.')
-            return render(request, 'reset.html', {'hideMenu': False})
-          
-    return render(request, 'reset.html', {'hideMenu': False})
+            return render(request, 'reset.html', {'hideMenu': False, 'language': language})
+    return render(request, 'reset.html', {'hideMenu': False, 'language': language})
 
 def halloween_ads(request):
-    return get_account_level(request, 'halloween_ads.html')
+    context = {'language': request.session.get('language', 'english')}
+    return get_account_level(request, 'halloween_ads.html', context)
 
 def halloween_top_artist(request):
-    return top_artist_and_songs_slide(request, 'halloweenone.html')
+    context = {'language': request.session.get('language', 'english')}
+    return top_artist_and_songs_slide(request, 'halloweenone.html', context)
 
 def christmas_top_artist(request):
-    return top_artist_and_songs_slide(request, 'christmasone.html')
+    context = {'language': request.session.get('language', 'english')}
+    return top_artist_and_songs_slide(request, 'christmasone.html', context)
 
 def halloween_seasonal(request):
-    return analyze_seasonal_mood(request, 'halloween_seasonal.html')
+    context = {'language': request.session.get('language', 'english')}
+    return analyze_seasonal_mood(request, 'halloween_seasonal.html', context)
 
 def halloween_llm(request):
-    return llm_insights_page(request, 'halloween_llm.html')
+    context = {'language': request.session.get('language', 'english')}
+    return llm_insights_page(request, 'halloween_llm.html', context)
 
 def christmas_seasonal(request):
-    return analyze_seasonal_mood(request, 'christmas_seasonal.html')
+    context = {'language': request.session.get('language', 'english')}
+    return analyze_seasonal_mood(request, 'christmas_seasonal.html', context)
 
 def christmas_llm(request):
-    return llm_insights_page(request, 'christmas_llm.html')
+    context = {'language': request.session.get('language', 'english')}
+    return llm_insights_page(request, 'christmas_llm.html', context)
 
 def game_mix_pitch_1(request):
+    language = request.session.get('language', 'english')
     access_token = request.session.get('spotify_access_token')
 
     if not access_token:
@@ -1121,14 +1137,16 @@ def game_mix_pitch_1(request):
     # Step 5: Render the template
     context = {
         'mixed_audio': mixed_audio_base64,
-        'song_choices': song_choices,  # All multiple-choice options
-        'correct_songs': [track1_name, track2_name]  # Correct answers,
-    }
 
+        'song_choices': song_choices,
+        'correct_songs': [track1_name, track2_name],
+        'language': language
+    }
     return render(request, 'game_mix_pitch.html', context)
 
 
 def game_mix_pitch_2(request):
+    language = request.session.get('language', 'english')
     access_token = request.session.get('spotify_access_token')
 
     if not access_token:
@@ -1284,9 +1302,9 @@ def game_mix_pitch_2(request):
     # Step 5: Render the template
     context = {
         'mixed_audio': mixed_audio_base64,
-        'song_choices': song_choices,  # All multiple-choice options
-        'correct_songs': [base_track_name, pitch_track_up_name, pitch_track_down_name],  # Correct answers
-        'random_key': target_key  # Optionally display the target key used
+        'song_choices': song_choices,
+        'correct_songs': [base_track_name, pitch_track_up_name, pitch_track_down_name],
+        'random_key': target_key,
+        'language': language
     }
-
     return render(request, 'game_mix_pitch.html', context)
