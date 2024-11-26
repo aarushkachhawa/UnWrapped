@@ -79,7 +79,7 @@
                 {% endif %}
             </button>
             
-            <button class="continue-btn" id="continue">
+            <button class="continue-btn" id="continue" onclick="window.location.href='{% url 'game2' %}'">
                 {% if language == "english" %}
                     Play with 3 Songs
                 {% elif language == "hindi" %}
@@ -88,8 +88,8 @@
                     玩3首歌
                 {% endif %}
             </button>
-            
-            <button class="back-btn" id="back">
+
+            <button class="back-btn" id="back" onclick="window.location.href='{% url 'game' %}'">
                 {% if language == "english" %}
                     Play with 2 Songs
                 {% elif language == "hindi" %}
