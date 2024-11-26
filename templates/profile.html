@@ -216,7 +216,12 @@
         .record-players {
             display: flex;  
             gap: 1.5rem;
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            height: 100%; /* Ensure it takes the height of the parent */
         }
+
         .teal {background-color: #b2dfdb;}
         .pink {background-color: #ffcdd2;}
         .orange {background-color: #fff3e0;}
@@ -270,6 +275,11 @@
           width: 200px;
           height: auto;
         }
+
+        body.dark-mode .artist-field, .data-field {
+            color: black;
+        }
+
     </style>
 
     <img src="{% static 'ads_minutes/top_left_corner_rainbow.png' %}" alt="Rainbow" class="top-right rainbow">
@@ -314,7 +324,7 @@
             </label>
             <form method="POST" style="display: flex; width: 100%;">
                 {% csrf_token %}
-                <select name="language" class="data-field email-field" onchange="this.form.submit()">
+                <select name="language" class="data-field email-field" style="font-family: 'Notable', sans-serif; font-size: 16px;" onchange="this.form.submit()">
                     <option value="english" {% if language == "english" %}selected{% endif %}>
                         English (English)
                     </option>
@@ -330,14 +340,14 @@
         <div class="info-item">
             <label>
                 {% if language == "english" %}
-                    TOP GENRE:
+                    TOP ARTIST:
                 {% elif language == "hindi" %}
-                    शीर्ष श्रेणी:
+                    शीर्ष कलाकार:
                 {% elif language == "mandarin" %}
-                    最爱流派：
+                    顶级艺术家：
                 {% endif %}
             </label>
-            <div class="data-field genre-field"></div>
+            <div class="data-field genre-field"> {{ top_artist }} </div>
         </div>
         <div class="bottom-section">
             <div class="top-artists">
@@ -354,23 +364,23 @@
                 </div>
                 <div class="artist-item">
                     <div class="artist-number blue-background">1</div>
-                    <div class="artist-field blue"></div>
+                    <div class="artist-field blue"> {{ top_songs.0 }} </div>
                 </div>
                 <div class="artist-item">
                     <div class="artist-number teal-background">2</div>
-                    <div class="artist-field teal"></div>
+                    <div class="artist-field teal"> {{ top_songs.1 }}</div>
                 </div>
                 <div class="artist-item">
                     <div class="artist-number pink-background">3</div>
-                    <div class="artist-field pink"></div>
+                    <div class="artist-field pink"> {{ top_songs.2 }}</div>
                 </div>
                 <div class="artist-item">
                     <div class="artist-number orange-background">4</div>
-                    <div class="artist-field orange"></div>
+                    <div class="artist-field orange"> {{ top_songs.3 }}</div>
                 </div>
                 <div class="artist-item">
                     <div class="artist-number blue-background">5</div>
-                    <div class="artist-field blue"></div>
+                    <div class="artist-field blue"> {{ top_songs.4 }}</div>
                 </div>
             </div>
             <div class="record-players">

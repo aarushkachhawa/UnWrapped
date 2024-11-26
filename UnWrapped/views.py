@@ -54,7 +54,9 @@ def profile(request):
     context = {
         'username': request.user.get_username(),
         'email': request.user.email,
-        'language': language
+        'language': language,
+        'top_songs': request.session['top_songs'],
+        'top_artist': request.session['top_artist'][0],
     }
     return render(request, 'profile.html', context)
 
