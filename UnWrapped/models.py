@@ -15,7 +15,7 @@ class CustomUser(AbstractUser):
 
 class CustomWrap(models.Model): # there can only be one wrap per day
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='wraps')  # Establishing the relationship
-    wrapDate = models.DateTimeField()  # Automatically set the field to now when the object is first created # auto_now_add=True
+    wrapDate = models.DateTimeField(auto_now_add=True)  # Automatically set the field to now when the object is first created
     year = models.IntegerField(default=datetime.now().year)  # Default to the current year
 
     top_artist = models.CharField(max_length=500, default="Unknown")
