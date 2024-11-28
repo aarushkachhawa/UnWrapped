@@ -1085,9 +1085,6 @@ def game_mix_pitch_1(request):
         track1_preview_url = track1.get('preview_url')
         track2_preview_url = track2.get('preview_url')
 
-        if not track1_preview_url or not track2_preview_url:
-            return render(request, 'game_mix_pitch.html', {'error': 'One or both tracks are missing preview URLs. Please try again.'})
-
         # Step 3: Select 8 additional unique tracks for multiple-choice options
         additional_tracks = random.sample([track for track in top_tracks if track != track1 and track != track2], 10)
         additional_names = [track.get('name') for track in additional_tracks]
@@ -1095,6 +1092,17 @@ def game_mix_pitch_1(request):
         # Ensure the correct songs are included in the choices
         song_choices = [track1_name, track2_name] + additional_names
         random.shuffle(song_choices)  # Shuffle the order of options
+
+        if not track1_preview_url or not track2_preview_url:
+            context = {
+                'mixed_audio': None,
+
+                'song_choices': song_choices,
+                'correct_songs': [track1_name, track2_name],
+                'language': language
+            }
+            return render(request, 'game_mix_pitch.html', context)
+
 
         # Step 4: Process audio
         sr = 22050
@@ -1201,10 +1209,6 @@ def game_mix_pitch_2(request):
         pitch_preview_url_up = pitch_track_up.get('preview_url')
         pitch_preview_url_down = pitch_track_down.get('preview_url')
 
-        # **Change 3:** Ensure all three tracks have preview URLs
-        if not base_preview_url or not pitch_preview_url_up or not pitch_preview_url_down:
-            return render(request, 'game_mix_pitch.html', {'error': 'One or more tracks are missing preview URLs. Please try again.'})
-
         # Step 3: Select 13 additional unique tracks for multiple-choice options
         remaining_tracks = [track for track in top_tracks if track not in selected_tracks]
         decoy_tracks = random.sample(remaining_tracks, decoy_count)
@@ -1213,6 +1217,18 @@ def game_mix_pitch_2(request):
         # **Change 4:** Include three correct song names in choices
         song_choices = [base_track_name, pitch_track_up_name, pitch_track_down_name] + decoy_song_names
         random.shuffle(song_choices)  # Shuffle the order of options
+
+        # **Change 3:** Ensure all three tracks have preview URLs
+        if not base_preview_url or not pitch_preview_url_up or not pitch_preview_url_down:
+            context = {
+                'mixed_audio': None,
+                'song_choices': song_choices,
+                'correct_songs': [base_track_name, pitch_track_up_name, pitch_track_down_name],
+                'random_key': None,
+                'language': language
+            }
+            return render(request, 'game_mix_pitch.html', context)
+
 
         # Step 4: Process audio
         sr = 22050  # Sampling rate
@@ -1307,8 +1323,7 @@ def game_mix_pitch_2(request):
         mixed_audio_buffer = BytesIO()
         sf.write(mixed_audio_buffer, mixed_audio, sr, format='WAV')
         mixed_audio_buffer.seek(0)
-        mixed_audio_base64 = base64.b64encode(
-            mixed_audio_buffer.read()).decode('utf-8')
+        mixed_audio_base64 = base64.b64encode(mixed_audio_buffer.read()).decode('utf-8')
 
     except Exception as e:
         return render(request, 'game_mix_pitch.html', {'error': f'Error during audio processing: {e}'})
