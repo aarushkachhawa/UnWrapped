@@ -41,5 +41,6 @@ urlpatterns = [
     path('reset/', views.reset, name='reset'), # For initiating the reset request (email input)
     path('game/', views.game_mix_pitch_1, name="game"),
     path('game2/', views.game_mix_pitch_2, name="game2"),
-    path('transition_two/', views.transition_two, name="transition_two")
+    path('transition_two/', views.transition_two, name="transition_two"),
+    path('submit_feedback/', views.submit_feedback, name="submit_feedback"),
 ]

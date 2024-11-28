@@ -229,12 +229,93 @@
                 margin-bottom: 10px;
             }
         }
+
+        body.dark-mode .contactContainer {
+            outline: 2px #c1c1c1 dashed;
+        }
+
         p, li {
             font-family: Verdana, Geneva, Tahoma, sans-serif
         }
+
+        h3 {
+            color: #ef8378;
+            font-size: 26px;
+            text-align: center;
+        }
+
+        body.dark-mode h3 {
+            color: #c4b3ff;
+        }
+
+        label {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-weight: normal;
+        }
+
+        textarea, #rating {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-weight: normal;
+            border: 2px #ef8378 solid;
+            border-radius: 10px;
+            padding-left: 7px;
+        }
+
+        body.dark-mode textarea, body.dark-mode #rating {
+            border: 2px #c4b3ff solid;
+        }
+
+
+        #rating {
+            width: 40px;
+            height: auto;
+        }
+
+        #feedback-section {
+            justify-items: center;
+        }
+
+        .button {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-weight: normal;
+            background-color: #f8c4c2;
+            border: 2px #ef8378 solid;
+            border-radius: 10px;
+            padding: 5px 10px;
+        }
+
+        body.dark-mode .button {
+            background-color: #ded4fb;
+            border: 2px #c4b3ff solid;
+        }
+
+        .alignment {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #info-section {
+            position: absolute;
+            top: 110px;
+        }
+
+        #feedback-section {
+            position: absolute;
+            top: 670px;
+        }
+
+        .message {
+            color: #ef8378;
+        }
+
+        body.dark-mode .message {
+            color: #ecd00d;
+        }
+
     </style>
 
-    <div class="contactContainer">
+    <div class="contactContainer" id="info-section">
         <!-- <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="rainbow-corner bottom-right">
         <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="rainbow-corner bottom-left"> -->
         <h1>
@@ -341,6 +422,38 @@
             {% endif %}
         </p> -->
 
+    </div>
+
+    <div class="contactContainer" id="feedback-section">
+        {% if messages %}
+            {% for message in messages %}
+                <p class="message">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <h3>We'd Love To Hear From You!</h3>
+            <div class='alignment'>
+
+             <form action="{% url 'submit_feedback' %}" method="post">
+                {% csrf_token %}
+                <div id="submit_feedback_form" class="form-container">
+                    <br>
+
+                    <label for="rating">How would you rate our web app? (from 1 to 5):&nbsp;&nbsp;&nbsp;</label>
+                    <input type="number" id="rating" name="rating" min="1" max="5">
+
+                    <br><br>
+
+                    <label for="feedback">Submit your feedback about UnWrapped here:</label>
+                    <br><br>
+                    <textarea id="feedback" name="feedback" rows="4" cols="65" placeholder="Write your feedback here"></textarea>
+
+                    <br><br>
+
+                    <input type="submit" value="Submit Feedback" class="button">
+                </div>
+            </form>
+        </div>
     </div>
     {% endblock %}
 </body>

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.core.validators import RegexValidator
-from .models import CustomUser
+from .models import CustomUser, Feedback
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
@@ -26,15 +26,19 @@ class CustomUserCreationForm(UserCreationForm):
         return user
 
 
-class AddReviewForm(forms.Form):
-    review = forms.CharField(
-        label='Write your review here',
+class AddFeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = ["feedback", "rating"]
+
+    feedback = forms.CharField(
+        label='Please leave your feedback here',
         max_length=1000
     )
     rating = forms.IntegerField(
         min_value=1,
         max_value=5,
-        label='Rating (Integer from 1 to 5)'
+        label='How would you rate our web app? (from 1 to 5)'
     )
 
 # class CustomLoginForm(forms.Form):
