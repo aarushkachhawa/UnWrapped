@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unwrapped</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Notable&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+    {% block content %}
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+        </script>
+
+        <style>
+             * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family: 'Notable', sans-serif;
+                overflow: hidden;
+                background: url("{% static 'ads_minutes/ads_background.png' %}");
+                background-size: cover;
+            }
+
+            body.dark-mode {
+                background: url("{% static 'ads_minutes/dark_mode_background.png' %}");
+            }
+
+        /* Fixed Header */
+        .header {
+            width: 100%;
+            height: 100px;
+            background-color: darkgreen;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: red;
+            padding: 0 40px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .menu-icon {
+            color: red;
+            font-size: 65px;
+        }
+
+        .title {
+            font-size: 36px;
+            font-weight: bold;
+            color: red;
+            text-shadow:
+                -1px -1px 0 #C64036,
+                1px -1px 0 #C64036,
+                -1px 1px 0 #C64036,
+                1px 1px 0 #C64036;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+
+            .top-right {
+              position: absolute;
+              top: -5px;
+              right: 0;
+              width: 200px;
+              height: auto;
+            }
+
+            .bottom-quarter {
+              position: absolute;
+              bottom: -100px;
+              left: -100px;
+              width: 200px;
+              height: auto;
+              transform: rotate(210deg);
+            }
+
+            .bottom-half {
+              position: absolute;
+              bottom: -100px;
+              left: 100px;
+              width: 200px;
+              height: auto;
+              transform: rotate(180deg);
+            }
+
+            h1 {
+              color: darkred;
+              font-size: 45px;
+            }
+
+            body.dark-mode h1 {
+                color: #fbebeb;
+            }
+
+            #top-line {
+              margin-top: 175px;
+            }
+
+            #ads-minutes {
+              color: darkgreen;
+              text-shadow: -3px -3px 0 #E99F99, 3px -3px 0 #E99F99, 3px 3px 0 #E99F99, 3px 3px 0 #E99F99;
+              font-size: 100px;
+              margin-top: 50px;
+              margin-bottom: 70px;
+            }
+
+            #text-container {
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              text-align: center;
+            }
+
+            p {
+                font-family: 'Radio Canada Big', sans-serif;
+                font-size: 24px;
+                margin-top: 30px;
+                color: darkred;
+            }
+            body.dark-mode p {
+                color: #a8a6a6;
+            }
+
+        </style>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                if (localStorage.getItem('dark_mode') === 'on') {
+                    document.body.classList.add('dark-mode');
+                }
+
+                const dark_mode = localStorage.getItem('dark_mode') === 'on';
+                const rainbows = document.getElementsByClassName('rainbow');
+                if (dark_mode) {
+                    for (let i = 0; i < rainbows.length; i++) {
+                        rainbows[i].src = "{% static 'slide_2/snowflake.png' %}";
+                    }
+                } else {
+                    for (let i = 0; i < rainbows.length; i++) {
+                        rainbows[i].src = "{% static 'slide_2/snowflake.png' %}";
+                    }
+                }
+            });
+        </script>
+
+        <img src="{% static 'slide_2/snowflake.png' %}" alt="Rainbow" class="top-right rainbow">
+        <img src="{% static 'slide_2/snowflake.png' %}" alt="Rainbow" class="bottom-quarter rainbow">
+        <img src="{% static 'slide_2/snowflake.png' %}" alt="Rainbow" class="bottom-half rainbow">
+
+
+        <div id="text-container">
+          {% if language == "english" %}
+            <h1 id="top-line">You Avoided Approximately</h1>
+            <h1 id="ads-minutes">{{ads_minutes}} Minutes</h1>
+            <h1>of ads this week</h1>
+            {% if premium %}
+              <p>Spotify premium really coming in clutch here!</p>
+            {% else %}
+              <p>How many times have you heard “Want a break from the ads?”</p>
+            {% endif %}
+          {% elif language == "hindi" %}
+            <h1 id="top-line">आपने लगभग बचा लिया</h1>
+            <h1 id="ads-minutes">{{ads_minutes}} मिनट</h1>
+            <h1>इस सप्ताह के विज्ञापनों से</h1>
+            {% if premium %}
+              <p>स्पॉटिफाई प्रीमियम यहाँ वास्तव में मददगार साबित हुआ!</p>
+            {% else %}
+              <p>कितनी बार आपने सुना है "क्या आप विज्ञापनों से एक ब्रेक चाहते हैं?"</p>
+            {% endif %}
+          {% elif language == "mandarin" %}
+            <h1 id="top-line">本周您大约避免了</h1>
+            <h1 id="ads-minutes">{{ads_minutes}} 分钟</h1>
+            <h1>的广告时间</h1>
+            {% if premium %}
+              <p>Spotify会员真的很给力！</p>
+            {% else %}
+              <p>您听过多少次"要不要休息一下广告？"</p>
+            {% endif %}
+          {% endif %}
+        </div>
+
+        <a href="{% url 'llm_insights_page' %}">
+          <img src="{% static 'topArtist/triangle_button.png' %}" class="forward-triangle-button" alt="Forward Button">
+        </a>
+
+
+        <div class="circle-container">
+            <div class="small-circle"></div>
+            <div class="small-circle"></div>
+            <div class="small-circle"></div>
+            <div class="small-circle"></div>
+            <div class="darker-small-circle"></div>
+            <div class="small-circle"></div>
+        </div>
+
+        <a href="{% url 'analyze_seasonal_mood' %}">
+            <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button" alt="Forward Button">
+        </a>
+
+    {% endblock %}
+</body>
+</html>

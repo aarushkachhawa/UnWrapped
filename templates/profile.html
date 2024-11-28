@@ -301,6 +301,7 @@
             <div class="data-field username-field">{{ username }}</div>
         </div>
         <div class="info-item">
+            <!--
             <label>
                 {% if language == "english" %}
                     EMAIL:
@@ -310,7 +311,7 @@
                     邮箱：
                 {% endif %}
             </label>
-            <div class="data-field email-field">{{ email }}</div>
+            <div class="data-field email-field">{{ email }}</div> i don't think our user model saves their email?-->
         </div>
         <div class="info-item">
             <label>
@@ -354,11 +355,11 @@
                 <div class="info-item">
                     <label>
                         {% if language == "english" %}
-                            TOP FIVE ARTISTS
+                            TOP FIVE SONGS
                         {% elif language == "hindi" %}
-                            शीर्ष पांच कलाकार
+                            शीर्ष पांच गाने
                         {% elif language == "mandarin" %}
-                            五大最爱艺术家
+                            排名前五的歌曲
                         {% endif %}
                     </label>
                 </div>

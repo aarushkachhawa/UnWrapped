@@ -102,3 +102,8 @@ class CustomWrap(models.Model): # there can only be one wrap per day
 # ]
 
 # wrap_instance.save()  # This will update the existing wrap only if called on the same date
+
+class Feedback(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='feedback_user')
+    feedback = models.TextField(blank=False)
+    rating = models.IntegerField(blank=False)

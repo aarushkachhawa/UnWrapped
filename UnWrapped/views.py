@@ -8,7 +8,7 @@ from django.conf import settings
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, AddFeedbackForm
 from django.contrib.auth.decorators import login_required
 import logging
 from datetime import datetime, timedelta
@@ -871,7 +871,7 @@ def calculate_night_owl(request):  # combine this into one calculate stats metho
     request.session['hour_hand_rotation'] = hour_hand_rotation - 90
     request.session['minute_hand_rotation'] = minute_hand_rotation - 90
 
-def night_owl(request):
+def night_owl(request, page = 'slide_3.html', extra_content = None):
     language = request.session.get('language', 'english')
     context = {
         "latest_time": request.session['latest_time'],
@@ -881,7 +881,7 @@ def night_owl(request):
         "minute_hand_rotation": request.session['minute_hand_rotation'],
         "language": language
     }
-    return render(request, 'slide_3.html', context)
+    return render(request, page, context)
 
 
 @login_required
@@ -1021,6 +1021,18 @@ def reset(request):
 def halloween_ads(request):
     context = {'language': request.session.get('language', 'english')}
     return get_account_level(request, 'halloween_ads.html', context)
+
+def halloween_night(request):
+    context = {'language': request.session.get('language', 'english')}
+    return night_owl(request, 'halloween_night.html', context)
+
+def christmas_night(request):
+    context = {'language': request.session.get('language', 'english')}
+    return night_owl(request, 'christmas_night.html', context)
+
+def christmas_ads(request):
+    context = {'language': request.session.get('language', 'english')}
+    return get_account_level(request, 'christmas_ads.html', context)
 
 def halloween_top_artist(request):
     context = {'language': request.session.get('language', 'english')}
@@ -1417,3 +1429,17 @@ def wrap_id_to_session(request):
     request.session['premium'] = wrap.premium
     request.session['ads_minutes'] = wrap.ads_minutes
     return JsonResponse({})
+  
+
+def submit_feedback(request):
+    if request.method == 'POST':
+        form = AddFeedbackForm(request.POST)
+        if form.is_valid():
+            form.instance.user = request.user
+            form.save()
+            messages.success(request, "We've received your feedback!")
+        else:
+            messages.error(request, f"An error occurred with your feedback submission, please try again")
+            print(form.errors)
+    return redirect('contact')
+
