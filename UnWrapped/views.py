@@ -747,9 +747,9 @@ def analyze_seasonal_mood(request, page='seasonalMood.html', extra_context=None)
         context.update(extra_context)
 
     if request.session['holiday'] == 'halloween':
-        page = 'halloween_llm.html'
+        page = 'halloween_seasonal.html'
     elif request.session['holiday'] == 'christmas':
-        page = 'christmas_llm.html'
+        page = 'christmas_seasonal.html'
     return render(request, page, context)
 
 
@@ -784,6 +784,12 @@ def llm_insights_page(request, page='LLMinsights.html', extra_context=None):
     }
     if extra_context:
         context.update(extra_context)
+
+    if request.session['holiday'] == 'halloween':
+        page = 'halloween_llm.html'
+    elif request.session['holiday'] == 'christmas':
+        page = 'christmas_llm.html'
+
     return render(request, page, context)
 
 def analyze_clothing(request):
@@ -897,6 +903,12 @@ def night_owl(request, page = 'slide_3.html', extra_content = None):
         "minute_hand_rotation": request.session['minute_hand_rotation'],
         "language": language
     }
+
+    if request.session['holiday'] == 'halloween':
+        page = 'halloween_night.html'
+    elif request.session['holiday'] == 'christmas':
+        page = 'christmas_night.html'
+
     return render(request, page, context)
 
 
@@ -906,6 +918,7 @@ def transition_one(request):
         return redirect(spotify_auth_url())
     language = request.session.get('language', 'english')
     request.session['holiday'] = 'none'
+    request.session['todays_theme'] = 'none'
     try:
         return render(request, 'transitionOne.html', {'language': language})
     except Exception as e:
@@ -919,6 +932,7 @@ def halloween_transition_one(request):
         return redirect(spotify_auth_url())
     language = request.session.get('language', 'english')
     request.session['holiday'] = 'halloween'
+    request.session['todays_theme'] = 'halloween'
     try:
         return render(request, 'halloween_transition_one.html', {'language': language})
     except Exception as e:
@@ -932,6 +946,7 @@ def christmas_transition_one(request):
         return redirect(spotify_auth_url())
     language = request.session.get('language', 'english')
     request.session['holiday'] = 'christmas'
+    request.session['todays_theme'] = 'christmas'
     try:
         return render(request, 'christmas_transition_one.html', {'language': language})
     except Exception as e:
@@ -991,6 +1006,11 @@ def get_account_level(request, page='ads_minutes.html', extra_context=None):
     }
     if extra_context:
         context.update(extra_context)
+
+    if request.session['holiday'] == 'halloween':
+        page = 'halloween_ads.html'
+    elif request.session['holiday'] == 'christmas':
+        page = 'christmas_ads.html'
     return render(request, page, context)
 
 def generate_wrap(request):
@@ -1502,4 +1522,8 @@ def submit_feedback(request):
             messages.error(request, f"An error occurred with your feedback submission, please try again")
             print(form.errors)
     return redirect('contact')
+
+def set_theme_from_profile(request):
+    request.session['holiday'] = request.session['todays_theme']
+    return redirect('slide_2')
 

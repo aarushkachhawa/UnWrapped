@@ -47,4 +47,5 @@ urlpatterns = [
     path('submit_feedback/', views.submit_feedback, name="submit_feedback"),
     path('halloween_transition_one/', views.halloween_transition_one, name="halloween_transition_one"),
     path('christmas_transition_one/', views.christmas_transition_one, name="christmas_transition_one"),
+    path('set_theme_from_profile/', views.set_theme_from_profile, name='set_theme_from_profile'),
 ]
