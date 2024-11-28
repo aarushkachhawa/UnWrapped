@@ -39,8 +39,10 @@ urlpatterns = [
     path('christmas_seasonal/', views.christmas_seasonal, name = 'christmas_seasonal'),
     path('generate_wrap/', views.generate_wrap, name='generate_wrap'),
     path('reset/', views.reset, name='reset'), # For initiating the reset request (email input)
+    path('past_wraps/', views.past_wraps, name='past_wraps'),
     path('game/', views.game_mix_pitch_1, name="game"),
     path('game2/', views.game_mix_pitch_2, name="game2"),
+    path('wrap_id_to_session/', views.wrap_id_to_session, name='wrap_id_to_session'),
     path('transition_two/', views.transition_two, name="transition_two"),
     path('submit_feedback/', views.submit_feedback, name="submit_feedback"),
 ]

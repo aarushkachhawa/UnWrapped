@@ -1,3 +1,5 @@
+from calendar import month
+
 import requests
 from django.db.models.functions import NullIf
 from django.http import JsonResponse, HttpResponse
@@ -295,6 +297,7 @@ def calculate_top_artist_and_songs_slide(request):
 
     print("CALCULATED TOP ARTISTS")
 
+
 def top_artist_and_songs_slide(request, page='topArtistAndSongs.html', extra_context=None):
     context = {
         'top_artist': request.session['top_artist'],
@@ -304,6 +307,7 @@ def top_artist_and_songs_slide(request, page='topArtistAndSongs.html', extra_con
         'top_songs_urls': request.session['top_songs_urls'],
         'language': request.session.get('language', 'english')
     }
+    
     if extra_context:
         context.update(extra_context)
     return render(request, page, context)
@@ -1054,6 +1058,51 @@ def christmas_llm(request):
     context = {'language': request.session.get('language', 'english')}
     return llm_insights_page(request, 'christmas_llm.html', context)
 
+def past_wraps(request):
+    month_to_word_dict = {
+        1: "Jan",
+        2: "Feb",
+        3: "Mar",
+        4: "Apr",
+        5: "May",
+        6: "Jun",
+        7: "Jul",
+        8: "Aug",
+        9: "Sep",
+        10: "Oct",
+        11: "Nov",
+        12: "Dec",
+    }
+
+    wraps = CustomWrap.objects.filter(user=request.user)
+    wrap_list = []
+    for wrap in wraps:
+        date_string = ""
+        date = wrap.wrapDate.date()
+        date_string += month_to_word_dict[date.month]
+        date_string += f" {date.day}, {date.year}"
+
+        wrap_list.append(
+            {
+                'id': wrap.id,
+                'words': date_string,
+            }
+        )
+
+        print({
+                'id': wrap.id,
+                'words': date_string,
+            }, '\n')
+
+    context = {
+        "wrap_list": wrap_list,
+        "num_wraps": len(wrap_list),
+    }
+
+    print('num wraps: ', len(wrap_list))
+
+    return render(request, 'past_wraps.html', context)
+
 def game_mix_pitch_1(request):
     language = request.session.get('language', 'english')
     access_token = request.session.get('spotify_access_token')
@@ -1323,6 +1372,65 @@ def game_mix_pitch_2(request):
     }
     return render(request, 'game_mix_pitch.html', context)
 
+
+def wrap_id_to_session(request):
+    body = json.loads(request.body)
+    wrap_id = body['wrap_id']
+    wrap = CustomWrap.objects.filter(id=wrap_id).first()
+    print('\n\n\n\n', wrap)
+
+    without_brackets = wrap.top_artist[1:-1]
+    print(without_brackets)
+
+    without_brackets = without_brackets.split(', ')
+    without_brackets[0] = without_brackets[0][1:-1]
+    without_brackets[1] = without_brackets[1][1:-1]
+    print(type(without_brackets))
+    request.session['top_artist'] = without_brackets
+    request.session['top_songs'] = wrap.top_songs
+    request.session['image_url'] = wrap.image_url
+    request.session['top_3_artists'] = wrap.top_3_artists
+    request.session['artist1'] = wrap.artist1
+    request.session['artist2'] = wrap.artist2
+    request.session['artist3'] = wrap.artist3
+    request.session['mood1'] = wrap.mood1
+    request.session['mood2'] = wrap.mood2
+    request.session['mood3'] = wrap.mood3
+    request.session['mood4'] = wrap.mood4
+    request.session['mood5'] = wrap.mood5
+    request.session['mood6'] = wrap.mood6
+    request.session['song_artist1'] = wrap.song_artist1
+    request.session['song_artist2'] = wrap.song_artist2
+    request.session['song_artist3'] = wrap.song_artist3
+    request.session['song_artist4'] = wrap.song_artist4
+    request.session['song_artist5'] = wrap.song_artist5
+    request.session['song_artist6'] = wrap.song_artist6
+    request.session['image'] = wrap.image
+    request.session['season'] = wrap.season
+
+    content_without_brackets = wrap.content[1:-1]
+    print(content_without_brackets)
+
+    content_without_brackets = content_without_brackets.split(', ')
+    content_without_brackets[0] = content_without_brackets[0][1:-1]
+    content_without_brackets[1] = content_without_brackets[1][1:-1]
+    content_without_brackets[2] = content_without_brackets[2][1:-1]
+    content_without_brackets[3] = content_without_brackets[3][1:-1]
+    print(type(content_without_brackets))
+
+    request.session['content'] = content_without_brackets
+    request.session['mood'] = wrap.mood
+    request.session['songPath'] = wrap.songPath
+    request.session['latest_time'] = wrap.latest_time
+    request.session['time_ranges'] = wrap.time_ranges
+    request.session['total_minutes'] = wrap.total_minutes
+    request.session['hour_hand_rotation'] = wrap.hour_hand_rotation
+    request.session['minute_hand_rotation'] = wrap.minute_hand_rotation
+    request.session['premium'] = wrap.premium
+    request.session['ads_minutes'] = wrap.ads_minutes
+    return JsonResponse({})
+  
+
 def submit_feedback(request):
     if request.method == 'POST':
         form = AddFeedbackForm(request.POST)
@@ -1334,3 +1442,4 @@ def submit_feedback(request):
             messages.error(request, f"An error occurred with your feedback submission, please try again")
             print(form.errors)
     return redirect('contact')
+

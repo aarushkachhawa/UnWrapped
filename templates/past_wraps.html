@@ -1,0 +1,345 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Past Wraps</title>
+</head>
+
+<body>
+    {% block content %}
+    <style>
+        h1 {
+            font-size: 50px;
+            position: absolute;
+            top: 110px;
+            color: #E99F99;
+            text-shadow: -2px 2px #D80005;
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+        .top-left {
+           position: absolute;
+           top: -50px;
+           left: -150px;
+           width: 300px;
+           height: auto;
+       }
+
+       .bottom-right {
+           position: absolute;
+           bottom: -150px;
+           right: -150px;
+           width: 300px;
+           height: auto;
+           transform: rotate(180deg);
+       }
+
+       #horizontal-timeline {
+           height: 5px;
+           background-color: black;
+           width: 80%;
+           position: absolute;
+           top: 55%;
+       }
+
+       .vertical-line {
+           background-color: black;
+           width: 3px;
+           height: 80px;
+           position: absolute;
+       }
+
+       #line1 {
+           top: calc(55% - 80px);
+           left: 20%;
+       }
+
+       #line2 {
+           top: 55%;
+           left: 40%;
+       }
+
+       #line3 {
+           top: calc(55% - 80px);
+           left: 60%;
+       }
+
+       #line4 {
+           top: 55%;
+           left: 80%;
+       }
+
+       .record {
+           width: 100px;
+           height: auto;
+           position: absolute;
+       }
+
+       #record1 {
+           top: calc(55% - 80px - 100px - 10px); /* horizontal line - vertical line - record - spacing */
+           left: calc(20% - 50px);
+       }
+
+       #record2 {
+           top: calc(55% + 90px);
+           left: calc(40% - 50px);
+       }
+
+       #record3 {
+           top: calc(55% - 80px - 100px - 10px);
+           left: calc(60% - 50px);
+       }
+
+       #record4 {
+           top: calc(55% + 90px);
+           left: calc(80% - 50px);
+       }
+
+       #text1 {
+           text-shadow: #EF6E53 2px 2px;
+           position: absolute;
+           top: calc(55% - 80px - 65px - 10px);
+           left: calc(20% + 60px);
+
+       }
+
+       #text2 {
+           text-shadow: #2A9D90 2px 2px;
+           position: absolute;
+           top: calc(55% + 125px);
+           left: calc(40% + 60px);
+       }
+
+       #text3 {
+           text-shadow: #DDC371 2px 2px;
+           position: absolute;
+           top: calc(55% - 80px - 65px - 10px);
+           left: calc(60% + 60px);
+       }
+
+       #text4 {
+           text-shadow: #EF6E53 2px 2px;
+           position: absolute;
+           top: calc(55% + 125px);
+           left: calc(80% + 60px);
+       }
+
+       .forward-triangle-button {
+            position: absolute;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            bottom: 3%;
+            right: calc(50% - 175px);
+       }
+
+        .backward-triangle-button {
+            position: absolute;
+            align-items: center;
+            transform: rotate(180deg);
+            width: 40px;
+            height: 40px;
+            bottom: 3%;
+            right: calc(50% + 175px);
+            display: none;
+        }
+
+        p {
+            font-size: 24px;
+            color: darkgray;
+            position: absolute;
+            align-items: center;
+            bottom: 4%;
+            right: calc(50% - 120px);
+        }
+
+        #info {
+            font-size: 50px;
+            color: #2A9D90;
+            position: absolute;
+            top: 50%;
+            align-content: center;
+        }
+
+
+
+    </style>
+
+    <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="top-left rainbow">
+    <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="bottom-right rainbow">
+    <h1>Past Wraps</h1>
+
+
+    {% if num_wraps > 0 %}
+        <div id="horizontal-timeline"></div>
+
+        <div class="wrap0" onclick="showWrap(0)">
+            <div class="vertical-line" id="line1"></div>
+            <img src="{% static 'past_wraps/salmon_record.png' %}" class="record" id="record1">
+            <h2 id="text1">{{wrap_list.0.words}}</h2>
+        </div>
+    {% else %}
+        <h2 id="info">Generate a wrap to see it here!</h2>
+    {% endif %}
+
+    {% if num_wraps > 1 %}
+    <div class="wrap1" onclick="showWrap(1)">
+        <div class="vertical-line" id="line2"></div>
+        <img src="{% static 'past_wraps/teal_record.png' %}" class="record" id="record2">
+        <h2 id="text2">{{wrap_list.1.words}}</h2>
+    </div>
+    {% endif %}
+
+
+    {% if num_wraps > 2 %}
+    <div class="wrap2" onclick="showWrap(2)">
+        <div class="vertical-line" id="line3"></div>
+        <img src="{% static 'past_wraps/gold_record.png' %}" class="record" id="record3">
+        <h2 id="text3">{{wrap_list.2.words}}</h2>
+    </div>
+    {% endif %}
+
+    {% if num_wraps > 3 %}
+    <div class="wrap3" onclick="showWrap(3)">
+        <div class="vertical-line" id="line4"></div>
+        <img src="{% static 'past_wraps/salmon_record.png' %}" class="record" id="record4">
+        <h2 id="text4">{{wrap_list.3.words}}</h2>
+    </div>
+    {% endif %}
+
+    {% if num_wraps > 3 %}
+        <div>
+            <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button" id='back-button' onclick="prevPage()" alt="Backward Button"/>
+        </div>
+        <p>See more wraps</p>
+        <div>
+            <img src="{% static 'topArtist/triangle_button.png' %}" class="forward-triangle-button" id='forward-button' onclick="nextPage()" alt="Forward Button"/>
+        </div>
+    {% endif %}
+
+    <script>
+        let startNum = 0;
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const rainbows = document.getElementsByClassName('rainbow');
+            if (localStorage.getItem('dark_mode') === 'on') {
+                document.body.classList.add('dark-mode');
+                console.log('dark mode on');
+                for (let i = 0; i < rainbows.length; i++) {
+                    rainbows[i].src = "{% static 'slide_2/dark_mode_rainbow.png' %}"
+                }
+            }
+
+            let numWraps = wrap_list.length;
+            if (numWraps <= 4) {
+                document.getElementById('forward-button').style.display = 'none';
+            }
+        });
+
+        function prevPage() {
+            let wrap_list = {{ wrap_list|safe }};
+            let numWraps = wrap_list.length;
+
+            if (startNum >= 4) {
+                startNum -= 4;
+
+                document.getElementById("text1").textContent = wrap_list[startNum]['words'];
+                document.getElementById("text1").style.display = 'block';
+                document.getElementById("line1").style.display = 'block';
+                document.getElementById("record1").style.display = 'block';
+
+                document.getElementById("text2").textContent = wrap_list[startNum + 1]['words'];
+                document.getElementById("text2").style.display = 'block';
+                document.getElementById("line2").style.display = 'block';
+                document.getElementById("record2").style.display = 'block';
+
+                document.getElementById("text3").textContent = wrap_list[startNum + 2]['words'];
+                document.getElementById("text3").style.display = 'block';
+                document.getElementById("line3").style.display = 'block';
+                document.getElementById("record3").style.display = 'block';
+
+                document.getElementById("text4").textContent = wrap_list[startNum + 3]['words'];
+                document.getElementById("text4").style.display = 'block';
+                document.getElementById("line4").style.display = 'block';
+                document.getElementById("record4").style.display = 'block';
+            }
+
+            document.getElementById('forward-button').style.display = 'block';
+
+            if (startNum - 4 < 0) {
+                document.getElementById('back-button').style.display = 'none';
+            }
+        }
+
+        function nextPage() {
+            let wrap_list = {{ wrap_list|safe }};
+            let numWraps = wrap_list.length;
+
+            if (startNum + 4 < numWraps) {
+                startNum += 4;
+                document.getElementById("text1").textContent = wrap_list[startNum]['words'];
+
+                if (startNum + 1 < numWraps) {
+                    document.getElementById("text2").textContent = wrap_list[startNum + 1]['words'];
+                } else {
+                    document.getElementById("text2").style.display = 'none';
+                    document.getElementById("line2").style.display = 'none';
+                    document.getElementById("record2").style.display = 'none';
+                }
+
+                if (startNum + 2 < numWraps) {
+                    document.getElementById("text3").textContent = wrap_list[startNum + 2]['words'];
+                } else {
+                    document.getElementById("text3").style.display = 'none';
+                    document.getElementById("line3").style.display = 'none';
+                    document.getElementById("record3").style.display = 'none';
+                }
+
+                if (startNum + 3 < numWraps) {
+                    document.getElementById("text4").textContent = wrap_list[startNum + 3]['words'];
+                } else {
+                    document.getElementById("text4").style.display = 'none';
+                    document.getElementById("line4").style.display = 'none';
+                    document.getElementById("record4").style.display = 'none';
+                }
+            }
+
+            document.getElementById('back-button').style.display = 'block';
+
+            if (startNum + 4 >= numWraps) {
+                document.getElementById('forward-button').style.display = 'none';
+            }
+        }
+
+        function showWrap(num) {
+            console.log('here!!!');
+            let wrap_list = {{ wrap_list|safe }};
+            let wrap_id = wrap_list[startNum + num]['id'];
+            fetch("{% url 'wrap_id_to_session' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({
+                    "wrap_id": wrap_id
+                })
+            }).then(response => response.json())
+            .then(data => {
+                    window.location.href = "/top_artist/";
+            });
+
+        }
+
+    </script>
+
+    {% endblock %}
+</body>
+
+</html>
