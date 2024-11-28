@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="main-container">
+    <div class="content-wrapper">
+        <div class="rainbow-container">
+            <!-- Single Full-Width Rainbow -->
+            <svg class="rainbow-animation" viewBox="0 0 100 200" preserveAspectRatio="none">
+                <path class="rainbow-path" d="M 0 30 L 100 30" stroke="#FF5A4B" stroke-width="25" fill="none"/>
+                <path class="rainbow-path" d="M 0 60 L 100 60" stroke="#88BB70" stroke-width="25" fill="none"/>
+                <path class="rainbow-path" d="M 0 90 L 100 90" stroke="#FF5A4B" stroke-width="25" fill="none"/>
+                <path class="rainbow-path" d="M 0 120 L 100 120" stroke="#88BB70" stroke-width="25" fill="none"/>
+                <path class="rainbow-path" d="M 0 150 L 100 150" stroke="#FF5A4B" stroke-width="25" fill="none"/>
+            </svg>
+
+            <img src="{% static 'slide_2/teal_record.png' %}" class="record">
+
+            <h2 id="generating_wrap">
+                {% if language == "english" %}
+                    Generating Your Wrapped...
+                {% elif language == "hindi" %}
+                    आपका रैप्ड जनरेट हो रहा है...
+                {% elif language == "mandarin" %}
+                    正在生成您的回顾...
+                {% endif %}
+             </h2>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: #FCF8F1;
+    }
+
+    .main-container {
+        min-height: calc(100vh - 64px);
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+        margin: 0;
+    }
+
+    .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3rem;
+        width: 100%;
+    }
+
+    .rainbow-container {
+        position: relative;
+        width: 100%;
+        height: 1000px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    .rainbow-animation {
+        position: absolute;
+        width: 100%;
+        height: 200px;
+        top: 50%;
+        transform: translateY(calc(-50% - 50px));
+        left: 0;
+    }
+
+    .rainbow-path {
+        stroke-dasharray: 100%;
+        stroke-dashoffset: 100%;
+        animation: drawHorizontalRainbow 2.5s ease-out forwards;
+    }
+
+    /* Rainbow timing */
+    .rainbow-path:nth-child(1) { animation-delay: 0s; }
+    .rainbow-path:nth-child(2) { animation-delay: 0.2s; }
+    .rainbow-path:nth-child(3) { animation-delay: 0.4s; }
+    .rainbow-path:nth-child(4) { animation-delay: 0.6s; }
+    .rainbow-path:nth-child(5) { animation-delay: 0.8s; }
+
+    @keyframes drawHorizontalRainbow {
+        from {
+            stroke-dashoffset: 100%;
+        }
+        to {
+            stroke-dashoffset: 0;
+        }
+    }
+
+    .record {
+        width: var(--width, 200px);
+        height: var(--height, 200px);
+        animation: spin_record var(--animation-speed, 2s) linear infinite;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, calc(-50% - 50px));
+        transform-origin: center;
+    }
+
+    @keyframes spin_record {
+        0% {
+            transform: translate(-50%, calc(-50% - 50px)) rotate(0deg);
+        }
+        100% {
+            transform: translate(-50%, calc(-50% - 50px)) rotate(360deg);
+        }
+    }
+
+    .insights-title {
+        color: #FF6B6B;
+        font-size: 2.5rem;
+        text-transform: uppercase;
+        font-weight: bold;
+        margin: 0;
+        text-align: center;
+        opacity: 0;
+        animation: fadeIn 1s ease-in forwards;
+        animation-delay: 4s;
+        position: absolute;
+        bottom: -500px;
+        z-index: 10;
+    }
+
+    @keyframes spin {
+        from {
+            transform: translate(-50%, -50%) rotate(0deg);
+        }
+        to {
+            transform: translate(-50%, -50%) rotate(360deg);
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+            visibility: hidden;
+        }
+    }
+
+    body.fadeOut {
+        animation: fadeOut 1s forwards;
+    }
+
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+        } to {
+            opacity: 0;
+        }
+    }
+
+    #generating_wrap {
+        color: #FF5A4B;
+        text-shadow: -2px 2px #88BB70;
+        position: absolute;
+        bottom: 300px;
+        font-size: 48px;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        if (localStorage.getItem('dark_mode') === 'on') {
+            document.body.classList.add('dark-mode');
+            console.log('dark mode on');
+        }
+
+        const record = document.querySelector('.record');
+        record.style.setProperty('--animation-speed', '2s');
+        record.style.setProperty('--width', '200px');
+        record.style.setProperty('--height', '200px');
+        let styles = window.getComputedStyle(record);
+        let rotationSpeed = styles.animationDuration;
+        rotationSpeed = parseFloat(rotationSpeed.slice(0,-1));
+        let currentWidth = parseFloat(styles.width.slice(0, -1));
+        let currentHeight = parseFloat(styles.height.slice(0, -1));
+
+        function rotationSpeedIncrease() {
+            console.log(rotationSpeed);
+            if (rotationSpeed > 0.5) {
+                rotationSpeed = Math.max(rotationSpeed - 0.0015, 0.5);
+                record.style.setProperty('--animation-speed', `${rotationSpeed}s`);
+            }
+
+            if (currentWidth < 700 && currentHeight < 700) {
+                currentWidth += 1;
+                currentHeight += 1;
+                record.style.setProperty('--width', `${currentWidth}px`);
+                record.style.setProperty('--height', `${currentHeight}px`);
+            }
+            
+
+            requestAnimationFrame(rotationSpeedIncrease);
+        }
+
+        rotationSpeedIncrease();
+
+        fetch("{% url 'generate_wrap' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            }
+        }).then(response => response.json())
+        .then(data => {
+            if (data.done == true) {
+                console.log('generate_wrap done gathering data');
+                document.body.classList.add("fadeOut");
+                const text = document.getElementById('generating_wrap');
+                localStorage.setItem('from_transition_page', 'true');
+                setTimeout(() => {
+                    window.location.href = "/christmas_top_artist/";
+                }, 1000);
+            }
+        })
+        .catch(error => {
+            console.log('Error:', error);
+        });
+    });
+</script>
+{% endblock %}

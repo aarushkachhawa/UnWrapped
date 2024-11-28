@@ -61,5 +61,29 @@
             {% endif %}
          </a>
     </div>
+
+    <div class="button-wrapper">
+        <a href="{% url 'halloween_transition_one' %}" class="view-unwrapped">
+            {% if language == "english" %}
+                VIEW HALLOWEEN UNWRAPPED
+            {% elif language == "hindi" %}
+                हैलोवीन देखें UNWRAPPED
+            {% elif language == "mandarin" %}
+                查看万圣节 UNWRAPPED
+            {% endif %}
+         </a>
+    </div>
+
+    <div class="button-wrapper">
+        <a href="{% url 'christmas_transition_one' %}" class="view-unwrapped">
+            {% if language == "english" %}
+                VIEW CHRISTMAS UNWRAPPED
+            {% elif language == "hindi" %}
+                क्रिसमस देखें UNWRAPPED
+            {% elif language == "mandarin" %}
+                查看圣诞节 UNWRAPPED
+            {% endif %}
+         </a>
+    </div>
 </div>
 {% endblock %}
