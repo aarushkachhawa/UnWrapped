@@ -1388,7 +1388,18 @@ def wrap_id_to_session(request):
     request.session['song_artist6'] = wrap.song_artist6
     request.session['image'] = wrap.image
     request.session['season'] = wrap.season
-    request.session['content'] = wrap.content
+
+    content_without_brackets = wrap.content[1:-1]
+    print(content_without_brackets)
+
+    content_without_brackets = content_without_brackets.split(', ')
+    content_without_brackets[0] = content_without_brackets[0][1:-1]
+    content_without_brackets[1] = content_without_brackets[1][1:-1]
+    content_without_brackets[2] = content_without_brackets[2][1:-1]
+    content_without_brackets[3] = content_without_brackets[3][1:-1]
+    print(type(content_without_brackets))
+
+    request.session['content'] = content_without_brackets
     request.session['mood'] = wrap.mood
     request.session['songPath'] = wrap.songPath
     request.session['latest_time'] = wrap.latest_time
