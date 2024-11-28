@@ -26,7 +26,15 @@
     </div>
 
     <div class="button-wrapper">
-        <a href="{% url 'transition_one' %}" class="view-unwrapped">VIEW UNWRAPPED</a>
+        <a href="{% url 'transition_one' %}" class="view-unwrapped">
+            {% if language == "english" %}
+                VIEW UNWRAPPED
+            {% elif language == "hindi" %}
+                देखें UNWRAPPED
+            {% elif language == "mandarin" %}
+                查看 UNWRAPPED
+            {% endif %}
+         </a>
     </div>
 </div>
 {% endblock %}

@@ -3,7 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Year in Music</title>
+    <title>
+        {% if language == "english" %}
+            Your Year in Music 
+        {% elif language == "hindi" %}
+            संगीत में आपका वर्ष
+        {% elif language == "mandarin" %}
+            您的音乐年度回顾
+        {% endif %}
+    </title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -108,7 +116,15 @@
 </head>
 <body>
     <div class="container">
-        <h1>Your Year in Music</h1>
+        <h1>
+            {% if language == "english" %}
+                Your Year in Music
+            {% elif language == "hindi" %}
+                संगीत में आपका वर्ष
+            {% elif language == "mandarin" %}
+                您的音乐年度回顾
+            {% endif %}
+        </h1>
 
         <div class="slideshow-container">
             {% for slide in slides %}
@@ -124,8 +140,24 @@
                             <li>
                                 <span class="audio-title">{{ item.0 }}</span>
                                 <div class="audio-controls">
-                                    <button class="play-btn" onclick="toggleAudio(this)">Play</button>
-                                    <button class="stop-btn" onclick="stopAudio(this)">Reset</button>
+                                    <button class="play-btn" onclick="toggleAudio(this)">
+                                        {% if language == "english" %}
+                                            Play
+                                        {% elif language == "hindi" %}
+                                            चलाएं
+                                        {% elif language == "mandarin" %}
+                                            播放
+                                        {% endif %}
+                                    </button>
+                                    <button class="stop-btn" onclick="stopAudio(this)">
+                                        {% if language == "english" %}
+                                            Reset
+                                        {% elif language == "hindi" %}
+                                            रीसेट
+                                        {% elif language == "mandarin" %}
+                                            重置
+                                        {% endif %}
+                                    </button>
                                 </div>
                                 <audio id="audio-{{ loop.index }}" src="{{ item.1 }}" preload="none"></audio>
                             </li>
@@ -170,22 +202,30 @@
                     a.pause();
                     a.currentTime = 0; // Reset other audio
                     const playBtn = a.parentElement.querySelector('.play-btn');
-                    playBtn.innerText = "Play"; // Reset play button text
+                    playBtn.innerText = language === "english" ? "Play" : 
+                                language === "hindi" ? "चलाएं" : 
+                                "播放";
                 }
             });
 
             // Play or pause the selected audio
             if (audio.paused) {
                 audio.play();
-                button.innerText = "Pause";
+                button.innerText = language === "english" ? "Pause" : 
+                                language === "hindi" ? "रोकें" : 
+                                "暂停";
             } else {
                 audio.pause();
-                button.innerText = "Play";
+                button.innerText = language === "english" ? "Play" : 
+                                language === "hindi" ? "चलाएं" : 
+                                "播放";
             }
 
             // Reset button text when audio ends
             audio.onended = function() {
-                button.innerText = "Play";
+                button.innerText = language === "english" ? "Play" : 
+                                language === "hindi" ? "चलाएं" : 
+                                "播放";
             };
         }
 
@@ -193,7 +233,9 @@
             const audio = button.parentElement.nextElementSibling;
             audio.pause();
             audio.currentTime = 0;
-            button.previousElementSibling.innerText = "Play"; // Reset play button text
+            button.previousElementSibling.innerText = language === "english" ? "Play" : 
+                                            language === "hindi" ? "चलाएं" : 
+                                            "播放";
         }
     </script>
 </body>

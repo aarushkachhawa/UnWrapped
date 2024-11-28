@@ -1,4 +1,11 @@
 {% extends 'base.html' %}
+{% block extra_css %}
+<style>
+    .navbar {
+        background-color: black !important;
+    }
+</style>
+{% endblock %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -25,8 +32,7 @@
 
         body {
             font-family: 'Notable', sans-serif;
-            background-color: orange; /* Updated background color */
-            color: black; /* Updated text color */
+            background-color: #FFA500;
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center top;
@@ -34,66 +40,27 @@
             overflow: hidden;
         }
 
-        .top-corner-rainbow {
-            width: 300px;
-            height: 300px;
-            position: absolute;
-            top: -50px;
-            left: -150px;
-        }
+        .top-left {
+           position: absolute;
+           top: -50px;
+           left: -150px;
+           width: 300px;
+           height: auto;
+       }
 
-        .bottom-corner-rainbow {
-            width: 300px;
-            height: 300px;
-            transform: rotate(180deg);
-            position: absolute;
-            bottom: -150px;
-            right: -150px;
-        }
-
-        /* Fixed Header */
-        .header {
-            width: 100%;
-            height: 100px;
-            background-color: #000000; /* Black background */
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #ECD101; /* Set default text color in header to yellow */
-            padding: 0 40px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-        }
-
-        .menu-icon {
-            color: #ECD101;
-            font-size: 65px;
-        }
-
-        .title {
-            font-size: 36px;
-            font-weight: bold;
-            color: #ECD101; /* Yellow "Unwrapped" text */
-            text-shadow:
-                -1px -1px 0 #C64036,
-                1px -1px 0 #C64036,
-                -1px 1px 0 #C64036,
-                1px 1px 0 #C64036;
-            text-align: center;
-            flex-grow: 1;
-        }
-
-        .profile {
-            color: #ECD101;
-            font-size: 20px;
-        }
+       .bottom-right {
+           position: absolute;
+           bottom: -150px;
+           right: -150px;
+           width: 300px;
+           height: auto;
+           transform: rotate(180deg);
+       }
 
         /* Combined Title Styling */
         .page-title {
             font-size: 20px;
-            color: #D24E0D;
+            color: black;
             margin-bottom: 20px;
             text-align: center;
             margin-top: 20px;
@@ -113,7 +80,7 @@
         .top-artist-section {
             display: flex;
             flex-direction: column;
-            align-items: flex-start; /* Align to the left */
+            /*align-items: flex-start; /* Align to the left */
             max-width: 300px;
         }
 
@@ -123,107 +90,206 @@
             align-items: center;
         }
 
-        .artist-image {
-            width: 80px;
-            height: 200px;
+        .record-image {
+            width: 400px;
+            height: 400px;
+            position: absolute;
+            top: 300px;
+            left: calc(50% - 650px);
+            z-index: 10;
+
+        }
+
+        .top-artist-section h2 {
+            font-size: 32px;
+            color: black;
+            text-shadow: 2px 2px 4px rgba(199, 58, 68, 1);
+            margin-top: 500px;
         }
 
         .artist-vinyl {
             width: 160px;
             height: 400px;
+            position: absolute;
+            top: 300px;
+            left: calc(50% - 250px);
         }
 
-        .top-artist-section h2 {
-            font-size: 32px;
-            color: #5AABF3;
-            text-shadow: 2px 2px 4px rgba(199, 58, 68, 1);
-            margin-top: 10px;
-        }
-
-        /* Songs section styling */
-        .top-songs-section {
-            display: flex;
-            gap: 15px;
-            max-width: 600px;
-        }
-
-        .songs-column {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .songs-column:nth-child(2) {
-            margin-top: 130px; /* Offset for the right column */
-            margin-left: 80px; /* Offset for the right column */
-        }
-
-        .song {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background-color: orange; /* Updated song background color to orange */
-            padding: 40px 15px;
-            width: 100%;
-        }
-
-        .vinyl-icon-red {
+        .small-record {
             width: 100px;
             height: 100px;
             background-size: cover;
-            background-position: center;
+            border-radius: 50%;
+        }
+
+        .small-record-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            position: absolute;
+            max-height: 200px;
+            max-width: 400px;
+            gap: 15px;
+        }
+
+        .small-record-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 200px;
+        }
+
+        /* .small-record-container1 {
+            top: 250px;
+            left: calc(50%);
+        } */
+
+        .small-record1 {
             background-image: url("{% static 'topArtist/red_record.png' %}");
         }
 
-        .vinyl-icon-blue {
-            background-image: url("{% static 'topArtist/blue_record.png' %}");
-            width: 100px;
-            height: 100px;
-            background-size: cover;
-            background-position: center;
+        /* .small-record-container2 {
+            top: 350px;
+            right: calc(50% - 600px);
+        } */
+
+        .small-record2 {
+            background-image: url("{% static 'seasonalMood/yellow_record.png' %}");
         }
 
-        .vinyl-icon-yellow {
-            background-image: url("{% static 'topArtist/yellow_record.png' %}");
-            width: 100px;
-            height: 100px;
-            background-size: cover;
-            background-position: center;
+        /* .small-record-container3 {
+            top: 450px;
+            left: calc(50%);
+        } */
+
+        .small-record3 {
+            background-image: url("{% static 'seasonalMood/blue_record.png' %}");
         }
 
-        .song-details h3 {
-            font-size: 25px;
+        /* .small-record-container4 {
+            top: 550px;
+            right: calc(50% - 600px);
+        } */
+
+        .small-record4 {
+            background-image: url("{% static 'seasonalMood/red_record.png' %}");
+        }
+
+        /* .small-record-container5 {
+            top: 650px;
+            left: calc(50%);
+        } */
+
+        .top-artist-record-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px; /* Space between items */
+            right: 5%;
+        }
+
+        .small-record-container {
+            position: absolute; /* Allows for precise positioning */
+            max-height: 200px;
+            /* max-width: 400px; */
+            display: flex;
+            gap: 15px;
+        }
+
+        .small-record-container:nth-child(odd) {
+            transform: translateX(350px); /* Keep odd items closer to the right */
+        }
+
+        .small-record-container:nth-child(even) {
+            transform: translateX(-50px); /* Push even items slightly left for zigzag */
+        }
+
+        .small-record-container1 { top: 250px; }
+        .small-record-container2 { top: 350px; }
+        .small-record-container3 { top: 450px; }
+        .small-record-container4 { top: 550px; }
+        .small-record-container5 { top: 650px; }
+
+        .small-record5 {
+            background-image: url("{% static 'seasonalMood/yellow_record.png' %}");
+        }
+
+        .song-text-song {
+            font-size: 20px;
             color: #000000;
-            margin: 0;
+            text-overflow: ellipsis;
         }
 
-        .song-details p {
+        .dark-mode .song-text-song {
+            color: #E0E0E0;
+        }
+
+        .song-text-artist {
             font-family: 'Radio Canada', sans-serif;
             font-size: 16px;
             color: #000000;
-            margin: 0;
+            width: 150px;
         }
 
-        .forward-triangle-button {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            bottom: 5%;
-            right: 45%;
+        .dark-mode .song-text-artist {
+            font-family: 'Radio Canada', sans-serif;
+            font-size: 16px;
+            color: #E0E0E0;
+            width: 150px;
         }
 
-        .backward-triangle-button {
-            position: absolute;
-            transform: rotate(180deg);
-            width: 40px;
-            height: 40px;
-            bottom: 5%;
-            right: 55%;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        body.fadeIn {
+            animation: fadeIn 1s;
+        }
+
+
+        .play-btn, .stop-btn {
+            padding: 5px 10px;
+            margin-top: 10px;
+            margin-left: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #4a773c;
+            color: white;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .play-btn:hover, .stop-btn:hover {
+            background-color: #3a5a2c;
         }
 
     </style>
 
-    <img src="{% static 'topArtist/top_left_corner_rainbow.png' %}" class="top-corner-rainbow">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const rainbows = document.getElementsByClassName('rainbow');
+            if (localStorage.getItem('dark_mode') === 'on') {
+                document.body.classList.add('dark-mode');
+                console.log('dark mode on');
+                for (let i = 0; i < rainbows.length; i++) {
+                    rainbows[i].src = "{% static 'slide_2/dark_mode_rainbow.png' %}"
+                }
+            }
+
+            if (localStorage.getItem("from_transition_page") == "true") {
+                document.body.classList.add('fadeIn');
+            }
+            localStorage.setItem("from_transition_page", "false");
+        });
+    </script>
+
+    <img src="{% static 'slide_2/spider_web.png' %}" alt="Rainbow" class="top-left rainbow">
+    <img src="{% static 'slide_2/spider_web.png' %}" alt="Rainbow" class="bottom-right rainbow">
 
     <!-- Page Title -->
     <div class="page-title">
@@ -236,65 +302,138 @@
         <div class="top-artist-section">
             <div class="artist-info">
                 <img src="{% static 'topArtist/album_cover_record.png' %}" class="artist-vinyl">
-                <h2>Bruno Mars</h2>
+                <h2>{{top_artist.0}}</h2>
             </div>
         </div>
 
-        <!-- Top Songs Section on the Right -->
-        <div class="top-songs-section">
-            <!-- Left Column for Songs 1, 3, and 5 -->
-            <div class="songs-column">
-                <div class="song">
-                    <div class="vinyl-icon-red"></div>
-                    <div class="song-details">
-                        <h3>Telepatia</h3>
-                        <p>Kali Uchis</p>
-                    </div>
-                </div>
-                <div class="song">
-                    <div class="vinyl-icon-blue"></div>
-                    <div class="song-details">
-                        <h3>Feather</h3>
-                        <p>Sabrina Carpenter</p>
-                    </div>
-                </div>
-                <div class="song">
-                    <div class="vinyl-icon-yellow"></div>
-                    <div class="song-details">
-                        <h3>APT.</h3>
-                        <p>ROSE, Bruno Mars</p>
-                    </div>
-                </div>
-            </div>
+        <img src={{top_artist.1}} class="record-image">
 
-            <!-- Right Column for Songs 2 and 4 -->
-            <div class="songs-column">
-                <div class="song">
-                    <div class="song-details">
-                        <h3>White Horse</h3>
-                        <p>Chris Stapleton</p>
-                    </div>
-
-                    <div class="vinyl-icon-yellow"></div>
-                </div>
-                <div class="song">
-                    <div class="song-details">
-                        <h3>Mean It</h3>
-                        <p>Gracie Abrams</p>
-                    </div>
-                    <div class="vinyl-icon-red"></div>
-                </div>
-            </div>
         </div>
-    </div>
+
+        <div class="top-artist-record-section">
+
+            <div class="small-record-container small-record-container1">
+                <div class="small-record small-record1"></div>
+                <div class="small-record-text">
+                    <div class="song-text-song">{{top_songs.0}}</div>
+                    <div class="song-text-artist">{{top_songs_artists.0}}</div>
+                    <div class="audio-controls">
+                        <button class="play-btn" onclick="toggleAudio(this)">Play</button>
+                        <button class="stop-btn" onclick="stopAudio(this)">Reset</button>
+                    </div>
+                    <audio id="audio-0" src="{{ top_songs_urls.0 }}" preload="none"></audio>
+                </div>
+            </div>
+
+            <div class="small-record-container small-record-container2">
+                <div class="small-record-text">
+                    <div class="song-text-song">{{top_songs.1}}</div>
+                    <div class="song-text-artist">{{top_songs_artists.1}}</div>
+                    <div class="audio-controls">
+                        <button class="play-btn" onclick="toggleAudio(this)">Play</button>
+                        <button class="stop-btn" onclick="stopAudio(this)">Reset</button>
+                    </div>
+                    <audio id="audio-1" src="{{ top_songs_urls.1 }}" preload="none"></audio>
+                </div>
+                <div class="small-record small-record2"></div>
+            </div>
+
+            <div class="small-record-container small-record-container3">
+                <div class="small-record small-record3"></div>
+                <div class="small-record-text">
+                    <div class="song-text-song">{{top_songs.2}}</div>
+                    <div class="song-text-artist">{{top_songs_artists.2}}</div>
+                    <div class="audio-controls">
+                        <button class="play-btn" onclick="toggleAudio(this)">Play</button>
+                        <button class="stop-btn" onclick="stopAudio(this)">Reset</button>
+                    </div>
+                    <audio id="audio-2" src="{{ top_songs_urls.2 }}" preload="none"></audio>
+                </div>
+            </div>
+
+            <div class="small-record-container small-record-container4">
+                <div class="small-record-text">
+                    <div class="song-text-song">{{top_songs.3}}</div>
+                    <div class="song-text-artist">{{top_songs_artists.3}}</div>
+                    <div class="audio-controls">
+                        <button class="play-btn" onclick="toggleAudio(this)">Play</button>
+                        <button class="stop-btn" onclick="stopAudio(this)">Reset</button>
+                    </div>
+                    <audio id="audio-3" src="{{ top_songs_urls.3 }}" preload="none"></audio>
+                </div>
+                <div class="small-record small-record4"></div>
+            </div>
+
+            <div class="small-record-container small-record-container5">
+                <div class="small-record small-record5"></div>
+                <div class="small-record-text">
+                    <div class="song-text-song">{{top_songs.4}}</div>
+                    <div class="song-text-artist">{{top_songs_artists.4}}</div>
+                    <div class="audio-controls">
+                        <button class="play-btn" onclick="toggleAudio(this)">Play</button>
+                        <button class="stop-btn" onclick="stopAudio(this)">Reset</button>
+                    </div>
+                    <audio id="audio-4" src="{{ top_songs_urls.4 }}" preload="none"></audio>
+                </div>
+            </div>
+
+        </div>
 
     <a href="{% url 'slide_2' %}">
         <img src="{% static 'topArtist/triangle_button.png' %}" class="forward-triangle-button" alt="Forward Button">
     </a>
 
-    <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button">
+    <div class="circle-container">
+        <div class="darker-small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+    </div>
 
-    <img src="{% static 'topArtist/top_left_corner_rainbow.png' %}" class="bottom-corner-rainbow">
+    <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button" alt="Forward Button">
+
+
+    <script>
+        function toggleAudio(button) {
+            const audio = button.parentElement.nextElementSibling;
+
+            // Stop all other audio
+            const allAudios = document.querySelectorAll('audio');
+            allAudios.forEach(a => {
+                if (a !== audio) {
+                    a.pause();
+                    a.currentTime = 0; // Reset other audio
+                    const playBtn = a.parentElement.querySelector('.play-btn');
+                    playBtn.innerText = "Play"; // Reset play button text
+                }
+            });
+
+            // Play or pause the selected audio
+            if (audio.paused) {
+                audio.play();
+                button.innerText = "Pause";
+            } else {
+                audio.pause();
+                button.innerText = "Play";
+            }
+
+            // Reset button text when audio ends
+            audio.onended = function() {
+                button.innerText = "Play";
+            };
+        }
+
+        function stopAudio(button) {
+            const audio = button.parentElement.nextElementSibling;
+            audio.pause();
+            audio.currentTime = 0;
+            button.previousElementSibling.innerText = "Play"; // Reset play button text
+        }
+    </script>
 
     {% endblock %}
 </body>

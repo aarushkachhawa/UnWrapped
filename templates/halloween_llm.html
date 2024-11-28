@@ -25,6 +25,7 @@
         body {
             font-family: 'Notable', sans-serif;
             background-image: url("{% static 'topArtist/background.png' %}");
+            background-color: orange;
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center top;
@@ -36,11 +37,11 @@
         .header {
             width: 100%;
             height: 100px;
-            background-color: #5AABF3;
+            background-color: black;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: #ECD101;
+            color: orange;
             padding: 0 40px;
             position: fixed;
             top: 0;
@@ -56,7 +57,7 @@
         .title {
             font-size: 36px;
             font-weight: bold;
-            color: #ECD101;
+            color: orange;
             text-shadow:
                 -1px -1px 0 #C64036,
                 1px -1px 0 #C64036,
@@ -74,14 +75,10 @@
         /* Combined Title Styling */
         .page-title {
             font-size: 24px;
-            color: #C7443A;
+            color: black;
             margin-bottom: 20px;
             text-align: center;
             margin-top: 10px;
-        }
-
-        body.dark-mode .page-title {
-            text-shadow: rgb(205, 204, 204) -2px 2px;
         }
 
         /* Layout for Artist and Songs Side by Side */
@@ -121,10 +118,6 @@
         .artist-vinyl {
             width: 160px;
             height: 390px;
-        }
-
-        body.dark-mode .artist-image {
-            box-shadow: -5px 5px 20px #777676;
         }
 
         .top-artist-section h2 {
@@ -213,8 +206,8 @@
        }
     </style>
 
-    <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="top-left rainbow">
-    <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="bottom-right rainbow">
+    <img src="{% static 'slide_2/spider_web.png' %}" alt="Rainbow" class="top-left rainbow">
+    <img src="{% static 'slide_2/spider_web.png' %}" alt="Rainbow" class="bottom-right rainbow">
     <!-- Page Title -->
     <div class="page-title">
         <h1>LLM Insights</h1>
@@ -246,26 +239,6 @@
 
         </div>
     </div>
-
-    <a href="{% url 'transition_two' %}">
-        <img src="{% static 'topArtist/triangle_button.png' %}" class="forward-triangle-button" alt="Forward Button">
-    </a>
-
-
-    <div class="circle-container">
-        <div class="small-circle"></div>
-        <div class="small-circle"></div>
-        <div class="small-circle"></div>
-        <div class="small-circle"></div>
-        <div class="small-circle"></div>
-        <div class="darker-small-circle"></div>
-    </div>
-
-    <a href="{% url 'ads_minutes' %}">
-        <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button" alt="Forward Button">
-    </a>
-
-
     {% endblock %}
 </body>
 </html>

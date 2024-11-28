@@ -5,15 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        {% if language == "english" %}
-            Your Seasonal Mood
-        {% elif language == "hindi" %}
-            आपका मौसमी मूड
-        {% elif language == "mandarin" %}
-            您的季节心情
-        {% endif %}
-    </title>
+    <title>Your Seasonal Mood</title>
 
 </head>
 <body>
@@ -29,7 +21,7 @@
 
         body {
             font-family: 'Notable', sans-serif;
-            background-color: #FCF8F1;
+            background-color: red;
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center top 100px;
@@ -91,10 +83,6 @@
             border-radius: 50%;
         }
 
-        body.dark-mode .small-record {
-            box-shadow: 0 0 20px #777676;
-        }
-
         .small-record-container {
             display: flex;
             flex-direction: row;
@@ -111,7 +99,7 @@
 
         .small-record-mood {
             font-family: 'Notable', sans-serif;
-            color: #000000;
+            color: darkgreen;
             font-size: 24px;
             width: 150px;
             /*margin-right: 30px;*/
@@ -126,7 +114,7 @@
 
         .small-record-artist {
             font-family: 'Radio Canada', sans-serif;
-            color: #000000;
+            color: darkgreen;
             font-size: 16px;
             width: 150px;
             /*margin-right: 30px;*/
@@ -268,13 +256,13 @@
                 }
             } else {
                 for (let i = 0; i < rainbows.length; i++) {
-                    rainbows[i].src = "{% static 'slide_2/top_left_corner_rainbow.png' %}";
+                    rainbows[i].src = "{% static 'slide_2/spider_web.png' %}";
                 }
             }
         }
     </script>
 
-    <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" class="top-corner-rainbow rainbow">
+    <img src="{% static 'slide_2/spider_web.png' %}" class="top-corner-rainbow rainbow">
 
     <img src={{image}} class="record-image">
 
@@ -288,65 +276,37 @@
 
         <!-- Text along the circular path -->
         <text fill="#C64036" font-size="36" font-weight="bold" transform="translate(8, 0)" style="text-shadow: 2px 2px 0 white;">
+            {% if season == "winter" %}
             <textPath href="#textCircle" startOffset="0%">
-                {% if season == "winter" %}
-                    {% if language == "english" %}
-                        YOUR WINTER MOOD
-                    {% elif language == "hindi" %}
-                        आपका सर्दी का मूड
-                    {% elif language == "mandarin" %}
-                        您的冬季心情
-                    {% endif %}
-                {% elif season == "spring" %}
-                    {% if language == "english" %}
-                        YOUR SPRING MOOD
-                    {% elif language == "hindi" %}
-                        आपका वसंत का मूड
-                    {% elif language == "mandarin" %}
-                        您的春季心情
-                    {% endif %}
-                {% elif season == "summer" %}
-                    {% if language == "english" %}
-                        YOUR SUMMER MOOD
-                    {% elif language == "hindi" %}
-                        आपका गर्मी का मूड
-                    {% elif language == "mandarin" %}
-                        您的夏季心情
-                    {% endif %}
-                {% else %}
-                    {% if language == "english" %}
-                        YOUR AUTUMN MOOD
-                    {% elif language == "hindi" %}
-                        आपका शरद का मूड
-                    {% elif language == "mandarin" %}
-                        您的秋季心情
-                    {% endif %}
-                {% endif %}
+                YOUR WINTER MOOD
             </textPath>
+            {% elif season == "spring" %}
+            <textPath href="#textCircle" startOffset="0%">
+                YOUR SPRING MOOD
+            </textPath>
+
+            {% elif season == "summer" %}
+            <textPath href="#textCircle" startOffset="0%">
+                YOUR SUMMER MOOD
+            </textPath>
+            {% else %}
+            <textPath href="#textCircle" startOffset="0%">
+                YOUR AUTUMN MOOD
+            </textPath>
+
+            {% endif %}
         </text>
 
         <!-- Text along bottom circular path-->
         <text fill="#C64036" font-size="18" font-weight="bold" transform="translate(5, -4)">
             <textPath href="#textCircleBottom" startOffset="60%">
-                {% if language == "english" %}
-                    & EXAMPLES OF SOME OF
-                {% elif language == "hindi" %}
-                    और कुछ उदाहरण
-                {% elif language == "mandarin" %}
-                    以及一些
-                {% endif %}
+                & EXAMPLES OF SOME OF
             </textPath>
         </text>
 
         <text fill="#C64036" font-size="18" font-weight="bold" transform="translate(5, 30)">
             <textPath href="#textCircleBottom" startOffset="63%">
-                {% if language == "english" %}
-                    YOUR FAVORITE SONGS
-                {% elif language == "hindi" %}
-                    आपके पसंदीदा गानों के
-                {% elif language == "mandarin" %}
-                    您最喜欢的歌曲
-                {% endif %}
+                YOUR FAVORITE SONGS
             </textPath>
         </text>
     </svg>
@@ -402,9 +362,7 @@
         <div class="small-record small-record6"></div>
     </div>
 
-    <a href="{% url 'ads_minutes' %}">
-        <img src="{% static 'topArtist/triangle_button.png' %}" class="forward-triangle-button" alt="Forward Button">
-    </a>
+    <img src="{% static 'topArtist/triangle_button.png' %}" class="forward-triangle-button" alt="Forward Button">
 
 
     <div class="circle-container">
@@ -414,13 +372,15 @@
         <div class="darker-small-circle"></div>
         <div class="small-circle"></div>
         <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
     </div>
 
     <a href="{% url 'slide_3' %}">
         <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button" alt="Forward Button">
     </a>
 
-    <img src="{% static 'topArtist/top_left_corner_rainbow.png' %}" class="bottom-corner-rainbow rainbow">
+    <img src="{% static 'topArtist/snowflake.png' %}" class="bottom-corner-rainbow rainbow">
 
     {% endblock %}
 </body>
