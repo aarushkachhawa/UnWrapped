@@ -23,7 +23,7 @@
                     猜歌曲
                 {% endif %}
             </h2>
-            
+
             {% if correct_songs|length == 2 %}
                 <p>
                     {% if language == "english" %}
@@ -68,7 +68,7 @@
                     提交
                 {% endif %}
             </button>
-            
+
             <button class="reset-btn" id="reset">
                 {% if language == "english" %}
                     Reset
@@ -78,7 +78,7 @@
                     重置
                 {% endif %}
             </button>
-            
+
             <button class="continue-btn" id="continue" onclick="window.location.href='{% url 'game2' %}'">
                 {% if language == "english" %}
                     Play with 3 Songs
