@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, AddFeedbackForm
 from django.contrib.auth.decorators import login_required
 import logging
 from datetime import datetime, timedelta
@@ -1310,3 +1310,15 @@ def game_mix_pitch_2(request):
         'language': language
     }
     return render(request, 'game_mix_pitch.html', context)
+
+def submit_feedback(request):
+    if request.method == 'POST':
+        form = AddFeedbackForm(request.POST)
+        if form.is_valid():
+            form.instance.user = request.user
+            form.save()
+            messages.success(request, "We've received your feedback!")
+        else:
+            messages.error(request, f"An error occurred with your feedback submission, please try again")
+            print(form.errors)
+    return redirect('contact')
