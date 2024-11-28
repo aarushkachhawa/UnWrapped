@@ -28,6 +28,41 @@
             overflow: hidden;
         }
 
+        /* Fixed Header */
+        .header {
+            width: 100%;
+            height: 100px;
+            background-color: darkgreen;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: red;
+            padding: 0 40px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .menu-icon {
+            color: red;
+            font-size: 65px;
+        }
+
+        .title {
+            font-size: 36px;
+            font-weight: bold;
+            color: red;
+            text-shadow:
+                -1px -1px 0 #C64036,
+                1px -1px 0 #C64036,
+                -1px 1px 0 #C64036,
+                1px 1px 0 #C64036;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+
         .top-corner-rainbow {
             width: 300px;
             height: 300px;
@@ -222,7 +257,7 @@
                 }
             } else {
                 for (let i = 0; i < rainbows.length; i++) {
-                    rainbows[i].src = "{% static 'slide_2/top_left_corner_rainbow.png' %}";
+                    rainbows[i].src = "{% static 'slide_2/snowflake.png' %}";
                 }
             }
         });
@@ -256,13 +291,13 @@
                 }
             } else {
                 for (let i = 0; i < rainbows.length; i++) {
-                    rainbows[i].src = "{% static 'slide_2/spider_web.png' %}";
+                    rainbows[i].src = "{% static 'slide_2/snowflake.png' %}";
                 }
             }
         }
     </script>
 
-    <img src="{% static 'slide_2/spider_web.png' %}" class="top-corner-rainbow rainbow">
+    <img src="{% static 'slide_2/snowflake.png' %}" class="top-corner-rainbow rainbow">
 
     <img src={{image}} class="record-image">
 

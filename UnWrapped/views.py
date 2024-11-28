@@ -867,7 +867,7 @@ def calculate_night_owl(request):  # combine this into one calculate stats metho
     request.session['hour_hand_rotation'] = hour_hand_rotation - 90
     request.session['minute_hand_rotation'] = minute_hand_rotation - 90
 
-def night_owl(request):
+def night_owl(request, page = 'slide_3.html', extra_content = None):
     language = request.session.get('language', 'english')
     context = {
         "latest_time": request.session['latest_time'],
@@ -877,7 +877,7 @@ def night_owl(request):
         "minute_hand_rotation": request.session['minute_hand_rotation'],
         "language": language
     }
-    return render(request, 'slide_3.html', context)
+    return render(request, page, context)
 
 
 @login_required
@@ -1017,6 +1017,18 @@ def reset(request):
 def halloween_ads(request):
     context = {'language': request.session.get('language', 'english')}
     return get_account_level(request, 'halloween_ads.html', context)
+
+def halloween_night(request):
+    context = {'language': request.session.get('language', 'english')}
+    return night_owl(request, 'halloween_night.html', context)
+
+def christmas_night(request):
+    context = {'language': request.session.get('language', 'english')}
+    return night_owl(request, 'christmas_night.html', context)
+
+def christmas_ads(request):
+    context = {'language': request.session.get('language', 'english')}
+    return get_account_level(request, 'christmas_ads.html', context)
 
 def halloween_top_artist(request):
     context = {'language': request.session.get('language', 'english')}
