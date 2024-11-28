@@ -235,6 +235,11 @@
                     rainbows[i].src = "{% static 'slide_2/dark_mode_rainbow.png' %}"
                 }
             }
+
+            let numWraps = wrap_list.length;
+            if (numWraps <= 4) {
+                document.getElementById('forward-button').style.display = 'none';
+            }
         });
 
         function prevPage() {
@@ -243,6 +248,7 @@
 
             if (startNum >= 4) {
                 startNum -= 4;
+
                 document.getElementById("text1").textContent = wrap_list[startNum]['words'];
                 document.getElementById("text1").style.display = 'block';
                 document.getElementById("line1").style.display = 'block';
@@ -266,7 +272,7 @@
 
             document.getElementById('forward-button').style.display = 'block';
 
-            if (startNum - 4 < numWraps) {
+            if (startNum - 4 < 0) {
                 document.getElementById('back-button').style.display = 'none';
             }
         }
@@ -275,7 +281,7 @@
             let wrap_list = {{ wrap_list|safe }};
             let numWraps = wrap_list.length;
 
-            if (startNum + 4 <= numWraps) {
+            if (startNum + 4 < numWraps) {
                 startNum += 4;
                 document.getElementById("text1").textContent = wrap_list[startNum]['words'];
 
@@ -306,7 +312,7 @@
 
             document.getElementById('back-button').style.display = 'block';
 
-            if (startNum + 4 > numWraps) {
+            if (startNum + 4 >= numWraps) {
                 document.getElementById('forward-button').style.display = 'none';
             }
         }

@@ -1077,10 +1077,17 @@ def past_wraps(request):
             }
         )
 
+        print({
+                'id': wrap.id,
+                'words': date_string,
+            }, '\n')
+
     context = {
         "wrap_list": wrap_list,
         "num_wraps": len(wrap_list),
     }
+
+    print('num wraps: ', len(wrap_list))
 
     return render(request, 'past_wraps.html', context)
 
