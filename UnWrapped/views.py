@@ -1213,6 +1213,7 @@ def past_wraps(request):
 
     return render(request, 'past_wraps.html', context)
 
+@login_required(login_url='login')
 def game_mix_pitch_1(request):
     language = request.session.get('language', 'english')
     access_token = request.session.get('spotify_access_token')
@@ -1325,7 +1326,7 @@ def game_mix_pitch_1(request):
     }
     return render(request, 'game_mix_pitch.html', context)
 
-
+@login_required(login_url='login')
 def game_mix_pitch_2(request):
     language = request.session.get('language', 'english')
     access_token = request.session.get('spotify_access_token')
