@@ -42,7 +42,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: red;
+            color: orangered;
             padding: 0 40px;
             position: fixed;
             top: 0;
@@ -58,7 +58,7 @@
         .title {
             font-size: 36px;
             font-weight: bold;
-            color: red;
+            color: orangered;
             text-shadow:
                 -1px -1px 0 #C64036,
                 1px -1px 0 #C64036,
@@ -195,6 +195,51 @@
 
         </style>
 
+        <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const container = document.getElementById('main-container');
+            sidebar.classList.toggle('active');
+            container.classList.toggle('sidebar-active');
+        }
+
+        document.getElementById('dark-mode-btn').onclick = function () {
+            document.body.classList.toggle('dark-mode');
+
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('dark_mode', 'on');
+                console.log('dark mode on');
+            } else {
+                localStorage.setItem('dark_mode', 'off');
+                console.log("dark mode off");
+                console.log(localStorage.getItem('dark_mode'));
+            }
+
+            const rainbows = document.getElementsByClassName('rainbow');
+            const dark_mode = localStorage.getItem('dark_mode') === 'on';
+            if (dark_mode) {
+                for (let i = 0; i < rainbows.length; i++) {
+                    rainbows[i].src = "{% static 'slide_2/snowflake.png' %}";
+                }
+            } else {
+                for (let i = 0; i < rainbows.length; i++) {
+                    rainbows[i].src = "{% static 'slide_2/snowflake.png' %}";
+                }
+            }
+        };
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const rainbows = document.getElementsByClassName('rainbow');
+            if (localStorage.getItem('dark_mode') === 'on') {
+                document.body.classList.add('dark-mode');
+                console.log('dark mode on');
+                for (let i = 0; i < rainbows.length; i++) {
+                    rainbows[i].src = "{% static 'slide_2/snowflake.png' %}"
+                }
+            }
+        });
+    </script>
+
         <img src="{% static 'slide_2/snowflake.png' %}" alt="Rainbow" class="top-left rainbow">
         <img src="{% static 'slide_2/snowflake.png' %}" alt="Rainbow" class="bottom-left rainbow">
 
@@ -204,7 +249,7 @@
                 const rainbows = document.getElementsByClassName('rainbow');
                 if (dark_mode) {
                     for (let i = 0; i < rainbows.length; i++) {
-                        rainbows[i].src = "{% static 'slide_3/dark_mode_rainbow.png' %}"
+                        rainbows[i].src = "{% static 'slide_2/snowflake.png' %}"
                     }
                 }
             });
@@ -382,7 +427,7 @@
                     const dark_mode = localStorage.getItem('dark_mode') === 'on';
                     if (dark_mode) {
                         for (let i = 0; i < rainbows.length; i++) {
-                            rainbows[i].src = "{% static 'slide_2/dark_mode_rainbow.png' %}";
+                            rainbows[i].src = "{% static 'slide_2/snowflake.png' %}";
                         }
 
                         hoursBarGraph.options.scales.xAxes[0].ticks.fontColor = '#a8a6a6';

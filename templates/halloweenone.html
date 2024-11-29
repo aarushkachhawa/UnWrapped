@@ -101,6 +101,10 @@
             margin-top: 20px;
         }
 
+        body.dark-mode .page-title {
+            color: white;
+        }
+
         /* Layout for Artist and Songs Side by Side */
         .content-sections {
             display: flex;
@@ -312,7 +316,7 @@
                 document.body.classList.add('dark-mode');
                 console.log('dark mode on');
                 for (let i = 0; i < rainbows.length; i++) {
-                    rainbows[i].src = "{% static 'slide_2/dark_mode_rainbow.png' %}"
+                    rainbows[i].src = "{% static 'slide_2/spider_web.png' %}"
                 }
             }
 
@@ -320,6 +324,53 @@
                 document.body.classList.add('fadeIn');
             }
             localStorage.setItem("from_transition_page", "false");
+        });
+    </script>
+
+
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const container = document.getElementById('main-container');
+            sidebar.classList.toggle('active');
+            container.classList.toggle('sidebar-active');
+        }
+
+        document.getElementById('dark-mode-btn').onclick = function () {
+            document.body.classList.toggle('dark-mode');
+
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('dark_mode', 'on');
+                console.log('dark mode on');
+            } else {
+                localStorage.setItem('dark_mode', 'off');
+                console.log("dark mode off");
+                console.log(localStorage.getItem('dark_mode'));
+            }
+
+            const rainbows = document.getElementsByClassName('rainbow');
+            const dark_mode = localStorage.getItem('dark_mode') === 'on';
+            if (dark_mode) {
+                for (let i = 0; i < rainbows.length; i++) {
+                    rainbows[i].src = "{% static 'slide_2/spider_web.png' %}";
+                }
+            } else {
+                for (let i = 0; i < rainbows.length; i++) {
+                    rainbows[i].src = "{% static 'slide_2/spider_web.png' %}";
+                }
+            }
+        };
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const rainbows = document.getElementsByClassName('rainbow');
+            if (localStorage.getItem('dark_mode') === 'on') {
+                document.body.classList.add('dark-mode');
+                console.log('dark mode on');
+                for (let i = 0; i < rainbows.length; i++) {
+                    rainbows[i].src = "{% static 'slide_2/spider_web.png' %}"
+                }
+            }
         });
     </script>
 
