@@ -232,6 +232,7 @@
             justify-content: center;
             gap: 20px;
             margin-top: 50px;
+            margin-bottom: 30px;
             height: 40px;
         }
 
@@ -258,6 +259,17 @@
             50% {
                 transform: translateY(-10px);
             }
+        }
+
+        body.dark-mode .register-container {
+            outline: 2px #c1c1c1 dashed;
+        }
+
+        .register-container {
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid black;
         }
 
         @media (max-width: 768px) {
@@ -334,6 +346,8 @@
             <span class="music-note">♫</span>
             <span class="music-note">♬</span>
         </div>
+
+        <div class = 'register-container'>
 
         <form method="POST" action="{% url 'register' %}">
             {% csrf_token %}
@@ -415,6 +429,8 @@
                 </button>
             </div>
         </form>
+
+        </div>
 
     {% endblock %}
 </body>
