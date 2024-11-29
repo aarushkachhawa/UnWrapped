@@ -96,7 +96,6 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                messages.success(request, "Successfully logged in")
                 return redirect('home')
             else:
                 messages.error(request, 'Invalid username or password.')
@@ -935,7 +934,7 @@ def transition_one(request):
         return render(request, 'transitionOne.html', {'language': language})
     except Exception as e:
         logger.error(f"Error in transition view: {e}")
-        messages.error(request, "An error occurred while loading the transition page.")
+        
         return redirect('home')
 
 @login_required
@@ -949,7 +948,7 @@ def halloween_transition_one(request):
         return render(request, 'halloween_transition_one.html', {'language': language})
     except Exception as e:
         logger.error(f"Error in transition view: {e}")
-        messages.error(request, "An error occurred while loading the transition page.")
+        
         return redirect('home')
 
 @login_required
@@ -963,7 +962,7 @@ def christmas_transition_one(request):
         return render(request, 'christmas_transition_one.html', {'language': language})
     except Exception as e:
         logger.error(f"Error in transition view: {e}")
-        messages.error(request, "An error occurred while loading the transition page.")
+        
         return redirect('home')
 
 @login_required
@@ -979,7 +978,7 @@ def transition_two(request, page = "transitionTwo.html"):
 
     except Exception as e:
         logger.error(f"Error in transition view: {e}")
-        messages.error(request, "An error occurred while loading the transition page.")
+        
         return redirect('home')
 
 @login_required
@@ -1106,10 +1105,10 @@ def reset(request):
             user = User.objects.get(username=username)
             user.password = make_password(new_password)
             user.save()
-            messages.success(request, 'Your password has been reset successfully.')
+            # messages.success(request, 'Your password has been reset successfully.')
             return redirect('login')
         except User.DoesNotExist:
-            messages.error(request, 'Username not found.')
+            # messages.error(request, 'Username not found.')
             return render(request, 'reset.html', {'hideMenu': False, 'language': language})
     return render(request, 'reset.html', {'hideMenu': False, 'language': language})
 
