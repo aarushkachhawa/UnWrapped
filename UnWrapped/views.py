@@ -47,10 +47,22 @@ def logout_view(request):
     messages.info(request, "You have successfully logged out.")
     return redirect('login')
 
+
+@login_required
+def delete_view(request):
+    if request.method == 'POST':
+        user = request.user
+        user.delete()
+        messages.success(request, "Your account has been deleted successfully.")
+        return redirect('register')  # Redirect to the home page or another appropriate page
+
+    return render(request, 'delete_account.html')
+
 @login_required
 def profile(request):
     if request.method == "POST" and 'language' in request.POST:
         request.session['language'] = request.POST.get('language')
+
 
     language = request.session.get('language', 'english')
     context = {
