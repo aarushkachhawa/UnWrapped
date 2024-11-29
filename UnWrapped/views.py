@@ -959,6 +959,10 @@ def transition_two(request, page = "transitionTwo.html"):
     if 'spotify_access_token' not in request.session:
         return redirect(spotify_auth_url())
     try:
+        if request.session['holiday'] == 'halloween':
+            page = 'halloween_TransitionTwo.html'
+        elif request.session['holiday'] == 'christmas':
+            page = 'christmas_TransitionTwo.html'
         return render(request, page, {'language': request.session.get('language', 'english')})
 
     except Exception as e:
