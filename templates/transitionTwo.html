@@ -20,9 +20,13 @@
         background-image: url("{% static 'transition_slide/transitionTwo.png' %}");
         background-repeat: no-repeat;
         background-size: cover;
-        background-position: center 170%;
+        background-position: center 20%;
         opacity: 0;
         animation: fadeIn 3s ease-in-out forwards;
+    }
+
+    body.dark-mode .container {
+        background-image: url("{% static 'transition_slide/transitionTwoDark.png' %}");
     }
 
     @keyframes fadeIn {
