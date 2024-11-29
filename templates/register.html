@@ -205,6 +205,73 @@
             color: #008000;
         }
 
+        .register-button {
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            margin-top: 10px; /* Reduced margin for higher positioning */
+        }
+
+        .register-button button {
+            background-color: rgb(83, 83, 223);
+            color: white;
+            font-size: 16px; /* Reduced font size for a smaller button */
+            border: none;
+            padding: 8px 16px; /* Reduced padding for a smaller button */
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .register-button button:hover {
+            background-color: rgb(114, 114, 222)
+        }
+
+        .music-notes {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 50px;
+            margin-bottom: 30px;
+            height: 40px;
+        }
+
+        .music-note {
+            font-size: 24px;
+            color: rgb(83, 83, 223);
+            animation: float 2s ease-in-out infinite;
+            position: relative;
+        }
+
+        .music-note:nth-child(1) { animation-delay: 0s; }
+        .music-note:nth-child(2) { animation-delay: 0.2s; }
+        .music-note:nth-child(3) { animation-delay: 0.4s; }
+        .music-note:nth-child(4) { animation-delay: 0.6s; }
+        .music-note:nth-child(5) { animation-delay: 0.8s; }
+        .music-note:nth-child(6) { animation-delay: 1.0s; }
+        .music-note:nth-child(7) { animation-delay: 1.2s; }
+        .music-note:nth-child(8) { animation-delay: 1.4s; }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        body.dark-mode .register-container {
+            outline: 2px #c1c1c1 dashed;
+        }
+
+        .register-container {
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid black;
+        }
+
         @media (max-width: 768px) {
             .blue-header h1 {
                 font-size: 32px;
@@ -239,6 +306,7 @@
                 height: 50px;
                 font-size: 16px;
             }
+
         }
     </style>
 
@@ -269,6 +337,17 @@
                 注册！
             {% endif %}
         </h2>
+
+        <div class="music-notes">
+            <span class="music-note">♪</span>
+            <span class="music-note">♫</span>
+            <span class="music-note">♬</span>
+            <span class="music-note">♪</span>
+            <span class="music-note">♫</span>
+            <span class="music-note">♬</span>
+        </div>
+
+        <div class = 'register-container'>
 
         <form method="POST" action="{% url 'register' %}">
             {% csrf_token %}
@@ -337,7 +416,21 @@
                     </div>
                 </div>
             </div>
+
+            <div class="register-button">
+                <button onclick="window.location.href='{% url 'login' %}'">  
+                    {% if language == "english" %}
+                        Have an account? Login
+                    {% elif language == "hindi" %}
+                        क्या आपके पास खाता है? लॉगिन करें
+                    {% elif language == "mandarin" %}
+                        有账号吗？登录
+                    {% endif %}
+                </button>
+            </div>
         </form>
+
+        </div>
 
     {% endblock %}
 </body>
