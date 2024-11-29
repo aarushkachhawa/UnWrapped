@@ -549,7 +549,7 @@ def get_most_popular_artists(request, page='slide_2.html', extra_context=None):
     if request.session['holiday'] == 'halloween':
         page = 'halloween_graph.html'
     elif request.session['holiday'] == 'christmas':
-        page = 'christmas_graph.html'
+        page = 'christmasGraph.html'
 
     return render(request, page, context)
 
