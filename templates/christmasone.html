@@ -373,7 +373,15 @@
 
     <!-- Page Title -->
     <div class="page-title">
-        <h1>Your Top Artist & Top 5 Songs</h1>
+        <h1>
+            {% if language == "english" %}
+                Your Top Artist & Top 5 Songs
+            {% elif language == "hindi" %}
+                आपका शीर्ष कलाकार और शीर्ष 5 गाने
+            {% elif language == "mandarin" %}
+                您最喜欢的艺术家和前5首歌
+            {% endif %}
+        </h1>
     </div>
 
     <!-- Content Sections for Top Artist and Top Songs -->
