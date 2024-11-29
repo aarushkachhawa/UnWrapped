@@ -254,11 +254,11 @@
             const rainbows = document.getElementsByClassName('rainbow');
             if (dark_mode) {
                 for (let i = 0; i < rainbows.length; i++) {
-                    rainbows[i].src = "{% static 'slide_2/dark_mode_rainbow.png' %}";
+                    rainbows[i].src = "{% static 'slide_2/spider_web.png' %}";
                 }
             } else {
                 for (let i = 0; i < rainbows.length; i++) {
-                    rainbows[i].src = "{% static 'slide_2/top_left_corner_rainbow.png' %}";
+                    rainbows[i].src = "{% static 'slide_2/spider_web.png' %}";
                 }
             }
         });
@@ -288,7 +288,7 @@
             const dark_mode = localStorage.getItem('dark_mode') === 'on';
             if (dark_mode) {
                 for (let i = 0; i < rainbows.length; i++) {
-                    rainbows[i].src = "{% static 'slide_2/dark_mode_rainbow.png' %}";
+                    rainbows[i].src = "{% static 'slide_2/spider_web.png' %}";
                 }
             } else {
                 for (let i = 0; i < rainbows.length; i++) {
@@ -297,6 +297,8 @@
             }
         }
     </script>
+
+
 
     <img src="{% static 'slide_2/spider_web.png' %}" class="top-corner-rainbow rainbow">
 
