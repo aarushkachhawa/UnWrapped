@@ -310,6 +310,11 @@ def top_artist_and_songs_slide(request, page='topArtistAndSongs.html', extra_con
     
     if extra_context:
         context.update(extra_context)
+
+    if request.session['holiday'] == 'halloween':
+        page = 'halloweenone.html'
+    elif request.session['holiday'] == 'christmas':
+        page = 'christmasone.html'
     return render(request, page, context)
 
 
@@ -540,6 +545,12 @@ def get_most_popular_artists(request, page='slide_2.html', extra_context=None):
     
     if extra_context:
         context.update(extra_context)
+
+    if request.session['holiday'] == 'halloween':
+        page = 'halloween_graph.html'
+    elif request.session['holiday'] == 'christmas':
+        page = 'christmasGraph.html'
+
     return render(request, page, context)
 
 
@@ -734,6 +745,11 @@ def analyze_seasonal_mood(request, page='seasonalMood.html', extra_context=None)
     }
     if extra_context:
         context.update(extra_context)
+
+    if request.session['holiday'] == 'halloween':
+        page = 'halloween_seasonal.html'
+    elif request.session['holiday'] == 'christmas':
+        page = 'christmas_seasonal.html'
     return render(request, page, context)
 
 
@@ -768,6 +784,12 @@ def llm_insights_page(request, page='LLMinsights.html', extra_context=None):
     }
     if extra_context:
         context.update(extra_context)
+
+    if request.session['holiday'] == 'halloween':
+        page = 'halloween_llm.html'
+    elif request.session['holiday'] == 'christmas':
+        page = 'christmas_llm.html'
+
     return render(request, page, context)
 
 def analyze_clothing(request):
@@ -881,6 +903,12 @@ def night_owl(request, page = 'slide_3.html', extra_content = None):
         "minute_hand_rotation": request.session['minute_hand_rotation'],
         "language": language
     }
+
+    if request.session['holiday'] == 'halloween':
+        page = 'halloween_night.html'
+    elif request.session['holiday'] == 'christmas':
+        page = 'christmas_night.html'
+
     return render(request, page, context)
 
 
@@ -889,8 +917,38 @@ def transition_one(request):
     if 'spotify_access_token' not in request.session:
         return redirect(spotify_auth_url())
     language = request.session.get('language', 'english')
+    request.session['holiday'] = 'none'
+    request.session['todays_theme'] = 'none'
     try:
         return render(request, 'transitionOne.html', {'language': language})
+    except Exception as e:
+        logger.error(f"Error in transition view: {e}")
+        messages.error(request, "An error occurred while loading the transition page.")
+        return redirect('home')
+
+@login_required
+def halloween_transition_one(request):
+    if 'spotify_access_token' not in request.session:
+        return redirect(spotify_auth_url())
+    language = request.session.get('language', 'english')
+    request.session['holiday'] = 'halloween'
+    request.session['todays_theme'] = 'halloween'
+    try:
+        return render(request, 'halloween_transition_one.html', {'language': language})
+    except Exception as e:
+        logger.error(f"Error in transition view: {e}")
+        messages.error(request, "An error occurred while loading the transition page.")
+        return redirect('home')
+
+@login_required
+def christmas_transition_one(request):
+    if 'spotify_access_token' not in request.session:
+        return redirect(spotify_auth_url())
+    language = request.session.get('language', 'english')
+    request.session['holiday'] = 'christmas'
+    request.session['todays_theme'] = 'christmas'
+    try:
+        return render(request, 'christmas_transition_one.html', {'language': language})
     except Exception as e:
         logger.error(f"Error in transition view: {e}")
         messages.error(request, "An error occurred while loading the transition page.")
@@ -948,6 +1006,11 @@ def get_account_level(request, page='ads_minutes.html', extra_context=None):
     }
     if extra_context:
         context.update(extra_context)
+
+    if request.session['holiday'] == 'halloween':
+        page = 'halloween_ads.html'
+    elif request.session['holiday'] == 'christmas':
+        page = 'christmas_ads.html'
     return render(request, page, context)
 
 def generate_wrap(request):
@@ -994,6 +1057,7 @@ def generate_wrap(request):
         minute_hand_rotation = request.session['minute_hand_rotation'],
         premium = request.session['premium'],
         ads_minutes = request.session['ads_minutes'],
+        holiday = request.session['holiday'],
     )
     wrap.save()
 
@@ -1443,6 +1507,7 @@ def wrap_id_to_session(request):
     request.session['minute_hand_rotation'] = wrap.minute_hand_rotation
     request.session['premium'] = wrap.premium
     request.session['ads_minutes'] = wrap.ads_minutes
+    request.session['holiday'] = wrap.holiday
     return JsonResponse({})
   
 
@@ -1457,4 +1522,8 @@ def submit_feedback(request):
             messages.error(request, f"An error occurred with your feedback submission, please try again")
             print(form.errors)
     return redirect('contact')
+
+def set_theme_from_profile(request):
+    request.session['holiday'] = request.session['todays_theme']
+    return redirect('slide_2')
 

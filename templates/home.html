@@ -39,6 +39,28 @@
             animation: popIn 1250ms ease-in-out 625ms forwards infinite;
         }
 
+        .christmas {
+
+        }
+
+        .halloween {
+            margin-top: 15px;
+        }
+
+        .halloween-button {
+            background-color: #E9C999;
+            color: #875e0b;
+        }
+
+        .christmas {
+            margin-top: 15px;
+        }
+
+        .christmas-button {
+            background-color: #E99F99;
+            color: #a62e25;
+        }
+
     </style>
 
     <div class="note-icons">
@@ -58,6 +80,30 @@
                 देखें UNWRAPPED
             {% elif language == "mandarin" %}
                 查看 UNWRAPPED
+            {% endif %}
+         </a>
+    </div>
+
+    <div class="button-wrapper halloween">
+        <a href="{% url 'halloween_transition_one' %}" class="view-unwrapped halloween-button">
+            {% if language == "english" %}
+                VIEW HALLOWEEN UNWRAPPED
+            {% elif language == "hindi" %}
+                हैलोवीन देखें UNWRAPPED
+            {% elif language == "mandarin" %}
+                查看万圣节 UNWRAPPED
+            {% endif %}
+         </a>
+    </div>
+
+    <div class="button-wrapper christmas">
+        <a href="{% url 'christmas_transition_one' %}" class="view-unwrapped christmas-button">
+            {% if language == "english" %}
+                VIEW CHRISTMAS UNWRAPPED
+            {% elif language == "hindi" %}
+                क्रिसमस देखें UNWRAPPED
+            {% elif language == "mandarin" %}
+                查看圣诞节 UNWRAPPED
             {% endif %}
          </a>
     </div>
