@@ -1156,7 +1156,21 @@ def past_wraps(request):
         date_string = ""
         date = wrap.wrapDate.date()
         date_string += month_to_word_dict[date.month]
-        date_string += f" {date.day}, {date.year}"
+
+        '''
+        hour = wrap.wrapDate.time().hour
+        hour -= 5 # utc to est
+        if hour == 0:
+            hour = 12
+            format = "AM"
+        elif hour > 12:
+            hour -= 12
+            format = "PM"
+        else:
+            format = "AM"
+        date_string += f" {date.day}, {date.year}<br>{hour}:{wrap.wrapDate.time().minute} {format}"
+        '''
+        date_string += f" {date.day}, {date.year} - {wrap.wrapDate.time().hour}:{'0' if wrap.wrapDate.time().minute < 10 else ''}{wrap.wrapDate.time().minute}"
 
         wrap_list.append(
             {
