@@ -184,7 +184,6 @@ def getStats(request):
 
     if response.status_code != 200 or trackResponse.status_code != 200:
         logger.error(f"Spotify API request failed: {response.status_code} - {response.text}")
-        messages.error(request, "Failed to retrieve data from Spotify.")
         return {'top_artists': ["N/A"], 'top_songs': ["N/A"], 'top_artist_year': "N/A", 'top_songs_urls': ["N/A"]}
 
     try:
@@ -1105,10 +1104,10 @@ def reset(request):
             user = User.objects.get(username=username)
             user.password = make_password(new_password)
             user.save()
-            # messages.success(request, 'Your password has been reset successfully.')
+            messages.success(request, 'Your password has been reset successfully.')
             return redirect('login')
         except User.DoesNotExist:
-            # messages.error(request, 'Username not found.')
+            messages.error(request, 'Username not found.')
             return render(request, 'reset.html', {'hideMenu': False, 'language': language})
     return render(request, 'reset.html', {'hideMenu': False, 'language': language})
 
