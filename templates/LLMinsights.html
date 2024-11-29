@@ -217,12 +217,18 @@
     <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="bottom-right rainbow">
     <!-- Page Title -->
     <div class="page-title">
-        <h1>LLM Insights</h1>
+        <h1>
+            {% if language == "english" %}
+                Your Personality Based on Your Music Taste
+            {% elif language == "hindi" %}
+                आपका व्यक्तित्व आपके संगीत के स्वाद पर आधारित है
+            {% elif language == "mandarin" %}
+                你的个性取决于你的音乐品味
+            {% endif %}
+        </h1>
     </div>
 
-    <!-- Content Sections for Top Artist and Top Songs -->
     <div class="content-sections">
-        <!-- Top Artist Section on the Left -->
         <div class="top-artist-section">
             <div class="artist-info">
                     <img src="{% static songPath %}" class="artist-image">
@@ -230,14 +236,12 @@
             </div>
         </div>
 
-        <!-- Top Songs Section on the Right -->
         <div class="top-songs-section">
             <div class="top-artist-section">
                 <div>
                     <img src="{% static imagePath %}" class="cartoon-image">
                 </div>
             </div>
-            <!-- Left Column for Songs 1, 3, and 5 -->
             <div class="songs-column">
                 {% for line in content %}
                     <p> {{ line }} </p>
