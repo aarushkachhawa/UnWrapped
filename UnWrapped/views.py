@@ -97,7 +97,6 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                messages.success(request, "Successfully logged in")
                 return redirect('home')
             else:
                 messages.error(request, 'Invalid username or password.')
@@ -186,7 +185,6 @@ def getStats(request):
 
     if response.status_code != 200 or trackResponse.status_code != 200:
         logger.error(f"Spotify API request failed: {response.status_code} - {response.text}")
-        messages.error(request, "Failed to retrieve data from Spotify.")
         return {'top_artists': ["N/A"], 'top_songs': ["N/A"], 'top_artist_year': "N/A", 'top_songs_urls': ["N/A"]}
 
     try:
@@ -249,6 +247,8 @@ def spotify_callback(request):
 
 @login_required
 def stats(request):
+    if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
+        return fallback(request)
     language = request.session.get('language', 'english')
     if 'spotify_access_token' not in request.session:
         return redirect(spotify_auth_url())
@@ -300,6 +300,8 @@ def calculate_top_artist_and_songs_slide(request):
 
 
 def top_artist_and_songs_slide(request, page='topArtistAndSongs.html', extra_context=None):
+    if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
+        return fallback(request)
     context = {
         'top_artist': request.session['top_artist'],
         'top_songs': request.session['top_songs'],
@@ -520,6 +522,8 @@ def calculate_get_most_popular_artists(request):
 
 
 def get_most_popular_artists(request, page='slide_2.html', extra_context=None):
+    if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
+        return fallback(request)
     language = request.session.get('language', 'english')
     
     time_labels = {
@@ -727,6 +731,8 @@ def calculate_analyze_seasonal_mood(request):
     request.session['season'] = curr_season
 
 def analyze_seasonal_mood(request, page='seasonalMood.html', extra_context=None):
+    if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
+        return fallback(request)
     context = {
         "mood1": request.session['mood1'],
         "mood2": request.session['mood2'],
@@ -796,6 +802,8 @@ def calculate_llm_insights_page(request):
 
 @login_required
 def llm_insights_page(request, page='LLMinsights.html', extra_context=None):
+    if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
+        return fallback(request)
     context = {
         'content': request.session['content'],
         'mood': request.session['mood'],
@@ -928,6 +936,8 @@ def calculate_night_owl(request):  # combine this into one calculate stats metho
     request.session['minute_hand_rotation'] = minute_hand_rotation - 90
 
 def night_owl(request, page = 'slide_3.html', extra_content = None):
+    if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
+        return fallback(request)
     language = request.session.get('language', 'english')
     context = {
         "latest_time": request.session['latest_time'],
@@ -957,7 +967,7 @@ def transition_one(request):
         return render(request, 'transitionOne.html', {'language': language})
     except Exception as e:
         logger.error(f"Error in transition view: {e}")
-        messages.error(request, "An error occurred while loading the transition page.")
+        
         return redirect('home')
 
 @login_required
@@ -971,7 +981,7 @@ def halloween_transition_one(request):
         return render(request, 'halloween_transition_one.html', {'language': language})
     except Exception as e:
         logger.error(f"Error in transition view: {e}")
-        messages.error(request, "An error occurred while loading the transition page.")
+        
         return redirect('home')
 
 @login_required
@@ -985,7 +995,7 @@ def christmas_transition_one(request):
         return render(request, 'christmas_transition_one.html', {'language': language})
     except Exception as e:
         logger.error(f"Error in transition view: {e}")
-        messages.error(request, "An error occurred while loading the transition page.")
+        
         return redirect('home')
 
 @login_required
@@ -1001,7 +1011,7 @@ def transition_two(request, page = "transitionTwo.html"):
 
     except Exception as e:
         logger.error(f"Error in transition view: {e}")
-        messages.error(request, "An error occurred while loading the transition page.")
+        
         return redirect('home')
 
 @login_required
@@ -1044,6 +1054,8 @@ def calculate_get_account_level(request):
     request.session['ads_minutes'] = round(calculate_ads(request))
 
 def get_account_level(request, page='ads_minutes.html', extra_context=None):
+    if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
+        return fallback(request)
     language = request.session.get('language', 'english')
     context = {
         "premium": request.session['premium'],
@@ -1068,6 +1080,9 @@ def generate_wrap(request):
     calculate_analyze_seasonal_mood(request)
     calculate_llm_insights_page(request)
     calculate_night_owl(request)
+
+    if 'holiday' not in request.session:
+        request.session['holiday'] = 'none'
 
     # save to model
     wrap = CustomWrap(
@@ -1106,6 +1121,8 @@ def generate_wrap(request):
         holiday = request.session['holiday'],
     )
     wrap.save()
+
+    request.session['generatedWrap'] = True
 
     return JsonResponse({
         "done": True
@@ -1169,6 +1186,8 @@ def christmas_llm(request):
     return llm_insights_page(request, 'christmas_llm.html', context)
 
 def past_wraps(request):
+    if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
+        return fallback(request)
     month_to_word_dict = {
         1: "Jan",
         2: "Feb",
@@ -1215,6 +1234,8 @@ def past_wraps(request):
 
 @login_required(login_url='login')
 def game_mix_pitch_1(request):
+    if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
+        return fallback(request)
     language = request.session.get('language', 'english')
     access_token = request.session.get('spotify_access_token')
 
@@ -1328,6 +1349,8 @@ def game_mix_pitch_1(request):
 
 @login_required(login_url='login')
 def game_mix_pitch_2(request):
+    if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
+        return fallback(request)
     language = request.session.get('language', 'english')
     access_token = request.session.get('spotify_access_token')
 
@@ -1573,4 +1596,14 @@ def submit_feedback(request):
 def set_theme_from_profile(request):
     request.session['holiday'] = request.session['todays_theme']
     return redirect('slide_2')
+
+@login_required
+def fallback(request):
+    if 'holiday' not in request.session:
+        return transition_one(request)
+    elif request.session['holiday'] == 'christmas':
+        return christmas_transition_one(request)
+    elif request.session['holiday'] == 'halloween':
+        return halloween_transition_one(request)
+    return transition_one(request)
 
