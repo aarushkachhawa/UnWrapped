@@ -970,6 +970,10 @@ def transition_two(request, page = "transitionTwo.html"):
 def halloween_transition_two(request):
     return transition_two(request, "halloween_TransitionTwo.html")
 
+@login_required
+def christmas_transition_two(request):
+    return transition_two(request, "christmas_TransitionTwo.html")
+
 def calculate_get_account_level(request):
     access_token = request.session.get('spotify_access_token')
 

@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    body {
+        font-family: 'Notable', sans-serif;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center top 100px;
+        background-color: red;
+        overflow: hidden;
+    }
+
+
+    /* Fixed Header */
+    .header {
+        width: 100%;
+        height: 100px;
+        background-color: darkgreen;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: red;
+        padding: 0 40px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+    }
+
+    .menu-icon {
+        color: red;
+        font-size: 65px;
+    }
+
+    .title {
+        font-size: 36px;
+        font-weight: bold;
+        color: red;
+        text-shadow:
+            -1px -1px 0 #C64036,
+            1px -1px 0 #C64036,
+            -1px 1px 0 #C64036,
+            1px 1px 0 #C64036;
+        text-align: center;
+        flex-grow: 1;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        margin-left: 0px;
+        margin-top: 100px;
+        min-height: 100vh;
+        background-image: url("{% static 'transition_slide/transitionTwo.png' %}");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center 170%;
+        opacity: 0;
+        animation: fadeIn 3s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    .button-container {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transform: translateY(-50%);
+        padding: 0 20px;
+    }
+
+    .button {
+        max-width: 40%;
+        padding: 20px;
+        font-size: 2rem;
+        text-align: center;
+        text-decoration: none;
+        color: white;
+        background-color: rgba(120, 102, 102, 0.5); /* Transparent background */
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        text-shadow: 1px 1px 2px black;
+    }
+
+    .button:hover {
+        background-color: rgba(0, 0, 0, 0.8); /* Slightly darker on hover */
+        color: #f0f0f0; /* Lighter text color on hover */
+    }
+</style>
+
+<div class="button-container">
+    <a href="{% url 'home' %}" class="button">Go Home</a>
+    <a href="{% url 'game' %}" class="button">Play Game</a>
+</div>
+{% endblock %}
