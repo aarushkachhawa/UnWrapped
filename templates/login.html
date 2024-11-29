@@ -174,15 +174,14 @@
             position: absolute;
         }
 
-        .forgot-password {
+        .forgot-password, .register-button {
             width: 100%;
             max-width: 600px;
             text-align: center;
             margin-top: 10px; /* Reduced margin for higher positioning */
         }
 
-        .forgot-password button {
-            background-color: #FF4B4B;
+        .forgot-password button, .register-button button {
             color: white;
             font-size: 16px; /* Reduced font size for a smaller button */
             border: none;
@@ -190,6 +189,18 @@
             border-radius: 6px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+        }
+
+        .register-button button {
+            background-color: rgb(83, 83, 223)
+        }
+
+        .register-button button:hover {
+            background-color: rgb(114, 114, 222)
+        }
+
+        .forgot-password button {
+            background-color: #FF4B4B;
         }
 
         .forgot-password button:hover {
@@ -375,9 +386,28 @@
                 </div>
             </div>
 
+        <div class="register-button">
+            <button onclick="window.location.href='{% url 'register' %}'">  
+                {% if language == "english" %}
+                    Don't have an account? Register
+                {% elif language == "hindi" %}
+                    खाता नहीं है? पंजीकरण करें
+                {% elif language == "mandarin" %}
+                    没有账号？注册
+                {% endif %}
+            </button>
+        </div>
         <!-- Forgot Password -->
         <div class="forgot-password">
-            <button onclick="window.location.href='{% url 'reset' %}'">Forgot your password?</button>
+            <button onclick="window.location.href='{% url 'reset' %}'">  
+                {% if language == "english" %}
+                    Forgot your password?
+                {% elif language == "hindi" %}
+                    क्या आप अपना पासवर्ड भूल गए हैं?
+                {% elif language == "mandarin" %}
+                    您忘记密码了吗？
+                {% endif %}
+            </button>
         </div>
     {% endblock %}
 </body>

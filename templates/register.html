@@ -205,6 +205,28 @@
             color: #008000;
         }
 
+        .register-button {
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            margin-top: 10px; /* Reduced margin for higher positioning */
+        }
+
+        .register-button button {
+            background-color: rgb(83, 83, 223);
+            color: white;
+            font-size: 16px; /* Reduced font size for a smaller button */
+            border: none;
+            padding: 8px 16px; /* Reduced padding for a smaller button */
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .register-button button:hover {
+            background-color: rgb(114, 114, 222)
+        }
+
         @media (max-width: 768px) {
             .blue-header h1 {
                 font-size: 32px;
@@ -239,6 +261,7 @@
                 height: 50px;
                 font-size: 16px;
             }
+
         }
     </style>
 
@@ -336,6 +359,18 @@
                         {% endif %}
                     </div>
                 </div>
+            </div>
+
+            <div class="register-button">
+                <button onclick="window.location.href='{% url 'login' %}'">  
+                    {% if language == "english" %}
+                        Have an account? Login
+                    {% elif language == "hindi" %}
+                        क्या आपके पास खाता है? लॉगिन करें
+                    {% elif language == "mandarin" %}
+                        有账号吗？登录
+                    {% endif %}
+                </button>
             </div>
         </form>
 
