@@ -85,6 +85,7 @@ def register(request):
 
 def login_view(request):
     language = request.session.get('language', 'english')
+    request.session['language'] = language
     if request.user.is_authenticated:
         return redirect('home')
 
@@ -633,7 +634,7 @@ def calculate_analyze_seasonal_mood(request):
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are a music analyst."},
-            {"role": "user", "content": "The following 100 songs are the songs a user listened to most frequently this season. Based on the songs listened come with 6 adjectives to describe their taste in music and for each adjective find an example song. Make sure the adjectives are 8 characters in length or smaller. Return the 6 adjectives and their respective example song and artist in the following format: Adjective1*Song Title by Artist*Adjective2*Song Title by Artist* etc. DO NOT return anything besides the 6 adjectives and their respective example song / artist."},
+            {"role": "user", "content": "The following 100 songs are the songs a user listened to most frequently this season. Based on the songs listened come with 6 adjectives to describe their taste in music and for each adjective find an example song. Make sure the adjectives are 8 characters in length or smaller. Return the 6 adjectives and their respective example song and artist in the following format: Adjective1*Song Title - Artist*Adjective2*Song Title - Artist* etc. DO NOT return anything besides the 6 adjectives and their respective example song / artist. Separate song and arist with a dash."},
             {"role": "user", "content": songs}
         ]
     )
@@ -657,7 +658,7 @@ def calculate_analyze_seasonal_mood(request):
 
     print(description)
 
-    song1 = song_artist1.split('by')[0].strip()
+    song1 = song_artist1.split('-')[0].strip()
 
     print(song1)
 
@@ -750,6 +751,26 @@ def analyze_seasonal_mood(request, page='seasonalMood.html', extra_context=None)
         page = 'halloween_seasonal.html'
     elif request.session['holiday'] == 'christmas':
         page = 'christmas_seasonal.html'
+
+    if request.session['language'] != 'english':
+        client = OpenAI(api_key=OPENAI_API_KEY)
+
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a translator."},
+                {"role": "user", "content": f"Take the following list of words and translate it to the given language. Make sure to separate each translated string in the list with the '*' character. Make sure that all text returned is in the translated language. For example, return 'translated_text1*translated_text2*translated_text3' given '[text1, text2, text3]'. Language: {request.session['language']}, Text List to Translate: ```[{request.session['mood1']}, {request.session['mood2']}, {request.session['mood3']}, {request.session['mood4']}, {request.session['mood5']}, {request.session['mood1']}```"}
+            ]
+        )
+
+        translated_moods = response.choices[0].message.content.split('*')
+        context['mood1'] = translated_moods[0]
+        context['mood2'] = translated_moods[1]
+        context['mood3'] = translated_moods[2]
+        context['mood4'] = translated_moods[3]
+        context['mood5'] = translated_moods[4]
+        context['mood6'] = translated_moods[5]
+
     return render(request, page, context)
 
 
@@ -789,6 +810,19 @@ def llm_insights_page(request, page='LLMinsights.html', extra_context=None):
         page = 'halloween_llm.html'
     elif request.session['holiday'] == 'christmas':
         page = 'christmas_llm.html'
+
+    if request.session['language'] != 'english':
+        client = OpenAI(api_key=OPENAI_API_KEY)
+
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a translator."},
+                {"role": "user", "content": f"Take the following list of texts and translate it to the given language. Make sure to separate each translated string in the list with the '*' character. Make sure that all text returned is in the translated language. For example, return 'translated_text1*translated_text2*translated_text3' given '[text1, text2, text3]'. Language: {request.session['language']}, Text List to Translate: ```{request.session['content']}```"}
+            ]
+        )
+
+        context['content'] = response.choices[0].message.content.split('*')
 
     return render(request, page, context)
 
