@@ -85,6 +85,7 @@ def register(request):
 
 def login_view(request):
     language = request.session.get('language', 'english')
+    request.session['language'] = language
     if request.user.is_authenticated:
         return redirect('home')
 
@@ -633,7 +634,7 @@ def calculate_analyze_seasonal_mood(request):
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are a music analyst."},
-            {"role": "user", "content": "The following 100 songs are the songs a user listened to most frequently this season. Based on the songs listened come with 6 adjectives to describe their taste in music and for each adjective find an example song. Make sure the adjectives are 8 characters in length or smaller. Return the 6 adjectives and their respective example song and artist in the following format: Adjective1*Song Title by Artist*Adjective2*Song Title by Artist* etc. DO NOT return anything besides the 6 adjectives and their respective example song / artist."},
+            {"role": "user", "content": "The following 100 songs are the songs a user listened to most frequently this season. Based on the songs listened come with 6 adjectives to describe their taste in music and for each adjective find an example song. Make sure the adjectives are 8 characters in length or smaller. Return the 6 adjectives and their respective example song and artist in the following format: Adjective1*Song Title - Artist*Adjective2*Song Title - Artist* etc. DO NOT return anything besides the 6 adjectives and their respective example song / artist. Separate song and arist with a dash."},
             {"role": "user", "content": songs}
         ]
     )
@@ -657,7 +658,7 @@ def calculate_analyze_seasonal_mood(request):
 
     print(description)
 
-    song1 = song_artist1.split('by')[0].strip()
+    song1 = song_artist1.split('-')[0].strip()
 
     print(song1)
 
