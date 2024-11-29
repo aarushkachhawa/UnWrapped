@@ -49,6 +49,7 @@ class CustomWrap(models.Model): # there can only be one wrap per day
     minute_hand_rotation = models.FloatField(default=0)
     premium = models.BooleanField(default=False)
     ads_minutes = models.FloatField(default=0)
+    holiday = models.CharField(max_length=20, default='none')
 
     def save(self, *args, **kwargs):
         # Check if a wrap for the same user and year exists

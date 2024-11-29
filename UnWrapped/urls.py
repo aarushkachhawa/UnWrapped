@@ -44,5 +44,10 @@ urlpatterns = [
     path('game2/', views.game_mix_pitch_2, name="game2"),
     path('wrap_id_to_session/', views.wrap_id_to_session, name='wrap_id_to_session'),
     path('transition_two/', views.transition_two, name="transition_two"),
+    path('halloween_transition_two/', views.halloween_transition_two, name="halloween_transition_two"),
+    path('christmas_transition_two/', views.christmas_transition_two, name="christmas_transition_two"),
     path('submit_feedback/', views.submit_feedback, name="submit_feedback"),
+    path('halloween_transition_one/', views.halloween_transition_one, name="halloween_transition_one"),
+    path('christmas_transition_one/', views.christmas_transition_one, name="christmas_transition_one"),
+    path('set_theme_from_profile/', views.set_theme_from_profile, name='set_theme_from_profile'),
 ]
