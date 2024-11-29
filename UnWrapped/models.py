@@ -51,6 +51,7 @@ class CustomWrap(models.Model): # there can only be one wrap per day
     ads_minutes = models.FloatField(default=0)
     holiday = models.CharField(max_length=20, default='none')
 
+    '''
     def save(self, *args, **kwargs):
         # Check if a wrap for the same user and year exists
         existing_wrap = CustomWrap.objects.filter(user=self.user, year=self.year).first()
@@ -65,6 +66,7 @@ class CustomWrap(models.Model): # there can only be one wrap per day
         
         # If no existing wrap or date doesn't match, create a new wrap
         super().save(*args, **kwargs)
+    '''
 
     def __str__(self):
         ret_str =  f"Wrap for {self.year} by {self.user.name}\n"
