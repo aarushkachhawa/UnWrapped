@@ -262,7 +262,15 @@
     <img src="{% static 'slide_2/spider_web.png' %}" alt="Rainbow" class="bottom-right rainbow">
     <!-- Page Title -->
     <div class="page-title">
-        <h1>Personality Insights Based on Your Music Taste</h1>
+        <h1>
+            {% if language == "english" %}
+                Your Personality Based on Your Music Taste
+            {% elif language == "hindi" %}
+                आपका व्यक्तित्व आपके संगीत के स्वाद पर आधारित है
+            {% elif language == "mandarin" %}
+                你的个性取决于你的音乐品味
+            {% endif %}
+        </h1>
     </div>
 
     <!-- Content Sections for Top Artist and Top Songs -->

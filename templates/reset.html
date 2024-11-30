@@ -101,7 +101,51 @@
             text-decoration: underline;
         }
 
+        .alert {
+            margin-bottom: 100px;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        .alert-danger {
+            background-color: #FFE0E0;
+            color: #FF0000;
+        }
+
+        .alert-success {
+            background-color: #E0FFE0;
+            color: #008000;
+        }
+
+        .alert-neutral {
+            background-color: #F0F0F0; /* Light grey background */
+            color: #505050; /* Neutral dark grey text */
+            border: 1px solid #D0D0D0; /* Optional border for clarity */
+        }
+
     </style>
+
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for field, errors in form.errors.items %}
+                    <li>{{ errors|striptags }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    {% if messages %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
 
     <div class="reset-container">
         <h2>
