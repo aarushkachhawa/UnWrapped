@@ -1252,6 +1252,7 @@ def past_wraps(request):
     context = {
         "wrap_list": wrap_list,
         "num_wraps": len(wrap_list),
+        'language': request.session.get('language', 'english')
     }
 
     print('num wraps: ', len(wrap_list))

@@ -8,7 +8,6 @@
     <title>Past Wraps</title>
 </head>
 
-<body>
     {% block content %}
     <style>
         h1 {
@@ -237,7 +236,8 @@
                     rainbows[i].src = "{% static 'slide_2/dark_mode_rainbow.png' %}"
                 }
             }
-
+            
+            let wrap_list = {{ wrap_list|safe }};
             let numWraps = wrap_list.length;
             if (numWraps <= 4) {
                 document.getElementById('forward-button').style.display = 'none';
@@ -342,6 +342,5 @@
     </script>
 
     {% endblock %}
-</body>
 
 </html>
