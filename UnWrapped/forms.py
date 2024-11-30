@@ -34,16 +34,39 @@ class AddFeedbackForm(forms.ModelForm):
     feedback = forms.CharField(
         label='Please leave your feedback here',
         max_length=1000
+        required=True,
+        widget=forms.Textarea(attrs={
+            'placeholder': 'Write your feedback here',
+            'class': 'form-control'
+        }),
+        error_messages={
+            'required': 'Please provide your feedback',
+            'max_length': 'Feedback must be less than 1000 characters'
+        }
     )
     rating = forms.IntegerField(
         min_value=1,
         max_value=5,
         label='How would you rate our web app? (from 1 to 5)'
+        required=True,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control'
+        }),
+        error_messages={
+            'required': 'Please provide a rating',
+            'min_value': 'Rating must be at least 1',
+            'max_value': 'Rating must be at most 5'
+        }
     )
     email = forms.EmailField(
-        label='Your Email',
-        max_length=254,
-        required=True
+        required=False,
+        widget=forms.EmailInput(attrs={
+            'placeholder': 'Enter your email address',
+            'class': 'form-control'
+        }),
+        error_messages={
+            'invalid': 'Please enter a valid email address'
+        }
     )
 
 # class CustomLoginForm(forms.Form):

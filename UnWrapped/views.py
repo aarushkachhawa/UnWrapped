@@ -1615,12 +1615,21 @@ def submit_feedback(request):
 
         form = AddFeedbackForm(request.POST)
         if form.is_valid():
-            form.instance.user = request.user
-            form.save()
-            messages.success(request, "We've received your feedback!")
+           try:
+                feedback_instance = form.save(commit=False)
+                feedback_instance.user = request.user
+                feedback_instance.save()
+                messages.success(request, "Thank you! Your feedback has been submitted successfully.")
+            except Exception as e:
+                messages.error(request, "An error occurred while saving your feedback. Please try again.")
+                print(f"Error saving feedback: {str(e)}")
         else:
-            messages.error(request, f"An error occurred with your feedback submission, please try again")
-            print(form.errors)
+            error_messages = []
+            for field, errors in form.errors.items():
+                for error in errors:
+                    error_messages.append(f"{field}: {error}")
+            error_message = "Please correct the following errors: " + ", ".join(error_messages)
+            messages.error(request, error_message)
     return redirect('contact')
 
 def set_theme_from_profile(request):

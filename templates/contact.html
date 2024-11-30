@@ -314,6 +314,25 @@
             color: #ecd00d;
         }
 
+                .messages {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        .text-success {
+            color: #2a9d8f;
+        }
+
+        .text-danger {
+            color: #e76f51;
+        }
+
     </style>
 
     <div class="contactContainer" id="info-section">
@@ -418,6 +437,15 @@
     <div class="contactContainer" id="feedback-section">
 
         <h3>We'd Love To Hear From You!</h3>
+        {% if messages %}
+        <div class="messages mt-4">
+            {% for message in messages %}
+                <div class="message {% if message.tags == 'success' %}text-success{% else %}text-danger{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
             <div class='alignment'>
 
              <form action="{% url 'submit_feedback' %}" method="post">
