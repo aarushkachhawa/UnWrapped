@@ -69,8 +69,8 @@ def profile(request):
         'username': request.user.get_username(),
         'email': request.user.email,
         'language': language,
-        'top_songs': request.session['top_songs'],
-        'top_artist': request.session['top_artist'][0],
+        'top_songs': request.session.get('top_songs', ['', '', '', '', '']),
+        'top_artist': request.session['top_artist'][0] if 'top_artist' in request.session else "Generate a wrap to see today's data!",
     }
     return render(request, 'profile.html', context)
 
@@ -1221,7 +1221,21 @@ def past_wraps(request):
         date_string = ""
         date = wrap.wrapDate.date()
         date_string += month_to_word_dict[date.month]
-        date_string += f" {date.day}, {date.year}"
+
+        '''
+        hour = wrap.wrapDate.time().hour
+        hour -= 5 # utc to est
+        if hour == 0:
+            hour = 12
+            format = "AM"
+        elif hour > 12:
+            hour -= 12
+            format = "PM"
+        else:
+            format = "AM"
+        date_string += f" {date.day}, {date.year}<br>{hour}:{wrap.wrapDate.time().minute} {format}"
+        '''
+        date_string += f" {date.day}, {date.year} - {wrap.wrapDate.time().hour}:{'0' if wrap.wrapDate.time().minute < 10 else ''}{wrap.wrapDate.time().minute}"
 
         wrap_list.append(
             {

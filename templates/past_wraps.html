@@ -184,7 +184,7 @@
         <div class="wrap0" onclick="showWrap(0)">
             <div class="vertical-line" id="line1"></div>
             <img src="{% static 'past_wraps/salmon_record.png' %}" class="record" id="record1">
-            <h2 id="text1">{{wrap_list.0.words}}</h2>
+            <h2 id="text1">{{wrap_list.0.words|safe}}</h2>
         </div>
     {% else %}
         <h2 id="info">Generate a wrap to see it here!</h2>
@@ -194,7 +194,7 @@
     <div class="wrap1" onclick="showWrap(1)">
         <div class="vertical-line" id="line2"></div>
         <img src="{% static 'past_wraps/teal_record.png' %}" class="record" id="record2">
-        <h2 id="text2">{{wrap_list.1.words}}</h2>
+        <h2 id="text2">{{wrap_list.1.words|safe}}</h2>
     </div>
     {% endif %}
 
@@ -203,7 +203,7 @@
     <div class="wrap2" onclick="showWrap(2)">
         <div class="vertical-line" id="line3"></div>
         <img src="{% static 'past_wraps/gold_record.png' %}" class="record" id="record3">
-        <h2 id="text3">{{wrap_list.2.words}}</h2>
+        <h2 id="text3">{{wrap_list.2.words|safe}}</h2>
     </div>
     {% endif %}
 
@@ -211,7 +211,7 @@
     <div class="wrap3" onclick="showWrap(3)">
         <div class="vertical-line" id="line4"></div>
         <img src="{% static 'past_wraps/salmon_record.png' %}" class="record" id="record4">
-        <h2 id="text4">{{wrap_list.3.words}}</h2>
+        <h2 id="text4">{{wrap_list.3.words|safe}}</h2>
     </div>
     {% endif %}
 
