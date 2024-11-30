@@ -76,7 +76,7 @@ def profile(request):
 
 def contactDevs(request):
     language = request.session.get('language', 'english')
-    return render(request, 'contact.html', {'language': 'english'})
+    return render(request, 'contact.html', {'language': language})
 
 def register(request):
     language = request.session.get('language', 'english')
@@ -1591,7 +1591,6 @@ def wrap_id_to_session(request):
     request.session['ads_minutes'] = wrap.ads_minutes
     request.session['holiday'] = wrap.holiday
     return JsonResponse({})
-  
 
 def submit_feedback(request):
     if request.method == 'POST':
