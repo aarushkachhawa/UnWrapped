@@ -1157,9 +1157,9 @@ def past_wraps(request):
         date = wrap.wrapDate.date()
         date_string += month_to_word_dict[date.month]
 
-        '''
         hour = wrap.wrapDate.time().hour
         hour -= 5 # utc to est
+        hour = hour % 24
         if hour == 0:
             hour = 12
             format = "AM"
@@ -1168,9 +1168,7 @@ def past_wraps(request):
             format = "PM"
         else:
             format = "AM"
-        date_string += f" {date.day}, {date.year}<br>{hour}:{wrap.wrapDate.time().minute} {format}"
-        '''
-        date_string += f" {date.day}, {date.year} - {wrap.wrapDate.time().hour}:{'0' if wrap.wrapDate.time().minute < 10 else ''}{wrap.wrapDate.time().minute}"
+        date_string += f" {date.day}, {date.year}<br>{hour}:{'0' if wrap.wrapDate.time().minute < 10 else ''}{wrap.wrapDate.time().minute} {format}"
 
         wrap_list.append(
             {
@@ -1190,7 +1188,6 @@ def past_wraps(request):
     }
 
     print('num wraps: ', len(wrap_list))
-
     return render(request, 'past_wraps.html', context)
 
 def game_mix_pitch_1(request):
