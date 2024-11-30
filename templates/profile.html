@@ -375,7 +375,15 @@
             <!-- Delete Account Button -->
             <form method="POST" action="{% url 'delete' %}">
                 {% csrf_token %}
-                <button type="submit" class="delete-account-btn">Delete Account</button>
+                <button type="submit" class="delete-account-btn">
+                    {% if language == "english" %}
+                            Delete Account
+                        {% elif language == "hindi" %}
+                            खाता हटा दो
+                        {% elif language == "mandarin" %}
+                            删除帐户
+                        {% endif %}
+                </button>
             </form>
         <div class="bottom-section">
             <div class="top-artists">
