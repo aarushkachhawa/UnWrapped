@@ -326,37 +326,65 @@
 
         <!-- Text along the circular path -->
         <text fill="#C64036" font-size="36" font-weight="bold" transform="translate(8, 0)" style="text-shadow: 2px 2px 0 white;">
-            {% if season == "winter" %}
             <textPath href="#textCircle" startOffset="0%">
-                YOUR WINTER MOOD
+                {% if season == "winter" %}
+                    {% if language == "english" %}
+                        YOUR WINTER MOOD
+                    {% elif language == "hindi" %}
+                        आपका सर्दी का मूड
+                    {% elif language == "mandarin" %}
+                        您的冬季心情
+                    {% endif %}
+                {% elif season == "spring" %}
+                    {% if language == "english" %}
+                        YOUR SPRING MOOD
+                    {% elif language == "hindi" %}
+                        आपका वसंत का मूड
+                    {% elif language == "mandarin" %}
+                        您的春季心情
+                    {% endif %}
+                {% elif season == "summer" %}
+                    {% if language == "english" %}
+                        YOUR SUMMER MOOD
+                    {% elif language == "hindi" %}
+                        आपका गर्मी का मूड
+                    {% elif language == "mandarin" %}
+                        您的夏季心情
+                    {% endif %}
+                {% else %}
+                    {% if language == "english" %}
+                        YOUR AUTUMN MOOD
+                    {% elif language == "hindi" %}
+                        आपका शरद का मूड
+                    {% elif language == "mandarin" %}
+                        您的秋季心情
+                    {% endif %}
+                {% endif %}
             </textPath>
-            {% elif season == "spring" %}
-            <textPath href="#textCircle" startOffset="0%">
-                YOUR SPRING MOOD
-            </textPath>
-
-            {% elif season == "summer" %}
-            <textPath href="#textCircle" startOffset="0%">
-                YOUR SUMMER MOOD
-            </textPath>
-            {% else %}
-            <textPath href="#textCircle" startOffset="0%">
-                YOUR AUTUMN MOOD
-            </textPath>
-
-            {% endif %}
         </text>
 
         <!-- Text along bottom circular path-->
         <text fill="#C64036" font-size="18" font-weight="bold" transform="translate(5, -4)">
             <textPath href="#textCircleBottom" startOffset="60%">
-                & EXAMPLES OF SOME OF
+                {% if language == "english" %}
+                    & EXAMPLES OF SOME OF
+                {% elif language == "hindi" %}
+                    और कुछ उदाहरण
+                {% elif language == "mandarin" %}
+                    以及一些
+                {% endif %}
             </textPath>
         </text>
 
         <text fill="#C64036" font-size="18" font-weight="bold" transform="translate(5, 30)">
             <textPath href="#textCircleBottom" startOffset="63%">
-                YOUR FAVORITE SONGS
+                {% if language == "english" %}
+                    YOUR FAVORITE SONGS
+                {% elif language == "hindi" %}
+                    आपके पसंदीदा गानों के
+                {% elif language == "mandarin" %}
+                    您最喜欢的歌曲
+                {% endif %}
             </textPath>
         </text>
     </svg>

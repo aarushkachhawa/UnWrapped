@@ -14,6 +14,11 @@
                 {% endif %}
             </p>
         {% else %}
+
+        <p2>
+            (This feature has been deprecated)
+        </p2>
+
             <h2>
                 {% if language == "english" %}
                     Guess the Songs
@@ -114,7 +119,12 @@
     }
 
     h2 {
-        margin-bottom: 10px;
+        margin-top: 10px;
+        margin-bottom: 5px;
+    }
+
+    p2 {
+        color: #c4b3ff;
     }
 
     strong {

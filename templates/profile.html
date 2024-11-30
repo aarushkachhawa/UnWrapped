@@ -280,6 +280,27 @@
             color: black;
         }
 
+
+
+        /* Styling for the delete account button */
+        .delete-account-btn {
+            background-color: #d32f2f; /* Red color */
+            font: 'Notable'
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .delete-account-btn:hover {
+            background-color: #c62828; /* Darker red on hover */
+        }
+
     </style>
 
     <img src="{% static 'ads_minutes/top_left_corner_rainbow.png' %}" alt="Rainbow" class="top-right rainbow">
@@ -350,6 +371,20 @@
             </label>
             <div class="data-field genre-field"> {{ top_artist }} </div>
         </div>
+
+            <!-- Delete Account Button -->
+            <form method="POST" action="{% url 'delete' %}">
+                {% csrf_token %}
+                <button type="submit" class="delete-account-btn">
+                    {% if language == "english" %}
+                            Delete Account
+                        {% elif language == "hindi" %}
+                            खाता हटा दो
+                        {% elif language == "mandarin" %}
+                            删除帐户
+                        {% endif %}
+                </button>
+            </form>
         <div class="bottom-section">
             <div class="top-artists">
                 <div class="info-item">
@@ -433,6 +468,7 @@
             </div>
         </div>
     </div>
+
     {% endblock %}
 </body>
 </html>

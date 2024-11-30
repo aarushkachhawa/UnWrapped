@@ -10,6 +10,7 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('logout/', views.logout_view, name='logout'),
     path('login/', views.login_view, name='login'),
+    path('delete/', views.delete_view, name='delete'),
     path('home/', views.home, name='home'),
     path('top_artist/', views.top_artist_and_songs_slide, name='top_artist'),
     path('spotify_callback/', views.spotify_callback, name='spotify_callback'),  # Spotify OAuth callback
