@@ -1609,6 +1609,10 @@ def wrap_id_to_session(request):
 
 def submit_feedback(request):
     if request.method == 'POST':
+        rating = request.POST.get('rating')
+        feedback = request.POST.get('feedback')
+        email = request.POST.get('email')
+
         form = AddFeedbackForm(request.POST)
         if form.is_valid():
             form.instance.user = request.user

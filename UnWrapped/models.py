@@ -110,3 +110,4 @@ class Feedback(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='feedback_user')
     feedback = models.TextField(blank=False)
     rating = models.IntegerField(blank=False)
+    email = models.EmailField(max_length=254, blank=True, null=True)

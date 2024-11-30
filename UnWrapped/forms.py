@@ -29,7 +29,7 @@ class CustomUserCreationForm(UserCreationForm):
 class AddFeedbackForm(forms.ModelForm):
     class Meta:
         model = Feedback
-        fields = ["feedback", "rating"]
+        fields = ["feedback", "rating", "email"]
 
     feedback = forms.CharField(
         label='Please leave your feedback here',
@@ -39,6 +39,11 @@ class AddFeedbackForm(forms.ModelForm):
         min_value=1,
         max_value=5,
         label='How would you rate our web app? (from 1 to 5)'
+    )
+    email = forms.EmailField(
+        label='Your Email',
+        max_length=254,
+        required=True
     )
 
 # class CustomLoginForm(forms.Form):
