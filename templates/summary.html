@@ -223,14 +223,28 @@
     <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="bottom-right rainbow">
     <div class="page-title">
             <h1>
+            {% if language == "english" %}
                 Your Music Summary
+            {% elif language == "hindi" %}
+                आपका संगीत सारांश
+            {% elif language == "mandarin" %}
+                您的音樂摘要
+            {% endif %}
             </h1>
         </div>
 
     <div class="body-section">
 
       <div class="left-section">
-        <h2 class="label">Top 3 Songs:</h2>
+        <h2 class="label">
+          {% if language == "english" %}
+              Top 3 Songs:
+          {% elif language == "hindi" %}
+              शीर्ष 3 गाने:
+          {% elif language == "mandarin" %}
+              前三首歌曲:
+          {% endif %}
+        </h2>
 
         <div class="song-1">
           <img src="{% static 'topArtist/red_record.png' %}" class="record">
@@ -263,7 +277,15 @@
         </div>
 
         <div class="personality">
-          <h2 class='label label2'>Your Personality:</h2>
+          <h2 class='label label2'>
+            {% if language == "english" %}
+              Your Personality:
+            {% elif language == "hindi" %}
+              आपकी व्यक्तित्व:
+            {% elif language == "mandarin" %}
+              您的個性:
+            {% endif %}
+          </h2>
           <h1 class="info2" id="mood">{{mood}}</h1>
         </div>
       </div>
@@ -271,12 +293,28 @@
       <div class="center-section">
 
         <img src={{top_artist.1}} class="record-image" alt="top artist image">
-        <h2 class="label" id="artist-label">Top Artist:</h2>
+        <h2 class="label" id="artist-label">
+          {% if language == "english" %}
+            Top Artist:
+          {% elif language == "hindi" %}
+            शीर्ष कलाकार:
+          {% elif language == "mandarin" %}
+            頂級藝術家:
+          {% endif %}
+        </h2>
         <h2 id="top-artist">{{top_artist.0}}</h2>
       </div>
 
       <div class="right-section">
-        <h2 class="label">Top 3 Moods:</h2>
+        <h2 class="label">
+          {% if language == "english" %}
+            Top 3 Moods:
+          {% elif language == "hindi" %}
+            शीर्ष 3 मूड्स:
+          {% elif language == "mandarin" %}
+            前三種情緒:
+          {% endif %}
+        </h2>
         <div class="song-1">
           <img src="{% static 'topArtist/blue_record.png' %}" class="record">
            <div class="small-record-container small-record-container1">
@@ -305,7 +343,25 @@
         </div>
 
         <div class="personality">
-          <h2 class='label label2' id="time-label">Latest<br>Listening Time:</h2>
+          <h2 class='label label2' id="time-label">
+            {% if language == "english" %}
+              Latest
+            {% elif language == "hindi" %}
+              नवीनतम
+            {% elif language == "mandarin" %}
+              最新
+            {% endif %}
+            
+            <br>
+            {% if language == "english" %}
+              Listening Time:
+            {% elif language == "hindi" %}
+              सुनने का समय:
+            {% elif language == "mandarin" %}
+              聽歌時間:
+            {% endif %}
+          
+          </h2>
           <h1 class="info2" id="time">{{latest_time}}</h1>
         </div>
       </div>
