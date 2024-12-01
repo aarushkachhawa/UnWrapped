@@ -167,6 +167,9 @@ def spotify_auth_url(request):
 
 @login_required
 def home(request):
+    for msg in messages.get_messages(request):
+        msg.deleted = True
+
     language = request.session.get('language', 'english')
     if 'spotify_access_token' not in request.session:
         return redirect(spotify_auth_url(request))
