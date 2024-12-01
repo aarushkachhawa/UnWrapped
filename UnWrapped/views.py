@@ -1205,6 +1205,9 @@ def generate_wrap(request):
         premium = request.session['premium'],
         ads_minutes = request.session['ads_minutes'],
         holiday = request.session['holiday'],
+        top_songs_artists = request.session['top_songs_artists'],
+        top_songs_urls = request.session['top_songs_urls'],
+        imagePath = request.session['imagePath'],
     )
     wrap.save()
 
@@ -1318,6 +1321,8 @@ def past_wraps(request):
                 'id': wrap.id,
                 'words': date_string,
             }, '\n')
+
+        print(request.session.get('generatedWrap', 'not in session data'))
 
     context = {
         "wrap_list": wrap_list,
@@ -1622,6 +1627,8 @@ def game_mix_pitch_2(request):
 
 @login_required
 def wrap_id_to_session(request):
+    request.session['generatedWrap'] = True
+
     body = json.loads(request.body)
     wrap_id = body['wrap_id']
     wrap = CustomWrap.objects.filter(id=wrap_id).first()
@@ -1714,6 +1721,9 @@ def wrap_id_to_session(request):
     request.session['premium'] = wrap.premium
     request.session['ads_minutes'] = wrap.ads_minutes
     request.session['holiday'] = wrap.holiday
+    request.session['top_songs_artists'] = wrap.top_songs_artists
+    request.session['top_songs_urls'] = wrap.top_songs_urls
+    request.session['imagePath'] = wrap.imagePath
     return JsonResponse({})
 
 def submit_feedback(request):
