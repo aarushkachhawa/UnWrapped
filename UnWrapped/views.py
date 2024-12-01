@@ -1649,5 +1649,12 @@ def summary(request):
         'latest_time': request.session['latest_time'],
         'language': request.session.get('language', 'english')
     }
-    return render(request, 'summary.html', context)
+
+    page = 'summary.html'
+    if request.session['holiday'] == 'halloween':
+        page = 'halloween_ads.html'
+    elif request.session['holiday'] == 'christmas':
+        page = 'christmas_summary.html'
+
+    return render(request, page, context)
 
