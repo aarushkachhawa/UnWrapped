@@ -695,16 +695,7 @@ def calculate_analyze_seasonal_mood(request):
     songs_list = []
     response = requests.get(f"https://api.spotify.com/v1/artists/{artist_id}", headers=headers)
 
-    """if response.status_code == 401:
-        refresh_token = request.session.get('spotify_refresh_token')
-        new_tokens = refresh_spotify_token(refresh_token)
-        access_token = new_tokens.get('access_token')
-        request.session['spotify_access_token'] = access_token
-        headers = {
-            "Authorization": f"Bearer {access_token}"
-        }
-        response = requests.get(f"{SPOTIFY_BASE_URL}/player/recently-played", headers=headers, params=parameters)
-"""
+
     response_json = response.json()
 
     print(response_json['images'][0]['url'])
@@ -742,6 +733,40 @@ def calculate_analyze_seasonal_mood(request):
     request.session['image'] = response_json['images'][0]['url']
     request.session['season'] = curr_season
 
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a translator."},
+            {"role": "user",
+             "content": f"Take the following list of words and translate it to the given language. Make sure to separate each translated string in the list with the '*' character. Make sure that all text returned is in the translated language. For example, return 'translated_text1*translated_text2*translated_text3' given '[text1, text2, text3]'. Language: Hindi, Text List to Translate: ```[{request.session['mood1']}, {request.session['mood2']}, {request.session['mood3']}, {request.session['mood4']}, {request.session['mood5']}, {request.session['mood6']}```"}
+        ]
+    )
+
+    translated_moods = response.choices[0].message.content.split('*')
+    request.session['hindi_mood1'] = translated_moods[0]
+    request.session['hindi_mood2'] = translated_moods[1]
+    request.session['hindi_mood3'] = translated_moods[2]
+    request.session['hindi_mood4'] = translated_moods[3]
+    request.session['hindi_mood5'] = translated_moods[4]
+    request.session['hindi_mood6'] = translated_moods[5]
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a translator."},
+            {"role": "user",
+             "content": f"Take the following list of words and translate it to the given language. Make sure to separate each translated string in the list with the '*' character. Make sure that all text returned is in the translated language. For example, return 'translated_text1*translated_text2*translated_text3' given '[text1, text2, text3]'. Language: Mandarin, Text List to Translate: ```[{request.session['mood1']}, {request.session['mood2']}, {request.session['mood3']}, {request.session['mood4']}, {request.session['mood5']}, {request.session['mood6']}```"}
+        ]
+    )
+
+    translated_moods = response.choices[0].message.content.split('*')
+    request.session['mandarin_mood1'] = translated_moods[0]
+    request.session['mandarin_mood2'] = translated_moods[1]
+    request.session['mandarin_mood3'] = translated_moods[2]
+    request.session['mandarin_mood4'] = translated_moods[3]
+    request.session['mandarin_mood5'] = translated_moods[4]
+    request.session['mandarin_mood6'] = translated_moods[5]
+
 def analyze_seasonal_mood(request, page='seasonalMood.html', extra_context=None):
     if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
         return fallback(request)
@@ -770,24 +795,21 @@ def analyze_seasonal_mood(request, page='seasonalMood.html', extra_context=None)
     elif request.session['holiday'] == 'christmas':
         page = 'christmas_seasonal.html'
 
-    if request.session['language'] != 'english':
-        client = OpenAI(api_key=OPENAI_API_KEY)
+    if request.session['language'] == 'hindi':
+        context['mood1'] = request.session['hindi_mood1']
+        context['mood2'] = request.session['hindi_mood2']
+        context['mood3'] = request.session['hindi_mood3']
+        context['mood4'] = request.session['hindi_mood4']
+        context['mood5'] = request.session['hindi_mood5']
+        context['mood6'] = request.session['hindi_mood6']
 
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "You are a translator."},
-                {"role": "user", "content": f"Take the following list of words and translate it to the given language. Make sure to separate each translated string in the list with the '*' character. Make sure that all text returned is in the translated language. For example, return 'translated_text1*translated_text2*translated_text3' given '[text1, text2, text3]'. Language: {request.session['language']}, Text List to Translate: ```[{request.session['mood1']}, {request.session['mood2']}, {request.session['mood3']}, {request.session['mood4']}, {request.session['mood5']}, {request.session['mood1']}```"}
-            ]
-        )
-
-        translated_moods = response.choices[0].message.content.split('*')
-        context['mood1'] = translated_moods[0]
-        context['mood2'] = translated_moods[1]
-        context['mood3'] = translated_moods[2]
-        context['mood4'] = translated_moods[3]
-        context['mood5'] = translated_moods[4]
-        context['mood6'] = translated_moods[5]
+    elif request.session['language'] == 'mandarin':
+        context['mood1'] = request.session['mandarin_mood1']
+        context['mood2'] = request.session['mandarin_mood2']
+        context['mood3'] = request.session['mandarin_mood3']
+        context['mood4'] = request.session['mandarin_mood4']
+        context['mood5'] = request.session['mandarin_mood5']
+        context['mood6'] = request.session['mandarin_mood6']
 
     return render(request, page, context)
 
@@ -1129,6 +1151,18 @@ def generate_wrap(request):
         mood4=request.session['mood4'],
         mood5=request.session['mood5'],
         mood6=request.session['mood6'],
+        hindi_mood1=request.session['mood1'],
+        hindi_mood2=request.session['mood2'],
+        hindi_mood3=request.session['mood3'],
+        hindi_mood4=request.session['mood4'],
+        hindi_mood5=request.session['mood5'],
+        hindi_mood6=request.session['mood6'],
+        mandarin_mood1=request.session['mandarin_mood1'],
+        mandarin_mood2=request.session['mandarin_mood2'],
+        mandarin_mood3=request.session['mandarin_mood3'],
+        mandarin_mood4=request.session['mandarin_mood4'],
+        mandarin_mood5=request.session['mandarin_mood5'],
+        mandarin_mood6=request.session['mandarin_mood6'],
         song_artist1 = request.session['song_artist1'],
         song_artist2=request.session['song_artist2'],
         song_artist3=request.session['song_artist3'],
@@ -1594,6 +1628,21 @@ def wrap_id_to_session(request):
     request.session['mood4'] = wrap.mood4
     request.session['mood5'] = wrap.mood5
     request.session['mood6'] = wrap.mood6
+
+    request.session['hindi_mood1'] = wrap.hindi_mood1
+    request.session['hindi_mood2'] = wrap.hindi_mood2
+    request.session['hindi_mood3'] = wrap.hindi_mood3
+    request.session['hindi_mood4'] = wrap.hindi_mood4
+    request.session['hindi_mood5'] = wrap.hindi_mood5
+    request.session['hindi_mood6'] = wrap.hindi_mood6
+
+    request.session['mandarin_mood1'] = wrap.mandarin_mood1
+    request.session['mandarin_mood2'] = wrap.mandarin_mood2
+    request.session['mandarin_mood3'] = wrap.mandarin_mood3
+    request.session['mandarin_mood4'] = wrap.mandarin_mood4
+    request.session['mandarin_mood5'] = wrap.mandarin_mood5
+    request.session['mandarin_mood6'] = wrap.mandarin_mood6
+
     request.session['song_artist1'] = wrap.song_artist1
     request.session['song_artist2'] = wrap.song_artist2
     request.session['song_artist3'] = wrap.song_artist3
