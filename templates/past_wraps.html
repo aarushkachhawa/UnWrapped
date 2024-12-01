@@ -5,7 +5,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Past Wraps</title>
+    <title>
+        {% if language == 'english' %}
+            Past Wraps
+        {% elif language == 'hindi' %}
+            बीते आवरण
+        {% elif language == 'mandarin' %}
+            过去的包装
+        {% endif %}
+    </title>
 </head>
 
     {% block content %}
@@ -180,13 +188,23 @@
             cursor: pointer;
         }
 
-
+        #back-button:hover, #forward-button:hover {
+            cursor: pointer
+        }
 
     </style>
 
     <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="top-left rainbow">
     <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="bottom-right rainbow">
-    <h1>Past Wraps</h1>
+    <h1>
+        {% if language == 'english' %}
+            Past Wraps
+        {% elif language == 'hindi' %}
+            बीते आवरण
+        {% elif language == 'mandarin' %}
+            过去的包装
+        {% endif %}
+    </h1>
 
 
     {% if num_wraps > 0 %}
@@ -230,7 +248,15 @@
         <div>
             <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button" id='back-button' onclick="prevPage()" alt="Backward Button"/>
         </div>
-        <p>See more wraps</p>
+        <p>
+            {% if language == 'english' %}
+                See More Wraps
+            {% elif language == 'hindi' %}
+                और आवरण देखें
+            {% elif language == 'mandarin' %}
+                查看更多包装
+            {% endif %}
+        </p>
         <div>
             <img src="{% static 'topArtist/triangle_button.png' %}" class="forward-triangle-button" id='forward-button' onclick="nextPage()" alt="Forward Button"/>
         </div>
