@@ -770,7 +770,7 @@ def analyze_seasonal_mood(request, page='seasonalMood.html', extra_context=None)
     elif request.session['holiday'] == 'christmas':
         page = 'christmas_seasonal.html'
 
-    if request.session['language'] != 'english':
+    if request.session.get('language', 'english') != 'english':
         client = OpenAI(api_key=OPENAI_API_KEY)
 
         response = client.chat.completions.create(
@@ -831,7 +831,7 @@ def llm_insights_page(request, page='LLMinsights.html', extra_context=None):
     elif request.session['holiday'] == 'christmas':
         page = 'christmas_llm.html'
 
-    if request.session['language'] != 'english':
+    if request.session.get('language', 'english') != 'english':
         client = OpenAI(api_key=OPENAI_API_KEY)
 
         response = client.chat.completions.create(
@@ -933,6 +933,9 @@ def calculate_night_owl(request):  # combine this into one calculate stats metho
     minute = latest_time['minute']
     if hour != 12:
         hour = latest_time['hour'] if latest_time['hour'] < 12 else latest_time['hour'] - 12
+    format = 'AM' if latest_time['hour'] < 12 else 'PM'
+    if hour == 0:
+        hour = 12
         
     degrees_per_min = 360/60
     minute_hand_rotation = minute * degrees_per_min
@@ -941,7 +944,7 @@ def calculate_night_owl(request):  # combine this into one calculate stats metho
 
     print(json.dumps(time_ranges))
 
-    request.session['latest_time'] = f"{hour}:{'0' if latest_time['minute'] < 10 else ''}{latest_time['minute']} {'AM' if latest_time['hour'] < 12 else 'PM'}"
+    request.session['latest_time'] = f"{hour}:{'0' if latest_time['minute'] < 10 else ''}{latest_time['minute']} {format}"
     request.session['time_ranges'] = json.dumps(time_ranges)
     request.session['total_minutes'] = total_time
     request.session['hour_hand_rotation'] = hour_hand_rotation - 90
