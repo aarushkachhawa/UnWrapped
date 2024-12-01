@@ -121,7 +121,7 @@
        #text1 {
            text-shadow: #EF6E53 2px 2px;
            position: absolute;
-           top: calc(55% - 80px - 65px - 10px);
+           top: calc(55% - 80px - 65px - 25px);
            left: calc(20% + 60px);
 
        }
@@ -129,21 +129,21 @@
        #text2 {
            text-shadow: #2A9D90 2px 2px;
            position: absolute;
-           top: calc(55% + 125px);
+           top: calc(55% + 110px);
            left: calc(40% + 60px);
        }
 
        #text3 {
            text-shadow: #DDC371 2px 2px;
            position: absolute;
-           top: calc(55% - 80px - 65px - 10px);
+           top: calc(55% - 80px - 65px - 25px);
            left: calc(60% + 60px);
        }
 
        #text4 {
            text-shadow: #EF6E53 2px 2px;
            position: absolute;
-           top: calc(55% + 125px);
+           top: calc(55% + 110px);
            left: calc(80% + 60px);
        }
 
@@ -289,22 +289,22 @@
             if (startNum >= 4) {
                 startNum -= 4;
 
-                document.getElementById("text1").textContent = wrap_list[startNum]['words'];
+                document.getElementById("text1").innerHTML = wrap_list[startNum]['words'];
                 document.getElementById("text1").style.display = 'block';
                 document.getElementById("line1").style.display = 'block';
                 document.getElementById("record1").style.display = 'block';
 
-                document.getElementById("text2").textContent = wrap_list[startNum + 1]['words'];
+                document.getElementById("text2").innerHTML = wrap_list[startNum + 1]['words'];
                 document.getElementById("text2").style.display = 'block';
                 document.getElementById("line2").style.display = 'block';
                 document.getElementById("record2").style.display = 'block';
 
-                document.getElementById("text3").textContent = wrap_list[startNum + 2]['words'];
+                document.getElementById("text3").innerHTML = wrap_list[startNum + 2]['words'];
                 document.getElementById("text3").style.display = 'block';
                 document.getElementById("line3").style.display = 'block';
                 document.getElementById("record3").style.display = 'block';
 
-                document.getElementById("text4").textContent = wrap_list[startNum + 3]['words'];
+                document.getElementById("text4").innerHTML = wrap_list[startNum + 3]['words'];
                 document.getElementById("text4").style.display = 'block';
                 document.getElementById("line4").style.display = 'block';
                 document.getElementById("record4").style.display = 'block';
@@ -323,10 +323,10 @@
 
             if (startNum + 4 < numWraps) {
                 startNum += 4;
-                document.getElementById("text1").textContent = wrap_list[startNum]['words'];
+                document.getElementById("text1").innerHTML = wrap_list[startNum]['words'];
 
                 if (startNum + 1 < numWraps) {
-                    document.getElementById("text2").textContent = wrap_list[startNum + 1]['words'];
+                    document.getElementById("text2").innerHTML = wrap_list[startNum + 1]['words'];
                 } else {
                     document.getElementById("text2").style.display = 'none';
                     document.getElementById("line2").style.display = 'none';
@@ -334,7 +334,7 @@
                 }
 
                 if (startNum + 2 < numWraps) {
-                    document.getElementById("text3").textContent = wrap_list[startNum + 2]['words'];
+                    document.getElementById("text3").innerHTML = wrap_list[startNum + 2]['words'];
                 } else {
                     document.getElementById("text3").style.display = 'none';
                     document.getElementById("line3").style.display = 'none';
@@ -342,7 +342,7 @@
                 }
 
                 if (startNum + 3 < numWraps) {
-                    document.getElementById("text4").textContent = wrap_list[startNum + 3]['words'];
+                    document.getElementById("text4").innerHTML = wrap_list[startNum + 3]['words'];
                 } else {
                     document.getElementById("text4").style.display = 'none';
                     document.getElementById("line4").style.display = 'none';

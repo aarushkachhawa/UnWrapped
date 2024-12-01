@@ -349,10 +349,22 @@
     <div class="center-record">
         <svg width="400" height="400" viewBox="0 0 400 400">
             <!-- Define a circular path for the text to follow -->
-            <defs>
-                <path id="textCircle" d="M 200, 200 m -150, 0 a 150,150 0 1,1 300,0 a 150,150 0 1,1 -300,0"/>
-                <path id="textCircleBottom" d="M 200, 200 m 150, 0 a 150,150 0 1,0 -300,0 a 150,150 0 1,0 300,0"/>
-        </defs>
+            {% if language == 'hindi' %}
+                <defs>
+                    <path id="textCircle" d="M 200, 200 m -110, -60 a 110,110 0 1,1 220,-10 a 110,110 0 1,1 -220,0"/>
+                    <path id="textCircleBottom" d="M 200, 200 m 150, 0 a 150,150 0 1,0 -300,0 a 150,150 0 1,0 300,0"/>
+                </defs>
+            {% elif language == "mandarin" %}
+                <defs>
+                    <path id="textCircle" d="M 200, 200 m -70, -90 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0"/>
+                    <path id="textCircleBottom" d="M 200, 200 m 130, 20 a 120,120 0 1,0 -240,0 a 120,120 0 1,0 240,0"/>
+                </defs>
+            {% else %}
+                <defs>
+                    <path id="textCircle" d="M 200, 200 m -150, 0 a 150,150 0 1,1 300,0 a 150,150 0 1,1 -300,0"/>
+                    <path id="textCircleBottom" d="M 200, 200 m 150, 0 a 150,150 0 1,0 -300,0 a 150,150 0 1,0 300,0"/>
+                </defs>
+            {% endif %}
 
         <!-- Text along the circular path -->
         <text fill="#C64036" font-size="36" font-weight="bold" transform="translate(8, 0)" style="text-shadow: 2px 2px 0 white;">
@@ -399,9 +411,9 @@
                 {% if language == "english" %}
                     & EXAMPLES OF SOME OF
                 {% elif language == "hindi" %}
-                    और कुछ उदाहरण
+                    और कुछ उदाहरण आपके पसंदीदा गानों के
                 {% elif language == "mandarin" %}
-                    以及一些
+                    以及一些您最喜欢的歌曲
                 {% endif %}
             </textPath>
         </text>
@@ -411,9 +423,9 @@
                 {% if language == "english" %}
                     YOUR FAVORITE SONGS
                 {% elif language == "hindi" %}
-                    आपके पसंदीदा गानों के
+
                 {% elif language == "mandarin" %}
-                    您最喜欢的歌曲
+
                 {% endif %}
             </textPath>
         </text>
@@ -480,6 +492,7 @@
         <div class="small-circle"></div>
         <div class="small-circle"></div>
         <div class="darker-small-circle"></div>
+        <div class="small-circle"></div>
         <div class="small-circle"></div>
         <div class="small-circle"></div>
     </div>
