@@ -71,7 +71,7 @@
             width: 100%;
             max-width: 600px;
             padding: 20px;
-            margin-top: 20px; /* Added margin to separate from heading */
+            margin-top: 10px; /* Added margin to separate from heading */
         }
 
         /* [Rest of the styles remain the same] */
@@ -118,7 +118,9 @@
         .vinyl-record {
             width: 140px;
             height: 140px;
-            margin: 20px auto;
+            margin-top: 10px;
+            margin-left: auto;
+            margin-right: auto;
             position: relative;
             cursor: pointer;
             transition: transform 0.2s ease;
@@ -416,19 +418,18 @@
                     </div>
                 </div>
             </div>
-
-            <div class="register-button">
-                <button onclick="window.location.href='{% url 'login' %}'">  
-                    {% if language == "english" %}
-                        Have an account? Login
-                    {% elif language == "hindi" %}
-                        क्या आपके पास खाता है? लॉगिन करें
-                    {% elif language == "mandarin" %}
-                        有账号吗？登录
-                    {% endif %}
-                </button>
-            </div>
         </form>
+
+        <div class="register-button">
+        <button onclick="window.location.href='{% url 'login' %}'">  
+            {% if language == "english" %}
+                Have an account? Login
+            {% elif language == "hindi" %}
+                क्या आपके पास खाता है? लॉगिन करें
+            {% elif language == "mandarin" %}
+                有账号吗？登录
+            {% endif %}
+        </button>
 
         </div>
 
