@@ -69,7 +69,7 @@ def profile(request):
         'username': request.user.get_username(),
         'email': request.user.email,
         'language': language,
-        'top_songs': request.session.get('top_songs', ['', '', '', '', '']),
+        'top_songs': request.session.get('top_songs', ['Songs have yet to be discovered', '', '', '', '']),
         'top_artist': request.session['top_artist'][0] if 'top_artist' in request.session else "Generate a wrap to see today's data!",
     }
     return render(request, 'profile.html', context)
@@ -1632,4 +1632,19 @@ def fallback(request):
     elif request.session['holiday'] == 'halloween':
         return halloween_transition_one(request)
     return transition_one(request)
+
+def summary(request):
+    context = {
+        'top_artist': request.session['top_artist'],
+        'top_songs': request.session['top_songs'],
+        'image': request.session['image_url'],
+        'top_songs_artists': request.session['top_songs_artists'],
+        'mood1': request.session['mood1'],
+        'mood2': request.session['mood2'],
+        'mood3': request.session['mood3'],
+        'mood': request.session['mood'],
+        'latest_time': request.session['latest_time'],
+        'language': request.session.get('language', 'english')
+    }
+    return render(request, 'summary.html', context)
 
