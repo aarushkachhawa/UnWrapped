@@ -386,12 +386,12 @@
 
     <p>
         {% if language == "english" %}
-                (The audio feature has been deprecated)
-            {% elif language == "hindi" %}
-                (ऑडियो सुविधा बंद कर दी गई है)
-            {% elif language == "mandarin" %}
-                （音频功能已被弃用）
-            {% endif %}
+            (The audio feature has been deprecated)
+        {% elif language == "hindi" %}
+            (ऑडियो फीचर को बंद कर दिया गया है)
+        {% elif language == "mandarin" %}
+            (音频功能已被弃用)
+        {% endif %}
     </p>
 
     <!-- Content Sections for Top Artist and Top Songs -->
@@ -405,7 +405,7 @@
         </div>
 
         <img src={{top_artist.1}} class="record-image">
-
+    
         </div>
 
         <div class="top-artist-record-section">
@@ -416,65 +416,145 @@
                     <div class="song-text-song">{{top_songs.0}}</div>
                     <div class="song-text-artist">{{top_songs_artists.0}}</div>
                     <div class="audio-controls">
-                        <button class="play-btn" onclick="toggleAudio(this)">Play</button>
-                        <button class="stop-btn" onclick="stopAudio(this)">Reset</button>
+                        <button class="play-btn red" onclick="toggleAudio(this)">
+                            {% if language == "english" %}
+                                Play
+                            {% elif language == "hindi" %}
+                                चलाएं
+                            {% elif language == "mandarin" %}
+                                播放
+                            {% endif %}
+                        </button>
+                        <button class="stop-btn red" onclick="stopAudio(this)">
+                            {% if language == "english" %}
+                                Reset
+                            {% elif language == "hindi" %}
+                                रीसेट
+                            {% elif language == "mandarin" %}
+                                重置
+                            {% endif %}
+                        </button>
                     </div>
                     <audio id="audio-0" src="{{ top_songs_urls.0 }}" preload="none"></audio>
                 </div>
             </div>
-
+    
             <div class="small-record-container small-record-container2">
-                <div class="small-record-text">
+                <div class="small-record-text right-align">
                     <div class="song-text-song">{{top_songs.1}}</div>
-                    <div class="song-text-artist">{{top_songs_artists.1}}</div>
+                    <div class="song-text-artist right-align">{{top_songs_artists.1}}</div>
                     <div class="audio-controls">
-                        <button class="play-btn" onclick="toggleAudio(this)">Play</button>
-                        <button class="stop-btn" onclick="stopAudio(this)">Reset</button>
+                        <button class="play-btn yellow" onclick="toggleAudio(this)">
+                            {% if language == "english" %}
+                                Play
+                            {% elif language == "hindi" %}
+                                चलाएं
+                            {% elif language == "mandarin" %}
+                                播放
+                            {% endif %}
+                        </button>
+                        <button class="stop-btn yellow" onclick="stopAudio(this)">
+                            {% if language == "english" %}
+                                Reset
+                            {% elif language == "hindi" %}
+                                रीसेट
+                            {% elif language == "mandarin" %}
+                                重置
+                            {% endif %}
+                        </button>
                     </div>
                     <audio id="audio-1" src="{{ top_songs_urls.1 }}" preload="none"></audio>
                 </div>
                 <div class="small-record small-record2"></div>
             </div>
-
+    
             <div class="small-record-container small-record-container3">
                 <div class="small-record small-record3"></div>
                 <div class="small-record-text">
                     <div class="song-text-song">{{top_songs.2}}</div>
                     <div class="song-text-artist">{{top_songs_artists.2}}</div>
                     <div class="audio-controls">
-                        <button class="play-btn" onclick="toggleAudio(this)">Play</button>
-                        <button class="stop-btn" onclick="stopAudio(this)">Reset</button>
+                        <button class="play-btn blue" onclick="toggleAudio(this)">
+                            {% if language == "english" %}
+                                Play
+                            {% elif language == "hindi" %}
+                                चलाएं
+                            {% elif language == "mandarin" %}
+                                播放
+                            {% endif %}
+                        </button>
+                        <button class="stop-btn blue" onclick="stopAudio(this)">
+                            {% if language == "english" %}
+                                Reset
+                            {% elif language == "hindi" %}
+                                रीसेट
+                            {% elif language == "mandarin" %}
+                                重置
+                            {% endif %}
+                        </button>
                     </div>
                     <audio id="audio-2" src="{{ top_songs_urls.2 }}" preload="none"></audio>
                 </div>
             </div>
-
+    
             <div class="small-record-container small-record-container4">
-                <div class="small-record-text">
+                <div class="small-record-text right-align">
                     <div class="song-text-song">{{top_songs.3}}</div>
-                    <div class="song-text-artist">{{top_songs_artists.3}}</div>
+                    <div class="song-text-artist right-align">{{top_songs_artists.3}}</div>
                     <div class="audio-controls">
-                        <button class="play-btn" onclick="toggleAudio(this)">Play</button>
-                        <button class="stop-btn" onclick="stopAudio(this)">Reset</button>
+                        <button class="play-btn red" onclick="toggleAudio(this)">
+                            {% if language == "english" %}
+                                Play
+                            {% elif language == "hindi" %}
+                                चलाएं
+                            {% elif language == "mandarin" %}
+                                播放
+                            {% endif %}
+                        </button>
+                        <button class="stop-btn red" onclick="stopAudio(this)">
+                            {% if language == "english" %}
+                                Reset
+                            {% elif language == "hindi" %}
+                                रीसेट
+                            {% elif language == "mandarin" %}
+                                重置
+                            {% endif %}
+                        </button>
                     </div>
                     <audio id="audio-3" src="{{ top_songs_urls.3 }}" preload="none"></audio>
                 </div>
                 <div class="small-record small-record4"></div>
             </div>
-
+    
             <div class="small-record-container small-record-container5">
                 <div class="small-record small-record5"></div>
                 <div class="small-record-text">
                     <div class="song-text-song">{{top_songs.4}}</div>
                     <div class="song-text-artist">{{top_songs_artists.4}}</div>
                     <div class="audio-controls">
-                        <button class="play-btn" onclick="toggleAudio(this)">Play</button>
-                        <button class="stop-btn" onclick="stopAudio(this)">Reset</button>
+                        <button class="play-btn yellow" onclick="toggleAudio(this)">
+                            {% if language == "english" %}
+                                Play
+                            {% elif language == "hindi" %}
+                                चलाएं
+                            {% elif language == "mandarin" %}
+                                播放
+                            {% endif %}
+                        </button>
+                        <button class="stop-btn yellow" onclick="stopAudio(this)">
+                            {% if language == "english" %}
+                                Reset
+                            {% elif language == "hindi" %}
+                                रीसेट
+                            {% elif language == "mandarin" %}
+                                重置
+                            {% endif %}
+                        </button>
                     </div>
                     <audio id="audio-4" src="{{ top_songs_urls.4 }}" preload="none"></audio>
                 </div>
             </div>
-
+    
         </div>
 
     <a href="{% url 'slide_2' %}">
@@ -494,32 +574,42 @@
 
 
     <script>
+        const language = "{{ language }}"
         function toggleAudio(button) {
             const audio = button.parentElement.nextElementSibling;
+            
 
             // Stop all other audio
-            const allAudios = document.querySelectorAll('audio');
+            const allAudios = document.querySelectorAll('audio'); // THE COMMENTED CODE DOESN'T WORK BECAUSE LANGUAGE ISN'T THE SAME AS THE LANGUAGE BEING PASSED IN
             allAudios.forEach(a => {
                 if (a !== audio) {
                     a.pause();
                     a.currentTime = 0; // Reset other audio
                     const playBtn = a.parentElement.querySelector('.play-btn');
-                    playBtn.innerText = "Play"; // Reset play button text
+                    playBtn.innerText = language === "english" ? "Play" : 
+                                language === "hindi" ? "चलाएं" : 
+                                "播放";
                 }
             });
 
             // Play or pause the selected audio
             if (audio.paused) {
                 audio.play();
-                button.innerText = "Pause";
+                button.innerText = language === "english" ? "Pause" : 
+                                language === "hindi" ? "रोकें" : 
+                                "暂停";
             } else {
                 audio.pause();
-                button.innerText = "Play";
+                button.innerText = language === "english" ? "Play" : 
+                                language === "hindi" ? "चलाएं" : 
+                                "播放";
             }
 
             // Reset button text when audio ends
             audio.onended = function() {
-                button.innerText = "Play";
+                button.innerText = language === "english" ? "Play" : 
+                                language === "hindi" ? "चलाएं" : 
+                                "播放";
             };
         }
 
@@ -527,8 +617,14 @@
             const audio = button.parentElement.nextElementSibling;
             audio.pause();
             audio.currentTime = 0;
-            button.previousElementSibling.innerText = "Play"; // Reset play button text
+            button.previousElementSibling.innerText = language === "english" ? "Play" : 
+                                language === "hindi" ? "चलाएं" : 
+                                "播放"; // Reset play button text
         }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            console.log({{top_artist}});
+        });
     </script>
 
     {% endblock %}
