@@ -273,6 +273,7 @@
 
         #feedback-section {
             justify-items: center;
+            margin-top: 50px;
         }
 
         .button {
@@ -435,8 +436,37 @@
     </div>
 
     <div class="contactContainer" id="feedback-section">
-
-        <h3>We'd Love To Hear From You!</h3>
+        {% if messages %}
+             {% for message in messages %}
+                {% if message.level_tag == "error" %}
+                    {% if language == "english" %}
+                        <p class="message">{{ message }}</p>
+                    {% elif language == "hindi" %}
+                        <p class="message">आपके फ़ीडबैक सबमिशन में कोई त्रुटि उत्पन्न हुई, कृपया पुनः प्रयास करें</p>
+                    {% elif language == "mandarin" %}
+                        <p class="message">您提交反馈时出错，请重试</p>
+                    {% endif %}
+                {% else %}
+                    {% if language == "english" %}
+                        <p class="message">{{ message }}</p>
+                    {% elif language == "hindi" %}
+                        <p class="message">हमें आपकी प्रतिक्रिया मिल गई है!</p>
+                    {% elif language == "mandarin" %}
+                        <p class="message">我们已收到您的反馈！</p>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+      
+        <h3>
+        {% if language == "english" %}
+            We'd love to hear from you!
+        {% elif language == "hindi" %}
+            हमें आपसे सुनकर अत्यंत खुशी होगी!
+        {% elif language == "mandarin" %}
+            我们很乐意听取您的意见！
+        {% endif %}
+        </h3>
         {% if messages %}
         <div class="messages mt-4">
             {% for message in messages %}
@@ -446,6 +476,7 @@
             {% endfor %}
         </div>
         {% endif %}
+
             <div class='alignment'>
 
              <form action="{% url 'submit_feedback' %}" method="post">
@@ -457,19 +488,34 @@
                     <textarea id="email" name="email" rows="1" cols="40" placeholder="Enter your email address"></textarea>
 
                     <br><br>
-
-                    <label for="rating">How would you rate our web app? (from 1 to 5):&nbsp;&nbsp;&nbsp;</label>
+                    <label for="rating">
+                        {% if language == "english" %}
+                            How would you rate our web app? (from 1 to 5):&nbsp;&nbsp;&nbsp;
+                        {% elif language == "hindi" %}
+                            आप हमारे वेब ऐप को कैसे रेटिंग देंगे? (1 से 5 तक):&nbsp;&nbsp;&nbsp;
+                        {% elif language == "mandarin" %}
+                            您如何评价我们的网络应用程序？ （从 1 到 5）：&nbsp;&nbsp;&nbsp;
+                        {% endif %}
+                    </label>
                     <input type="number" id="rating" name="rating" min="1" max="5">
 
                     <br><br>
 
-                    <label for="feedback">Submit your feedback about UnWrapped here:</label>
+                    <label for="feedback">
+                        {% if language == "english" %}
+                            Submit your feedback about UnWrapped here:
+                        {% elif language == "hindi" %}
+                            के बारे में अपनी प्रतिक्रिया सबमिट करें UnWrapped यहाँ:
+                        {% elif language == "mandarin" %}
+                            请在此处提交有关 UnWrapped 的反馈：
+                        {% endif %}
+                    </label>
                     <br><br>
-                    <textarea id="feedback" name="feedback" rows="4" cols="65" placeholder="Write your feedback here"></textarea>
+                    <textarea id="feedback" name="feedback" rows="4" cols="65" placeholder="{% if language == 'english' %}Write your feedback here{% elif language == 'hindi' %}अपनी प्रतिक्रिया यहां लिखें{% elif language == 'mandarin' %}在这里写下您的反馈{% endif %}"></textarea>
 
                     <br><br>
 
-                    <input type="submit" value="Submit Feedback" class="button">
+                    <input type="submit" value="{% if language == 'english' %}Submit feedback{% elif language == 'hindi' %}प्रतिक्रिया सबमिट करें{% elif language == 'mandarin' %}提交反馈{% endif %}" class="button">
                 </div>
             </form>
         </div>

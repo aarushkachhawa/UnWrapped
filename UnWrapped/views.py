@@ -69,7 +69,7 @@ def profile(request):
         'username': request.user.get_username(),
         'email': request.user.email,
         'language': language,
-        'top_songs': request.session.get('top_songs', ['', '', '', '', '']),
+        'top_songs': request.session.get('top_songs', ['Songs have yet to be discovered', '', '', '', '']),
         'top_artist': request.session['top_artist'][0] if 'top_artist' in request.session else "Generate a wrap to see today's data!",
     }
     return render(request, 'profile.html', context)
@@ -120,7 +120,8 @@ def login_view(request):
 
 
 # Helper function to get Spotify tokens
-def get_spotify_tokens(code):
+@login_required
+def get_spotify_tokens(request, code):
     data = {
         'grant_type': 'authorization_code',
         'code': code,
@@ -139,7 +140,8 @@ def get_spotify_tokens(code):
 
 
 # Helper function to refresh the Spotify token (if needed)
-def refresh_spotify_token(refresh_token):
+@login_required
+def refresh_spotify_token(request, refresh_token):
     data = {
         'grant_type': 'refresh_token',
         'refresh_token': refresh_token,
@@ -154,7 +156,8 @@ def refresh_spotify_token(refresh_token):
 
 
 # Spotify authorization URL
-def spotify_auth_url():
+@login_required
+def spotify_auth_url(request):
     auth_url = (
         f"https://accounts.spotify.com/authorize?client_id={SPOTIFY_CLIENT_ID}&response_type=code"
         f"&redirect_uri={SPOTIFY_REDIRECT_URI}&scope={SPOTIFY_SCOPE}"
@@ -166,7 +169,7 @@ def spotify_auth_url():
 def home(request):
     language = request.session.get('language', 'english')
     if 'spotify_access_token' not in request.session:
-        return redirect(spotify_auth_url())
+        return redirect(spotify_auth_url(request))
     context = getStats(request)
     context['language'] = language
     return render(request, 'home.html', context)
@@ -243,11 +246,11 @@ def getStats(request):
         messages.error(request, "An error occurred while processing Spotify data.")
         return {'top_artists': ["N/A"], 'top_songs': ["N/A"], 'top_artist_year': "N/A", 'top_songs_urls': ["N/A"]}
 
-
+@login_required
 def spotify_callback(request):
     # After user authorizes Spotify, they are redirected back to this view with a code
     code = request.GET.get('code')
-    tokens = get_spotify_tokens(code)
+    tokens = get_spotify_tokens(request, code)
 
     # Store access and refresh tokens in the session
     if tokens != {}:
@@ -310,7 +313,7 @@ def calculate_top_artist_and_songs_slide(request):
 
     print("CALCULATED TOP ARTISTS")
 
-
+@login_required
 def top_artist_and_songs_slide(request, page='topArtistAndSongs.html', extra_context=None):
     if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
         return fallback(request)
@@ -320,7 +323,8 @@ def top_artist_and_songs_slide(request, page='topArtistAndSongs.html', extra_con
         'image': request.session['image_url'],
         'top_songs_artists': request.session['top_songs_artists'],
         'top_songs_urls': request.session['top_songs_urls'],
-        'language': request.session.get('language', 'english')
+        'language': request.session.get('language', 'english'),
+        'bigMenu': True
     }
     
     if extra_context:
@@ -350,7 +354,7 @@ def get_last_50_songs(request):
 
     if response.status_code == 401:
         refresh_token = request.session.get('spotify_refresh_token')
-        new_tokens = refresh_spotify_token(refresh_token)
+        new_tokens = refresh_spotify_token(request, refresh_token)
         access_token = new_tokens.get('access_token')
         request.session['spotify_access_token'] = access_token
         headers = {
@@ -369,7 +373,7 @@ def get_last_50_songs(request):
 
     request.session['songs_list'] = songs_list
 
-
+@login_required
 def calculate_ads(request):
     seconds_in_a_month = 2.628e+6
 
@@ -395,7 +399,7 @@ def calculate_ads(request):
 
     return ads_minutes
 
-
+@login_required
 def calculate_get_most_popular_artists(request):
     if 'spotify_access_token' not in request.session:
         return redirect(spotify_auth_url())
@@ -416,7 +420,7 @@ def calculate_get_most_popular_artists(request):
 
     if response.status_code == 401:
         refresh_token = request.session.get('spotify_refresh_token')
-        new_tokens = refresh_spotify_token(refresh_token)
+        new_tokens = refresh_spotify_token(request, refresh_token)
         access_token = new_tokens.get('access_token')
         request.session['spotify_access_token'] = access_token
         headers = {
@@ -445,7 +449,7 @@ def calculate_get_most_popular_artists(request):
 
         if response.status_code == 401:
             refresh_token = request.session.get('spotify_refresh_token')
-            new_tokens = refresh_spotify_token(refresh_token)
+            new_tokens = refresh_spotify_token(request, refresh_token)
             access_token = new_tokens.get('access_token')
             request.session['spotify_access_token'] = access_token
             headers = {
@@ -485,7 +489,7 @@ def calculate_get_most_popular_artists(request):
 
         if response.status_code == 401:
             refresh_token = request.session.get('spotify_refresh_token')
-            new_tokens = refresh_spotify_token(refresh_token)
+            new_tokens = refresh_spotify_token(request, refresh_token)
             access_token = new_tokens.get('access_token')
             request.session['spotify_access_token'] = access_token
             headers = {
@@ -532,7 +536,7 @@ def calculate_get_most_popular_artists(request):
     request.session['artist2'] = artist2
     request.session['artist3'] = artist3
 
-
+@login_required
 def get_most_popular_artists(request, page='slide_2.html', extra_context=None):
     if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
         return fallback(request)
@@ -557,7 +561,8 @@ def get_most_popular_artists(request, page='slide_2.html', extra_context=None):
         'artist3': request.session['artist3'],
         'language': language,
         'time_labels': json.dumps(time_labels[language]),
-        'ranking_label': ranking_labels[language]
+        'ranking_label': ranking_labels[language],
+        'bigMenu': True
     }
     
     if extra_context:
@@ -580,6 +585,7 @@ def christmas_graph(request):
 
 
 # used for your seasonal mood (get top 100 songs in the last ~1 month), gets top 100 songs and the artists
+@login_required
 def get_recent_top_songs(request):
     tracks_url = f"{SPOTIFY_BASE_URL}/top/tracks"
     access_token = request.session.get('spotify_access_token')
@@ -599,7 +605,7 @@ def get_recent_top_songs(request):
 
         if response.status_code == 401:
             refresh_token = request.session.get('spotify_refresh_token')
-            new_tokens = refresh_spotify_token(refresh_token)
+            new_tokens = refresh_spotify_token(request, refresh_token)
             access_token = new_tokens.get('access_token')
             request.session['spotify_access_token'] = access_token
             headers = {
@@ -638,7 +644,7 @@ def get_recent_top_songs(request):
     request.session['top_100_songs'] = songs_list
 
 
-
+@login_required
 def calculate_analyze_seasonal_mood(request):
     client = OpenAI(api_key=OPENAI_API_KEY)
     songs_list = request.session['top_100_songs']
@@ -695,16 +701,6 @@ def calculate_analyze_seasonal_mood(request):
     songs_list = []
     response = requests.get(f"https://api.spotify.com/v1/artists/{artist_id}", headers=headers)
 
-    """if response.status_code == 401:
-        refresh_token = request.session.get('spotify_refresh_token')
-        new_tokens = refresh_spotify_token(refresh_token)
-        access_token = new_tokens.get('access_token')
-        request.session['spotify_access_token'] = access_token
-        headers = {
-            "Authorization": f"Bearer {access_token}"
-        }
-        response = requests.get(f"{SPOTIFY_BASE_URL}/player/recently-played", headers=headers, params=parameters)
-"""
     response_json = response.json()
 
     print(response_json['images'][0]['url'])
@@ -742,6 +738,42 @@ def calculate_analyze_seasonal_mood(request):
     request.session['image'] = response_json['images'][0]['url']
     request.session['season'] = curr_season
 
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a translator."},
+            {"role": "user",
+             "content": f"Take the following list of words and translate it to the given language. Make sure to separate each translated string in the list with the '*' character. Make sure that all text returned is in the translated language. For example, return 'translated_text1*translated_text2*translated_text3' given '[text1, text2, text3]'. Language: Hindi, Text List to Translate: ```[{request.session['mood1']}, {request.session['mood2']}, {request.session['mood3']}, {request.session['mood4']}, {request.session['mood5']}, {request.session['mood6']}```"}
+        ]
+    )
+
+    translated_moods = response.choices[0].message.content.split('*')
+    request.session['hindi_mood1'] = translated_moods[0]
+    request.session['hindi_mood2'] = translated_moods[1]
+    request.session['hindi_mood3'] = translated_moods[2]
+    request.session['hindi_mood4'] = translated_moods[3]
+    request.session['hindi_mood5'] = translated_moods[4]
+    request.session['hindi_mood6'] = translated_moods[5]
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a translator."},
+            {"role": "user",
+             "content": f"Take the following list of words and translate it to the given language. Make sure to separate each translated string in the list with the '*' character. Make sure that all text returned is in the translated language. For example, return 'translated_text1*translated_text2*translated_text3' given '[text1, text2, text3]'. Language: Mandarin, Text List to Translate: ```[{request.session['mood1']}, {request.session['mood2']}, {request.session['mood3']}, {request.session['mood4']}, {request.session['mood5']}, {request.session['mood6']}```"}
+        ]
+    )
+
+    translated_moods = response.choices[0].message.content.split('*')
+    request.session['mandarin_mood1'] = translated_moods[0]
+    request.session['mandarin_mood2'] = translated_moods[1]
+    request.session['mandarin_mood3'] = translated_moods[2]
+    request.session['mandarin_mood4'] = translated_moods[3]
+    request.session['mandarin_mood5'] = translated_moods[4]
+    request.session['mandarin_mood6'] = translated_moods[5]
+
+
+@login_required
 def analyze_seasonal_mood(request, page='seasonalMood.html', extra_context=None):
     if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
         return fallback(request)
@@ -760,7 +792,8 @@ def analyze_seasonal_mood(request, page='seasonalMood.html', extra_context=None)
         "song_artist6": request.session['song_artist6'],
         "image": request.session['image'],
         "season": request.session['season'],
-        "language": request.session.get('language', 'english')
+        "language": request.session.get('language', 'english'),
+        'bigMenu': True
     }
     if extra_context:
         context.update(extra_context)
@@ -769,30 +802,27 @@ def analyze_seasonal_mood(request, page='seasonalMood.html', extra_context=None)
         page = 'halloween_seasonal.html'
     elif request.session['holiday'] == 'christmas':
         page = 'christmas_seasonal.html'
+        
+    if request.session['language'] == 'hindi':
+        context['mood1'] = request.session['hindi_mood1']
+        context['mood2'] = request.session['hindi_mood2']
+        context['mood3'] = request.session['hindi_mood3']
+        context['mood4'] = request.session['hindi_mood4']
+        context['mood5'] = request.session['hindi_mood5']
+        context['mood6'] = request.session['hindi_mood6']
 
-    if request.session['language'] != 'english':
-        client = OpenAI(api_key=OPENAI_API_KEY)
-
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "You are a translator."},
-                {"role": "user", "content": f"Take the following list of words and translate it to the given language. Make sure to separate each translated string in the list with the '*' character. Make sure that all text returned is in the translated language. For example, return 'translated_text1*translated_text2*translated_text3' given '[text1, text2, text3]'. Language: {request.session['language']}, Text List to Translate: ```[{request.session['mood1']}, {request.session['mood2']}, {request.session['mood3']}, {request.session['mood4']}, {request.session['mood5']}, {request.session['mood1']}```"}
-            ]
-        )
-
-        translated_moods = response.choices[0].message.content.split('*')
-        context['mood1'] = translated_moods[0]
-        context['mood2'] = translated_moods[1]
-        context['mood3'] = translated_moods[2]
-        context['mood4'] = translated_moods[3]
-        context['mood5'] = translated_moods[4]
-        context['mood6'] = translated_moods[5]
+    elif request.session['language'] == 'mandarin':
+        context['mood1'] = request.session['mandarin_mood1']
+        context['mood2'] = request.session['mandarin_mood2']
+        context['mood3'] = request.session['mandarin_mood3']
+        context['mood4'] = request.session['mandarin_mood4']
+        context['mood5'] = request.session['mandarin_mood5']
+        context['mood6'] = request.session['mandarin_mood6']
 
     return render(request, page, context)
 
 
-
+@login_required
 def calculate_llm_insights_page(request):
     contentArr = analyze_clothing(request)
     mood = contentArr[0].split(": ")[1].lower()
@@ -811,6 +841,31 @@ def calculate_llm_insights_page(request):
     request.session['songPath'] = songPath
     request.session['imagePath'] = imagePath
 
+    client = OpenAI(api_key=OPENAI_API_KEY)
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a translator."},
+            {"role": "user",
+             "content": f"Take the following list of texts and translate it to the given language. Make sure to separate each translated string in the list with the '*' character. Make sure that all text returned is in the translated language. For example, return 'translated_text1*translated_text2*translated_text3' given '[text1, text2, text3]'. Language: Hindi, Text List to Translate: ```{request.session['content']}```"}
+        ]
+    )
+
+    request.session['hindi_content'] = response.choices[0].message.content.split('*')
+
+    response2 = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a translator."},
+            {"role": "user",
+             "content": f"Take the following list of texts and translate it to the given language. Make sure to separate each translated string in the list with the '*' character. Make sure that all text returned is in the translated language. For example, return 'translated_text1*translated_text2*translated_text3' given '[text1, text2, text3]'. Language: Mandarin, Text List to Translate: ```{request.session['content']}```"}
+        ]
+    )
+
+    request.session['mandarin_content'] = response2.choices[0].message.content.split('*')
+
+
 
 @login_required
 def llm_insights_page(request, page='LLMinsights.html', extra_context=None):
@@ -821,7 +876,8 @@ def llm_insights_page(request, page='LLMinsights.html', extra_context=None):
         'mood': request.session['mood'],
         'songPath': request.session['songPath'],
         'imagePath': request.session['imagePath'],
-        'language': request.session.get('language', 'english')
+        'language': request.session.get('language', 'english'),
+        'bigMenu': True
     }
     if extra_context:
         context.update(extra_context)
@@ -831,21 +887,14 @@ def llm_insights_page(request, page='LLMinsights.html', extra_context=None):
     elif request.session['holiday'] == 'christmas':
         page = 'christmas_llm.html'
 
-    if request.session['language'] != 'english':
-        client = OpenAI(api_key=OPENAI_API_KEY)
-
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "You are a translator."},
-                {"role": "user", "content": f"Take the following list of texts and translate it to the given language. Make sure to separate each translated string in the list with the '*' character. Make sure that all text returned is in the translated language. For example, return 'translated_text1*translated_text2*translated_text3' given '[text1, text2, text3]'. Language: {request.session['language']}, Text List to Translate: ```{request.session['content']}```"}
-            ]
-        )
-
-        context['content'] = response.choices[0].message.content.split('*')
+    if request.session['language'] == 'hindi':
+        context['content'] = request.session['hindi_content']
+    elif request.session['language'] == 'mandarin':
+        context['content'] = request.session['mandarin_content']
 
     return render(request, page, context)
 
+@login_required
 def analyze_clothing(request):
     client = OpenAI(api_key=OPENAI_API_KEY)
     songs = str(request.session['top_100_songs'])
@@ -867,7 +916,7 @@ def analyze_clothing(request):
 
     return description.content.split(";")
 
-
+@login_required
 def calculate_night_owl(request):  # combine this into one calculate stats method so we don't need to call get last 50 songs multiple times
     last_50_songs = request.session['songs_list']
 
@@ -933,6 +982,9 @@ def calculate_night_owl(request):  # combine this into one calculate stats metho
     minute = latest_time['minute']
     if hour != 12:
         hour = latest_time['hour'] if latest_time['hour'] < 12 else latest_time['hour'] - 12
+    format = 'AM' if latest_time['hour'] < 12 else 'PM'
+    if hour == 0:
+        hour = 12
         
     degrees_per_min = 360/60
     minute_hand_rotation = minute * degrees_per_min
@@ -941,12 +993,13 @@ def calculate_night_owl(request):  # combine this into one calculate stats metho
 
     print(json.dumps(time_ranges))
 
-    request.session['latest_time'] = f"{hour}:{'0' if latest_time['minute'] < 10 else ''}{latest_time['minute']} {'AM' if latest_time['hour'] < 12 else 'PM'}"
+    request.session['latest_time'] = f"{hour}:{'0' if latest_time['minute'] < 10 else ''}{latest_time['minute']} {format}"
     request.session['time_ranges'] = json.dumps(time_ranges)
     request.session['total_minutes'] = total_time
     request.session['hour_hand_rotation'] = hour_hand_rotation - 90
     request.session['minute_hand_rotation'] = minute_hand_rotation - 90
 
+@login_required
 def night_owl(request, page = 'slide_3.html', extra_content = None):
     if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
         return fallback(request)
@@ -957,7 +1010,8 @@ def night_owl(request, page = 'slide_3.html', extra_content = None):
         "total_minutes": request.session['total_minutes'],
         "hour_hand_rotation": request.session['hour_hand_rotation'],
         "minute_hand_rotation": request.session['minute_hand_rotation'],
-        "language": language
+        "language": language,
+        'bigMenu': True
     }
 
     if request.session['holiday'] == 'halloween':
@@ -1019,7 +1073,7 @@ def transition_two(request, page = "transitionTwo.html"):
             page = 'halloween_TransitionTwo.html'
         elif request.session['holiday'] == 'christmas':
             page = 'christmas_TransitionTwo.html'
-        return render(request, page, {'language': request.session.get('language', 'english')})
+        return render(request, page, {'language': request.session.get('language', 'english'), 'bigMenu': True})
 
     except Exception as e:
         logger.error(f"Error in transition view: {e}")
@@ -1045,7 +1099,7 @@ def calculate_get_account_level(request):
 
     if response.status_code == 401:
         refresh_token = request.session.get('spotify_refresh_token')
-        new_tokens = refresh_spotify_token(refresh_token)
+        new_tokens = refresh_spotify_token(request, refresh_token)
         access_token = new_tokens.get('access_token')
         request.session['spotify_access_token'] = access_token
         headers = {
@@ -1065,6 +1119,7 @@ def calculate_get_account_level(request):
 
     request.session['ads_minutes'] = round(calculate_ads(request))
 
+@login_required
 def get_account_level(request, page='ads_minutes.html', extra_context=None):
     if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
         return fallback(request)
@@ -1073,6 +1128,7 @@ def get_account_level(request, page='ads_minutes.html', extra_context=None):
         "premium": request.session['premium'],
         "ads_minutes": request.session['ads_minutes'],
         "language": language,
+        'bigMenu': True
     }
     if extra_context:
         context.update(extra_context)
@@ -1083,6 +1139,7 @@ def get_account_level(request, page='ads_minutes.html', extra_context=None):
         page = 'christmas_ads.html'
     return render(request, page, context)
 
+@login_required
 def generate_wrap(request):
     calculate_top_artist_and_songs_slide(request)
     get_last_50_songs(request)
@@ -1112,6 +1169,18 @@ def generate_wrap(request):
         mood4=request.session['mood4'],
         mood5=request.session['mood5'],
         mood6=request.session['mood6'],
+        hindi_mood1=request.session['mood1'],
+        hindi_mood2=request.session['mood2'],
+        hindi_mood3=request.session['mood3'],
+        hindi_mood4=request.session['mood4'],
+        hindi_mood5=request.session['mood5'],
+        hindi_mood6=request.session['mood6'],
+        mandarin_mood1=request.session['mandarin_mood1'],
+        mandarin_mood2=request.session['mandarin_mood2'],
+        mandarin_mood3=request.session['mandarin_mood3'],
+        mandarin_mood4=request.session['mandarin_mood4'],
+        mandarin_mood5=request.session['mandarin_mood5'],
+        mandarin_mood6=request.session['mandarin_mood6'],
         song_artist1 = request.session['song_artist1'],
         song_artist2=request.session['song_artist2'],
         song_artist3=request.session['song_artist3'],
@@ -1121,6 +1190,8 @@ def generate_wrap(request):
         image = request.session['image'],
         season = request.session['season'],
         content = request.session['content'],
+        hindi_content = request.session['hindi_content'],
+        mandarin_content = request.session['mandarin_content'],
         mood = request.session['mood'],
         songPath = request.session['songPath'],
         latest_time = request.session['latest_time'],
@@ -1197,9 +1268,8 @@ def christmas_llm(request):
     context = {'language': request.session.get('language', 'english')}
     return llm_insights_page(request, 'christmas_llm.html', context)
 
+@login_required
 def past_wraps(request):
-    if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
-        return fallback(request)
     month_to_word_dict = {
         1: "Jan",
         2: "Feb",
@@ -1218,13 +1288,12 @@ def past_wraps(request):
     wraps = CustomWrap.objects.filter(user=request.user)
     wrap_list = []
     for wrap in wraps:
+        newDate = wrap.wrapDate - timedelta(hours=5)
         date_string = ""
-        date = wrap.wrapDate.date()
+        date = newDate.date()
         date_string += month_to_word_dict[date.month]
 
-        '''
-        hour = wrap.wrapDate.time().hour
-        hour -= 5 # utc to est
+        hour = newDate.time().hour
         if hour == 0:
             hour = 12
             format = "AM"
@@ -1233,9 +1302,7 @@ def past_wraps(request):
             format = "PM"
         else:
             format = "AM"
-        date_string += f" {date.day}, {date.year}<br>{hour}:{wrap.wrapDate.time().minute} {format}"
-        '''
-        date_string += f" {date.day}, {date.year} - {wrap.wrapDate.time().hour}:{'0' if wrap.wrapDate.time().minute < 10 else ''}{wrap.wrapDate.time().minute}"
+        date_string += f" {date.day}, {date.year}<br>{hour}:{'0' if newDate.time().minute < 10 else ''}{newDate.time().minute} {format}"
 
         wrap_list.append(
             {
@@ -1256,7 +1323,6 @@ def past_wraps(request):
     }
 
     print('num wraps: ', len(wrap_list))
-
     return render(request, 'past_wraps.html', context)
 
 @login_required(login_url='login')
@@ -1307,7 +1373,8 @@ def game_mix_pitch_1(request):
 
                 'song_choices': song_choices,
                 'correct_songs': [track1_name, track2_name],
-                'language': language
+                'language': language,
+                'bigMenu': True
             }
             return render(request, 'game_mix_pitch.html', context)
 
@@ -1435,7 +1502,8 @@ def game_mix_pitch_2(request):
                 'song_choices': song_choices,
                 'correct_songs': [base_track_name, pitch_track_up_name, pitch_track_down_name],
                 'random_key': None,
-                'language': language
+                'language': language,
+                'bigMenu': True
             }
             return render(request, 'game_mix_pitch.html', context)
 
@@ -1549,6 +1617,7 @@ def game_mix_pitch_2(request):
     return render(request, 'game_mix_pitch.html', context)
 
 
+@login_required
 def wrap_id_to_session(request):
     body = json.loads(request.body)
     wrap_id = body['wrap_id']
@@ -1575,6 +1644,21 @@ def wrap_id_to_session(request):
     request.session['mood4'] = wrap.mood4
     request.session['mood5'] = wrap.mood5
     request.session['mood6'] = wrap.mood6
+
+    request.session['hindi_mood1'] = wrap.hindi_mood1
+    request.session['hindi_mood2'] = wrap.hindi_mood2
+    request.session['hindi_mood3'] = wrap.hindi_mood3
+    request.session['hindi_mood4'] = wrap.hindi_mood4
+    request.session['hindi_mood5'] = wrap.hindi_mood5
+    request.session['hindi_mood6'] = wrap.hindi_mood6
+
+    request.session['mandarin_mood1'] = wrap.mandarin_mood1
+    request.session['mandarin_mood2'] = wrap.mandarin_mood2
+    request.session['mandarin_mood3'] = wrap.mandarin_mood3
+    request.session['mandarin_mood4'] = wrap.mandarin_mood4
+    request.session['mandarin_mood5'] = wrap.mandarin_mood5
+    request.session['mandarin_mood6'] = wrap.mandarin_mood6
+
     request.session['song_artist1'] = wrap.song_artist1
     request.session['song_artist2'] = wrap.song_artist2
     request.session['song_artist3'] = wrap.song_artist3
@@ -1595,6 +1679,28 @@ def wrap_id_to_session(request):
     print(type(content_without_brackets))
 
     request.session['content'] = content_without_brackets
+
+    content_without_brackets = wrap.hindi_content[1:-1]
+
+    content_without_brackets = content_without_brackets.split(', ')
+    content_without_brackets[0] = content_without_brackets[0][1:-1]
+    content_without_brackets[1] = content_without_brackets[1][1:-1]
+    content_without_brackets[2] = content_without_brackets[2][1:-1]
+    content_without_brackets[3] = content_without_brackets[3][1:-1]
+
+    request.session['hindi_content'] = content_without_brackets
+
+    content_without_brackets = wrap.mandarin_content[1:-1]
+
+    content_without_brackets = content_without_brackets.split(', ')
+    content_without_brackets[0] = content_without_brackets[0][1:-1]
+    content_without_brackets[1] = content_without_brackets[1][1:-1]
+    content_without_brackets[2] = content_without_brackets[2][1:-1]
+    content_without_brackets[3] = content_without_brackets[3][1:-1]
+
+    request.session['mandarin_content'] = content_without_brackets
+
+
     request.session['mood'] = wrap.mood
     request.session['songPath'] = wrap.songPath
     request.session['latest_time'] = wrap.latest_time
@@ -1638,11 +1744,21 @@ def set_theme_from_profile(request):
 
 @login_required
 def fallback(request):
-    if 'holiday' not in request.session:
-        return transition_one(request)
-    elif request.session['holiday'] == 'christmas':
-        return christmas_transition_one(request)
-    elif request.session['holiday'] == 'halloween':
-        return halloween_transition_one(request)
-    return transition_one(request)
+    return redirect('past_wraps')
+
+@login_required
+def summary(request):
+    context = {
+        'top_artist': request.session['top_artist'],
+        'top_songs': request.session['top_songs'],
+        'image': request.session['image_url'],
+        'top_songs_artists': request.session['top_songs_artists'],
+        'mood1': request.session['mood1'],
+        'mood2': request.session['mood2'],
+        'mood3': request.session['mood3'],
+        'mood': request.session['mood'],
+        'latest_time': request.session['latest_time'],
+        'language': request.session.get('language', 'english')
+    }
+    return render(request, 'summary.html', context)
 

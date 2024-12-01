@@ -1,0 +1,396 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summary</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Notable&family=Radio+Canada:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    {% block content %}
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Notable', sans-serif;
+            background-color: #FCF8F1;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center top;
+            padding-top: 100px;
+            overflow: hidden;
+        }
+
+        .top-left {
+           position: absolute;
+           top: -50px;
+           left: -150px;
+           width: 300px;
+           height: auto;
+       }
+
+       .bottom-right {
+           position: absolute;
+           bottom: -150px;
+           right: -150px;
+           width: 300px;
+           height: auto;
+           transform: rotate(180deg);
+       }
+
+        .page-title {
+            font-size: 20px;
+            color: #C7443A;
+            margin-bottom: 20px;
+            text-align: center;
+            justify-content: center;
+            justify-items: center;
+        }
+
+        body.dark-mode .page-title {
+            color: #DDC371;
+        }
+
+        .record-image {
+            width: 350px;
+            height: 350px;
+            z-index: 10;
+            margin-top: 20px;
+        }
+
+        #top-artist {
+            font-size: 35px;
+            color: #5AABF3;
+            text-shadow: 2px 2px 4px rgba(199, 58, 68, 1);
+            margin-top: 5px;
+        }
+
+        .song-text-song {
+            font-size: 20px;
+            color: #000000;
+            text-overflow: ellipsis;
+            width: 300px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .dark-mode .song-text-song {
+            color: #EF6E53;
+        }
+
+        .song-text-artist {
+            font-family: 'Radio Canada', sans-serif;
+            font-size: 16px;
+            color: #000000;
+        }
+
+        .dark-mode .song-text-artist {
+            font-family: 'Radio Canada', sans-serif;
+            font-size: 16px;
+            color: #E0E0E0;
+            width: 150px;
+        }
+
+        body.dark-mode .red {
+            box-shadow: inset #C7443A 0 0 20px;
+        }
+
+        body.dark-mode .yellow {
+            box-shadow: inset #ECD101 0 0 20px;
+        }
+
+        body.dark-mode .blue {
+            box-shadow: inset #5AABF3 0 0 20px;
+        }
+
+        .center-section {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          width: 33%;
+        }
+
+        .label {
+          color: #473924;
+          font-size: 26px;
+          margin-top: 30px;
+        }
+
+        body.dark-mode .label {
+            color: white;
+        }
+
+        .left-section, .right-section {
+          display: flex;
+          flex-direction: column;
+          margin-top: 30px;
+          gap: 25px;
+          width: 33%;
+        }
+
+        .left-section {
+          margin-left: -100px;
+          margin-right: 100px;
+        }
+
+        .right-section {
+          margin-left: 150px;
+        }
+
+        .center-section {
+          margin-left: 0px;
+        }
+
+        .record {
+          width: 50px;
+          height: 50px;
+          margin-left: 30px;
+        }
+
+        .body-section {
+          display: flex;
+          justify-content: space-between;
+        }
+
+        .song-1 {
+          display: flex;
+          flex-direction: row;
+          gap: 15px;
+        }
+
+        .mood {
+          margin-top: 10px;
+          font-size: 20px;
+          gap: 15px;
+        }
+
+        body.dark-mode .mood {
+            color: #EF6E53;
+        }
+
+        #artist-label {
+          font-size: 30px;
+        }
+
+        .label2 {
+          margin-top: 60px;
+        }
+
+        .info2 {
+          margin-top: 5px;
+        }
+
+        #mood {
+          color: #DDC371;
+          text-shadow: -2px 2px #473924;
+        }
+
+        #time {
+          color: #2A9D90;
+          text-shadow: -2px 2px #cccccc;
+        }
+
+        .personality {
+          display: flex;
+          flex-direction: column;
+          justify-items: center;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+        }
+
+        #time-label {
+          margin-top: 35px;
+        }
+    </style>
+
+    <script>
+    </script>
+
+    <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="top-left rainbow">
+    <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="bottom-right rainbow">
+    <div class="page-title">
+            <h1>
+            {% if language == "english" %}
+                Your Music Summary
+            {% elif language == "hindi" %}
+                आपका संगीत सारांश
+            {% elif language == "mandarin" %}
+                您的音樂摘要
+            {% endif %}
+            </h1>
+        </div>
+
+    <div class="body-section">
+
+      <div class="left-section">
+        <h2 class="label">
+          {% if language == "english" %}
+              Top 3 Songs:
+          {% elif language == "hindi" %}
+              शीर्ष 3 गाने:
+          {% elif language == "mandarin" %}
+              前三首歌曲:
+          {% endif %}
+        </h2>
+
+        <div class="song-1">
+          <img src="{% static 'topArtist/red_record.png' %}" class="record">
+           <div class="small-record-container small-record-container1">
+              <div class="small-record-text">
+                  <div class="song-text-song">{{top_songs.0}}</div>
+                  <div class="song-text-artist">{{top_songs_artists.0}}</div>
+              </div>
+          </div>
+        </div>
+
+        <div class="song-1">
+          <img src="{% static 'topArtist/yellow_record.png' %}" class="record">
+           <div class="small-record-container small-record-container1">
+              <div class="small-record-text">
+                  <div class="song-text-song">{{top_songs.1}}</div>
+                  <div class="song-text-artist">{{top_songs_artists.1}}</div>
+              </div>
+          </div>
+        </div>
+
+        <div class="song-1">
+          <img src="{% static 'topArtist/blue_record.png' %}" class="record">
+           <div class="small-record-container small-record-container1">
+              <div class="small-record-text">
+                  <div class="song-text-song">{{top_songs.2}}</div>
+                  <div class="song-text-artist">{{top_songs_artists.2}}</div>
+              </div>
+          </div>
+        </div>
+
+        <div class="personality">
+          <h2 class='label label2'>
+            {% if language == "english" %}
+              Your Personality:
+            {% elif language == "hindi" %}
+              आपकी व्यक्तित्व:
+            {% elif language == "mandarin" %}
+              您的個性:
+            {% endif %}
+          </h2>
+          <h1 class="info2" id="mood">{{mood}}</h1>
+        </div>
+      </div>
+
+      <div class="center-section">
+
+        <img src={{top_artist.1}} class="record-image" alt="top artist image">
+        <h2 class="label" id="artist-label">
+          {% if language == "english" %}
+            Top Artist:
+          {% elif language == "hindi" %}
+            शीर्ष कलाकार:
+          {% elif language == "mandarin" %}
+            頂級藝術家:
+          {% endif %}
+        </h2>
+        <h2 id="top-artist">{{top_artist.0}}</h2>
+      </div>
+
+      <div class="right-section">
+        <h2 class="label">
+          {% if language == "english" %}
+            Top 3 Moods:
+          {% elif language == "hindi" %}
+            शीर्ष 3 मूड्स:
+          {% elif language == "mandarin" %}
+            前三種情緒:
+          {% endif %}
+        </h2>
+        <div class="song-1">
+          <img src="{% static 'topArtist/blue_record.png' %}" class="record">
+           <div class="small-record-container small-record-container1">
+              <div class="small-record-text">
+                  <div class="mood">{{mood1}}</div>
+              </div>
+          </div>
+        </div>
+
+        <div class="song-1">
+          <img src="{% static 'topArtist/red_record.png' %}" class="record">
+           <div class="small-record-container small-record-container1">
+              <div class="small-record-text">
+                  <div class="mood">{{mood2}}</div>
+              </div>
+          </div>
+        </div>
+
+        <div class="song-1">
+          <img src="{% static 'topArtist/yellow_record.png' %}" class="record">
+           <div class="small-record-container small-record-container1">
+              <div class="small-record-text">
+                  <div class="mood">{{mood3}}</div>
+              </div>
+          </div>
+        </div>
+
+        <div class="personality">
+          <h2 class='label label2' id="time-label">
+            {% if language == "english" %}
+              Latest
+            {% elif language == "hindi" %}
+              नवीनतम
+            {% elif language == "mandarin" %}
+              最新
+            {% endif %}
+            
+            <br>
+            {% if language == "english" %}
+              Listening Time:
+            {% elif language == "hindi" %}
+              सुनने का समय:
+            {% elif language == "mandarin" %}
+              聽歌時間:
+            {% endif %}
+          
+          </h2>
+          <h1 class="info2" id="time">{{latest_time}}</h1>
+        </div>
+      </div>
+
+    </div>
+
+
+    <a href="{% url 'transition_two' %}">
+        <img src="{% static 'topArtist/triangle_button.png' %}" class="forward-triangle-button" alt="Forward Button">
+    </a>
+
+    <div class="circle-container">
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="small-circle"></div>
+        <div class="darker-small-circle"></div>
+    </div>
+
+    <a href="{% url 'llm_insights_page' %}">
+      <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button" alt="Forward Button">
+    </a>
+
+    <script>
+
+    </script>
+
+    {% endblock %}
+</body>
+</html>

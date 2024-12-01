@@ -5,7 +5,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Past Wraps</title>
+    <title>
+        {% if language == 'english' %}
+            Past Wraps
+        {% elif language == 'hindi' %}
+            बीते आवरण
+        {% elif language == 'mandarin' %}
+            过去的包装
+        {% endif %}
+    </title>
 </head>
 
     {% block content %}
@@ -54,6 +62,14 @@
            width: 3px;
            height: 80px;
            position: absolute;
+       }
+
+       body.dark-mode #horizontal-timeline {
+           background-color: #FCF8F1;
+       }
+
+       body.dark-mode .vertical-line {
+           background-color: #FCF8F1;
        }
 
        #line1 {
@@ -105,7 +121,7 @@
        #text1 {
            text-shadow: #EF6E53 2px 2px;
            position: absolute;
-           top: calc(55% - 80px - 65px - 10px);
+           top: calc(55% - 80px - 65px - 25px);
            left: calc(20% + 60px);
 
        }
@@ -113,21 +129,21 @@
        #text2 {
            text-shadow: #2A9D90 2px 2px;
            position: absolute;
-           top: calc(55% + 125px);
+           top: calc(55% + 110px);
            left: calc(40% + 60px);
        }
 
        #text3 {
            text-shadow: #DDC371 2px 2px;
            position: absolute;
-           top: calc(55% - 80px - 65px - 10px);
+           top: calc(55% - 80px - 65px - 25px);
            left: calc(60% + 60px);
        }
 
        #text4 {
            text-shadow: #EF6E53 2px 2px;
            position: absolute;
-           top: calc(55% + 125px);
+           top: calc(55% + 110px);
            left: calc(80% + 60px);
        }
 
@@ -168,19 +184,33 @@
             align-content: center;
         }
 
+        .wrap:hover {
+            cursor: pointer;
+        }
 
+        #back-button:hover, #forward-button:hover {
+            cursor: pointer
+        }
 
     </style>
 
     <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="top-left rainbow">
     <img src="{% static 'slide_2/top_left_corner_rainbow.png' %}" alt="Rainbow" class="bottom-right rainbow">
-    <h1>Past Wraps</h1>
+    <h1>
+        {% if language == 'english' %}
+            Past Wraps
+        {% elif language == 'hindi' %}
+            बीते आवरण
+        {% elif language == 'mandarin' %}
+            过去的包装
+        {% endif %}
+    </h1>
 
 
     {% if num_wraps > 0 %}
         <div id="horizontal-timeline"></div>
 
-        <div class="wrap0" onclick="showWrap(0)">
+        <div class="wrap0 wrap" onclick="showWrap(0)">
             <div class="vertical-line" id="line1"></div>
             <img src="{% static 'past_wraps/salmon_record.png' %}" class="record" id="record1">
             <h2 id="text1">{{wrap_list.0.words|safe}}</h2>
@@ -190,7 +220,7 @@
     {% endif %}
 
     {% if num_wraps > 1 %}
-    <div class="wrap1" onclick="showWrap(1)">
+    <div class="wrap1 wrap" onclick="showWrap(1)">
         <div class="vertical-line" id="line2"></div>
         <img src="{% static 'past_wraps/teal_record.png' %}" class="record" id="record2">
         <h2 id="text2">{{wrap_list.1.words|safe}}</h2>
@@ -199,7 +229,7 @@
 
 
     {% if num_wraps > 2 %}
-    <div class="wrap2" onclick="showWrap(2)">
+    <div class="wrap2 wrap" onclick="showWrap(2)">
         <div class="vertical-line" id="line3"></div>
         <img src="{% static 'past_wraps/gold_record.png' %}" class="record" id="record3">
         <h2 id="text3">{{wrap_list.2.words|safe}}</h2>
@@ -207,7 +237,7 @@
     {% endif %}
 
     {% if num_wraps > 3 %}
-    <div class="wrap3" onclick="showWrap(3)">
+    <div class="wrap3 wrap" onclick="showWrap(3)">
         <div class="vertical-line" id="line4"></div>
         <img src="{% static 'past_wraps/salmon_record.png' %}" class="record" id="record4">
         <h2 id="text4">{{wrap_list.3.words|safe}}</h2>
@@ -218,7 +248,15 @@
         <div>
             <img src="{% static 'topArtist/triangle_button.png' %}" class="backward-triangle-button" id='back-button' onclick="prevPage()" alt="Backward Button"/>
         </div>
-        <p>See more wraps</p>
+        <p>
+            {% if language == 'english' %}
+                See More Wraps
+            {% elif language == 'hindi' %}
+                और आवरण देखें
+            {% elif language == 'mandarin' %}
+                查看更多包装
+            {% endif %}
+        </p>
         <div>
             <img src="{% static 'topArtist/triangle_button.png' %}" class="forward-triangle-button" id='forward-button' onclick="nextPage()" alt="Forward Button"/>
         </div>
@@ -251,22 +289,22 @@
             if (startNum >= 4) {
                 startNum -= 4;
 
-                document.getElementById("text1").textContent = wrap_list[startNum]['words'];
+                document.getElementById("text1").innerHTML = wrap_list[startNum]['words'];
                 document.getElementById("text1").style.display = 'block';
                 document.getElementById("line1").style.display = 'block';
                 document.getElementById("record1").style.display = 'block';
 
-                document.getElementById("text2").textContent = wrap_list[startNum + 1]['words'];
+                document.getElementById("text2").innerHTML = wrap_list[startNum + 1]['words'];
                 document.getElementById("text2").style.display = 'block';
                 document.getElementById("line2").style.display = 'block';
                 document.getElementById("record2").style.display = 'block';
 
-                document.getElementById("text3").textContent = wrap_list[startNum + 2]['words'];
+                document.getElementById("text3").innerHTML = wrap_list[startNum + 2]['words'];
                 document.getElementById("text3").style.display = 'block';
                 document.getElementById("line3").style.display = 'block';
                 document.getElementById("record3").style.display = 'block';
 
-                document.getElementById("text4").textContent = wrap_list[startNum + 3]['words'];
+                document.getElementById("text4").innerHTML = wrap_list[startNum + 3]['words'];
                 document.getElementById("text4").style.display = 'block';
                 document.getElementById("line4").style.display = 'block';
                 document.getElementById("record4").style.display = 'block';
@@ -285,10 +323,10 @@
 
             if (startNum + 4 < numWraps) {
                 startNum += 4;
-                document.getElementById("text1").textContent = wrap_list[startNum]['words'];
+                document.getElementById("text1").innerHTML = wrap_list[startNum]['words'];
 
                 if (startNum + 1 < numWraps) {
-                    document.getElementById("text2").textContent = wrap_list[startNum + 1]['words'];
+                    document.getElementById("text2").innerHTML = wrap_list[startNum + 1]['words'];
                 } else {
                     document.getElementById("text2").style.display = 'none';
                     document.getElementById("line2").style.display = 'none';
@@ -296,7 +334,7 @@
                 }
 
                 if (startNum + 2 < numWraps) {
-                    document.getElementById("text3").textContent = wrap_list[startNum + 2]['words'];
+                    document.getElementById("text3").innerHTML = wrap_list[startNum + 2]['words'];
                 } else {
                     document.getElementById("text3").style.display = 'none';
                     document.getElementById("line3").style.display = 'none';
@@ -304,7 +342,7 @@
                 }
 
                 if (startNum + 3 < numWraps) {
-                    document.getElementById("text4").textContent = wrap_list[startNum + 3]['words'];
+                    document.getElementById("text4").innerHTML = wrap_list[startNum + 3]['words'];
                 } else {
                     document.getElementById("text4").style.display = 'none';
                     document.getElementById("line4").style.display = 'none';
