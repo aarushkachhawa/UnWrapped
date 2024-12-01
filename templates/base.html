@@ -298,6 +298,7 @@
     </div>
 
     {% if hideMenu != False %}
+        {% if bigMenu %}
         <div class="sidebar" id="sidebar">
             {% if language == "english" %}
                 <a href="{% url 'home' %}">Home</a>
@@ -343,6 +344,32 @@
                 <a href="{% url 'logout' %}">退出登录</a>
             {% endif %}
         </div>
+        {% else %}
+        <div class="sidebar" id="sidebar">
+            {% if language == "english" %}
+                <a href="{% url 'home' %}">Home</a>
+                <hr>
+                <a href="{% url 'contact' %}">Contact</a>
+                <a href="{% url 'profile' %}">Profile</a>
+                <a href="{% url 'past_wraps' %}">Past Wraps</a>
+                <a href="{% url 'logout' %}">Logout</a>
+            {% elif language == "hindi" %}
+                <a href="{% url 'home' %}">मुख्य पृष्ठ</a>
+                <hr>
+                <a href="{% url 'contact' %}">संपर्क करें</a>
+                <a href="{% url 'profile' %}">प्रोफ़ाइल</a>
+                <a href="{% url 'past_wraps' %}">बीते हुए आवरण</a>
+                <a href="{% url 'logout' %}">लॉगआउट</a>
+            {% elif language == "mandarin" %}
+                <a href="{% url 'home' %}">主页</a>
+                <hr>
+                <a href="{% url 'contact' %}">联系</a>
+                <a href="{% url 'profile' %}">个人资料</a>
+                <a href="{% url 'past_wraps' %}">过去的包装</a>
+                <a href="{% url 'logout' %}">退出登录</a>
+            {% endif %}
+        </div>
+        {% endif %}
     {% endif %}
 
 

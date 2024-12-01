@@ -120,7 +120,8 @@ def login_view(request):
 
 
 # Helper function to get Spotify tokens
-def get_spotify_tokens(code):
+@login_required
+def get_spotify_tokens(request, code):
     data = {
         'grant_type': 'authorization_code',
         'code': code,
@@ -139,7 +140,8 @@ def get_spotify_tokens(code):
 
 
 # Helper function to refresh the Spotify token (if needed)
-def refresh_spotify_token(refresh_token):
+@login_required
+def refresh_spotify_token(request, refresh_token):
     data = {
         'grant_type': 'refresh_token',
         'refresh_token': refresh_token,
@@ -154,7 +156,8 @@ def refresh_spotify_token(refresh_token):
 
 
 # Spotify authorization URL
-def spotify_auth_url():
+@login_required
+def spotify_auth_url(request):
     auth_url = (
         f"https://accounts.spotify.com/authorize?client_id={SPOTIFY_CLIENT_ID}&response_type=code"
         f"&redirect_uri={SPOTIFY_REDIRECT_URI}&scope={SPOTIFY_SCOPE}"
@@ -166,7 +169,7 @@ def spotify_auth_url():
 def home(request):
     language = request.session.get('language', 'english')
     if 'spotify_access_token' not in request.session:
-        return redirect(spotify_auth_url())
+        return redirect(spotify_auth_url(request))
     context = getStats(request)
     context['language'] = language
     return render(request, 'home.html', context)
@@ -243,11 +246,11 @@ def getStats(request):
         messages.error(request, "An error occurred while processing Spotify data.")
         return {'top_artists': ["N/A"], 'top_songs': ["N/A"], 'top_artist_year': "N/A", 'top_songs_urls': ["N/A"]}
 
-
+@login_required
 def spotify_callback(request):
     # After user authorizes Spotify, they are redirected back to this view with a code
     code = request.GET.get('code')
-    tokens = get_spotify_tokens(code)
+    tokens = get_spotify_tokens(request, code)
 
     # Store access and refresh tokens in the session
     if tokens != {}:
@@ -310,7 +313,7 @@ def calculate_top_artist_and_songs_slide(request):
 
     print("CALCULATED TOP ARTISTS")
 
-
+@login_required
 def top_artist_and_songs_slide(request, page='topArtistAndSongs.html', extra_context=None):
     if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
         return fallback(request)
@@ -320,7 +323,8 @@ def top_artist_and_songs_slide(request, page='topArtistAndSongs.html', extra_con
         'image': request.session['image_url'],
         'top_songs_artists': request.session['top_songs_artists'],
         'top_songs_urls': request.session['top_songs_urls'],
-        'language': request.session.get('language', 'english')
+        'language': request.session.get('language', 'english'),
+        'bigMenu': True
     }
     
     if extra_context:
@@ -350,7 +354,7 @@ def get_last_50_songs(request):
 
     if response.status_code == 401:
         refresh_token = request.session.get('spotify_refresh_token')
-        new_tokens = refresh_spotify_token(refresh_token)
+        new_tokens = refresh_spotify_token(request, refresh_token)
         access_token = new_tokens.get('access_token')
         request.session['spotify_access_token'] = access_token
         headers = {
@@ -369,7 +373,7 @@ def get_last_50_songs(request):
 
     request.session['songs_list'] = songs_list
 
-
+@login_required
 def calculate_ads(request):
     seconds_in_a_month = 2.628e+6
 
@@ -395,7 +399,7 @@ def calculate_ads(request):
 
     return ads_minutes
 
-
+@login_required
 def calculate_get_most_popular_artists(request):
     if 'spotify_access_token' not in request.session:
         return redirect(spotify_auth_url())
@@ -416,7 +420,7 @@ def calculate_get_most_popular_artists(request):
 
     if response.status_code == 401:
         refresh_token = request.session.get('spotify_refresh_token')
-        new_tokens = refresh_spotify_token(refresh_token)
+        new_tokens = refresh_spotify_token(request, refresh_token)
         access_token = new_tokens.get('access_token')
         request.session['spotify_access_token'] = access_token
         headers = {
@@ -445,7 +449,7 @@ def calculate_get_most_popular_artists(request):
 
         if response.status_code == 401:
             refresh_token = request.session.get('spotify_refresh_token')
-            new_tokens = refresh_spotify_token(refresh_token)
+            new_tokens = refresh_spotify_token(request, refresh_token)
             access_token = new_tokens.get('access_token')
             request.session['spotify_access_token'] = access_token
             headers = {
@@ -485,7 +489,7 @@ def calculate_get_most_popular_artists(request):
 
         if response.status_code == 401:
             refresh_token = request.session.get('spotify_refresh_token')
-            new_tokens = refresh_spotify_token(refresh_token)
+            new_tokens = refresh_spotify_token(request, refresh_token)
             access_token = new_tokens.get('access_token')
             request.session['spotify_access_token'] = access_token
             headers = {
@@ -532,7 +536,7 @@ def calculate_get_most_popular_artists(request):
     request.session['artist2'] = artist2
     request.session['artist3'] = artist3
 
-
+@login_required
 def get_most_popular_artists(request, page='slide_2.html', extra_context=None):
     if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
         return fallback(request)
@@ -557,7 +561,8 @@ def get_most_popular_artists(request, page='slide_2.html', extra_context=None):
         'artist3': request.session['artist3'],
         'language': language,
         'time_labels': json.dumps(time_labels[language]),
-        'ranking_label': ranking_labels[language]
+        'ranking_label': ranking_labels[language],
+        'bigMenu': True
     }
     
     if extra_context:
@@ -580,6 +585,7 @@ def christmas_graph(request):
 
 
 # used for your seasonal mood (get top 100 songs in the last ~1 month), gets top 100 songs and the artists
+@login_required
 def get_recent_top_songs(request):
     tracks_url = f"{SPOTIFY_BASE_URL}/top/tracks"
     access_token = request.session.get('spotify_access_token')
@@ -599,7 +605,7 @@ def get_recent_top_songs(request):
 
         if response.status_code == 401:
             refresh_token = request.session.get('spotify_refresh_token')
-            new_tokens = refresh_spotify_token(refresh_token)
+            new_tokens = refresh_spotify_token(request, refresh_token)
             access_token = new_tokens.get('access_token')
             request.session['spotify_access_token'] = access_token
             headers = {
@@ -638,7 +644,7 @@ def get_recent_top_songs(request):
     request.session['top_100_songs'] = songs_list
 
 
-
+@login_required
 def calculate_analyze_seasonal_mood(request):
     client = OpenAI(api_key=OPENAI_API_KEY)
     songs_list = request.session['top_100_songs']
@@ -697,7 +703,7 @@ def calculate_analyze_seasonal_mood(request):
 
     """if response.status_code == 401:
         refresh_token = request.session.get('spotify_refresh_token')
-        new_tokens = refresh_spotify_token(refresh_token)
+        new_tokens = refresh_spotify_token(request, refresh_token)
         access_token = new_tokens.get('access_token')
         request.session['spotify_access_token'] = access_token
         headers = {
@@ -742,6 +748,7 @@ def calculate_analyze_seasonal_mood(request):
     request.session['image'] = response_json['images'][0]['url']
     request.session['season'] = curr_season
 
+@login_required
 def analyze_seasonal_mood(request, page='seasonalMood.html', extra_context=None):
     if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
         return fallback(request)
@@ -760,7 +767,8 @@ def analyze_seasonal_mood(request, page='seasonalMood.html', extra_context=None)
         "song_artist6": request.session['song_artist6'],
         "image": request.session['image'],
         "season": request.session['season'],
-        "language": request.session.get('language', 'english')
+        "language": request.session.get('language', 'english'),
+        'bigMenu': True
     }
     if extra_context:
         context.update(extra_context)
@@ -792,7 +800,7 @@ def analyze_seasonal_mood(request, page='seasonalMood.html', extra_context=None)
     return render(request, page, context)
 
 
-
+@login_required
 def calculate_llm_insights_page(request):
     contentArr = analyze_clothing(request)
     mood = contentArr[0].split(": ")[1].lower()
@@ -821,7 +829,8 @@ def llm_insights_page(request, page='LLMinsights.html', extra_context=None):
         'mood': request.session['mood'],
         'songPath': request.session['songPath'],
         'imagePath': request.session['imagePath'],
-        'language': request.session.get('language', 'english')
+        'language': request.session.get('language', 'english'),
+        'bigMenu': True
     }
     if extra_context:
         context.update(extra_context)
@@ -846,6 +855,7 @@ def llm_insights_page(request, page='LLMinsights.html', extra_context=None):
 
     return render(request, page, context)
 
+@login_required
 def analyze_clothing(request):
     client = OpenAI(api_key=OPENAI_API_KEY)
     songs = str(request.session['top_100_songs'])
@@ -867,7 +877,7 @@ def analyze_clothing(request):
 
     return description.content.split(";")
 
-
+@login_required
 def calculate_night_owl(request):  # combine this into one calculate stats method so we don't need to call get last 50 songs multiple times
     last_50_songs = request.session['songs_list']
 
@@ -950,6 +960,7 @@ def calculate_night_owl(request):  # combine this into one calculate stats metho
     request.session['hour_hand_rotation'] = hour_hand_rotation - 90
     request.session['minute_hand_rotation'] = minute_hand_rotation - 90
 
+@login_required
 def night_owl(request, page = 'slide_3.html', extra_content = None):
     if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
         return fallback(request)
@@ -960,7 +971,8 @@ def night_owl(request, page = 'slide_3.html', extra_content = None):
         "total_minutes": request.session['total_minutes'],
         "hour_hand_rotation": request.session['hour_hand_rotation'],
         "minute_hand_rotation": request.session['minute_hand_rotation'],
-        "language": language
+        "language": language,
+        'bigMenu': True
     }
 
     if request.session['holiday'] == 'halloween':
@@ -1022,7 +1034,7 @@ def transition_two(request, page = "transitionTwo.html"):
             page = 'halloween_TransitionTwo.html'
         elif request.session['holiday'] == 'christmas':
             page = 'christmas_TransitionTwo.html'
-        return render(request, page, {'language': request.session.get('language', 'english')})
+        return render(request, page, {'language': request.session.get('language', 'english'), 'bigMenu': True})
 
     except Exception as e:
         logger.error(f"Error in transition view: {e}")
@@ -1048,7 +1060,7 @@ def calculate_get_account_level(request):
 
     if response.status_code == 401:
         refresh_token = request.session.get('spotify_refresh_token')
-        new_tokens = refresh_spotify_token(refresh_token)
+        new_tokens = refresh_spotify_token(request, refresh_token)
         access_token = new_tokens.get('access_token')
         request.session['spotify_access_token'] = access_token
         headers = {
@@ -1068,6 +1080,7 @@ def calculate_get_account_level(request):
 
     request.session['ads_minutes'] = round(calculate_ads(request))
 
+@login_required
 def get_account_level(request, page='ads_minutes.html', extra_context=None):
     if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
         return fallback(request)
@@ -1076,6 +1089,7 @@ def get_account_level(request, page='ads_minutes.html', extra_context=None):
         "premium": request.session['premium'],
         "ads_minutes": request.session['ads_minutes'],
         "language": language,
+        'bigMenu': True
     }
     if extra_context:
         context.update(extra_context)
@@ -1086,6 +1100,7 @@ def get_account_level(request, page='ads_minutes.html', extra_context=None):
         page = 'christmas_ads.html'
     return render(request, page, context)
 
+@login_required
 def generate_wrap(request):
     calculate_top_artist_and_songs_slide(request)
     get_last_50_songs(request)
@@ -1200,6 +1215,7 @@ def christmas_llm(request):
     context = {'language': request.session.get('language', 'english')}
     return llm_insights_page(request, 'christmas_llm.html', context)
 
+@login_required
 def past_wraps(request):
     if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
         return fallback(request)
@@ -1310,7 +1326,8 @@ def game_mix_pitch_1(request):
 
                 'song_choices': song_choices,
                 'correct_songs': [track1_name, track2_name],
-                'language': language
+                'language': language,
+                'bigMenu': True
             }
             return render(request, 'game_mix_pitch.html', context)
 
@@ -1438,7 +1455,8 @@ def game_mix_pitch_2(request):
                 'song_choices': song_choices,
                 'correct_songs': [base_track_name, pitch_track_up_name, pitch_track_down_name],
                 'random_key': None,
-                'language': language
+                'language': language,
+                'bigMenu': True
             }
             return render(request, 'game_mix_pitch.html', context)
 
@@ -1552,6 +1570,7 @@ def game_mix_pitch_2(request):
     return render(request, 'game_mix_pitch.html', context)
 
 
+@login_required
 def wrap_id_to_session(request):
     body = json.loads(request.body)
     wrap_id = body['wrap_id']
@@ -1628,14 +1647,9 @@ def set_theme_from_profile(request):
 
 @login_required
 def fallback(request):
-    if 'holiday' not in request.session:
-        return transition_one(request)
-    elif request.session['holiday'] == 'christmas':
-        return christmas_transition_one(request)
-    elif request.session['holiday'] == 'halloween':
-        return halloween_transition_one(request)
-    return transition_one(request)
+    return redirect('past_wraps')
 
+@login_required
 def summary(request):
     context = {
         'top_artist': request.session['top_artist'],
