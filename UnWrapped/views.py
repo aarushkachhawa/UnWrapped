@@ -1748,6 +1748,14 @@ def fallback(request):
 
 @login_required
 def summary(request):
+
+    hindi_mood = request.session['hindi_content'][0].split(':')[1]
+    print(request.session['hindi_content'])
+    print(request.session['mandarin_content'])
+    mandarin_mood = request.session['mandarin_content'][0].split('：')[1]
+    print(request.session['mood'])
+    print(hindi_mood)
+    print(mandarin_mood)
     context = {
         'top_artist': request.session['top_artist'],
         'top_songs': request.session['top_songs'],
@@ -1756,7 +1764,15 @@ def summary(request):
         'mood1': request.session['mood1'],
         'mood2': request.session['mood2'],
         'mood3': request.session['mood3'],
+        'hindi_mood1': request.session['hindi_mood1'],
+        'hindi_mood2': request.session['hindi_mood2'],
+        'hindi_mood3': request.session['hindi_mood3'],
+        'mandarin_mood1': request.session['mandarin_mood1'],
+        'mandarin_mood2': request.session['mandarin_mood2'],
+        'mandarin_mood3': request.session['mandarin_mood3'],
         'mood': request.session['mood'],
+        'hindi_mood' : hindi_mood,
+        'mandarin_mood' : mandarin_mood,
         'latest_time': request.session['latest_time'],
         'language': request.session.get('language', 'english')
     }
