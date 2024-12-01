@@ -16,7 +16,13 @@
         {% else %}
 
         <p2>
-            (This feature has been deprecated)
+            {% if language == "english" %}
+                (The audio feature has been deprecated)
+            {% elif language == "hindi" %}
+                (ऑडियो फीचर बंद कर दिया गया है)
+            {% elif language == "mandarin" %}
+                (音频功能已被抑制)
+            {% endif %}
         </p2>
 
             <h2>
