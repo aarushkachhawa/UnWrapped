@@ -1748,7 +1748,8 @@ def summary(request):
         'mood3': request.session['mood3'],
         'mood': request.session['mood'],
         'latest_time': request.session['latest_time'],
-        'language': request.session.get('language', 'english')
+        'language': request.session.get('language', 'english'),
+        'bigMenu': True,
     }
 
     page = 'summary.html'
