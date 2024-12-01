@@ -9,6 +9,11 @@
 </head>
 <body>
     {% block content %}
+    <img src="{% static 'ads_minutes/top_left_corner_rainbow.png' %}" alt="Rainbow" class="top-right rainbow">
+    <img src="{% static 'ads_minutes/top_left_corner_rainbow.png' %}" alt="Rainbow" class="bottom-quarter rainbow">
+    <img src="{% static 'ads_minutes/top_left_corner_rainbow.png' %}" alt="Rainbow" class="bottom-half rainbow">
+
+
     <style>
         body {
             background-color: #FCF8F1;
@@ -17,6 +22,14 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
+        }
+
+        h1 {
+            color: #2a9d8f;
+        }
+
+        body.dark-mode h1 {
+            color: #DDC371;
         }
         .container {
             width: 100%;
@@ -228,6 +241,8 @@
                 margin-top: 10px;
                 margin-bottom: 10px;
             }
+
+            outline: 2px solid #DDC371;
         }
 
         body.dark-mode .contactContainer {
@@ -315,7 +330,7 @@
             color: #ecd00d;
         }
 
-                .messages {
+        .messages {
             margin-bottom: 20px;
         }
 
@@ -333,6 +348,43 @@
         .text-danger {
             color: #e76f51;
         }
+      
+        .top-right {
+              position: fixed;
+              top: -5px;
+              right: 0;
+              width: 200px;
+              height: auto;
+            }
+
+            .bottom-quarter {
+              position: fixed;
+              bottom: -100px;
+              left: -100px;
+              width: 200px;
+              height: auto;
+              transform: rotate(210deg);
+            }
+
+            .bottom-half {
+              position: fixed;
+              bottom: -100px;
+              left: 100px;
+              width: 200px;
+              height: auto;
+              transform: rotate(180deg);
+            }
+
+            hr {
+                color: #DDC371;
+                background-color: #DDC371;
+                outline: #DDC371;
+                border-color: #DDC371;
+            }
+
+            body.dark-mode hr {
+                border: 2px #c1c1c1 dashed;
+            }
 
     </style>
 

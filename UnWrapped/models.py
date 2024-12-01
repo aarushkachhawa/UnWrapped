@@ -64,6 +64,9 @@ class CustomWrap(models.Model): # there can only be one wrap per day
     premium = models.BooleanField(default=False)
     ads_minutes = models.FloatField(default=0)
     holiday = models.CharField(max_length=20, default='none')
+    top_songs_artists = models.JSONField(default=list)
+    top_songs_urls = models.JSONField(default=list)
+    imagePath = models.TextField(default="Unknown")
 
     '''
     def save(self, *args, **kwargs):
