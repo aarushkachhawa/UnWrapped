@@ -1666,7 +1666,7 @@ def summary(request):
 
     page = 'summary.html'
     if request.session['holiday'] == 'halloween':
-        page = 'halloween_ads.html'
+        page = 'halloween_summary.html'
     elif request.session['holiday'] == 'christmas':
         page = 'christmas_summary.html'
 
