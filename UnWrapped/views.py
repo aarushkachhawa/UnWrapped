@@ -1217,8 +1217,6 @@ def christmas_llm(request):
 
 @login_required
 def past_wraps(request):
-    if 'generatedWrap' not in request.session or not request.session['generatedWrap']:
-        return fallback(request)
     month_to_word_dict = {
         1: "Jan",
         2: "Feb",
