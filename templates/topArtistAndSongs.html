@@ -326,7 +326,14 @@
     </div>
 
     <p2>
-        (The audio feature has been deprecated)
+
+        {% if language == "english" %}
+                (The audio feature has been deprecated)
+            {% elif language == "hindi" %}
+                (ऑडियो सुविधा बंद कर दी गई है)
+            {% elif language == "mandarin" %}
+                （音频功能已被弃用）
+            {% endif %}
     </p2>
 
     <!-- Content Sections for Top Artist and Top Songs -->

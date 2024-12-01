@@ -811,6 +811,31 @@ def calculate_llm_insights_page(request):
     request.session['songPath'] = songPath
     request.session['imagePath'] = imagePath
 
+    client = OpenAI(api_key=OPENAI_API_KEY)
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a translator."},
+            {"role": "user",
+             "content": f"Take the following list of texts and translate it to the given language. Make sure to separate each translated string in the list with the '*' character. Make sure that all text returned is in the translated language. For example, return 'translated_text1*translated_text2*translated_text3' given '[text1, text2, text3]'. Language: Hindi, Text List to Translate: ```{request.session['content']}```"}
+        ]
+    )
+
+    request.session['hindi_content'] = response.choices[0].message.content.split('*')
+
+    response2 = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a translator."},
+            {"role": "user",
+             "content": f"Take the following list of texts and translate it to the given language. Make sure to separate each translated string in the list with the '*' character. Make sure that all text returned is in the translated language. For example, return 'translated_text1*translated_text2*translated_text3' given '[text1, text2, text3]'. Language: Mandarin, Text List to Translate: ```{request.session['content']}```"}
+        ]
+    )
+
+    request.session['mandarin_content'] = response2.choices[0].message.content.split('*')
+
+
 
 @login_required
 def llm_insights_page(request, page='LLMinsights.html', extra_context=None):
@@ -831,18 +856,10 @@ def llm_insights_page(request, page='LLMinsights.html', extra_context=None):
     elif request.session['holiday'] == 'christmas':
         page = 'christmas_llm.html'
 
-    if request.session['language'] != 'english':
-        client = OpenAI(api_key=OPENAI_API_KEY)
-
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "You are a translator."},
-                {"role": "user", "content": f"Take the following list of texts and translate it to the given language. Make sure to separate each translated string in the list with the '*' character. Make sure that all text returned is in the translated language. For example, return 'translated_text1*translated_text2*translated_text3' given '[text1, text2, text3]'. Language: {request.session['language']}, Text List to Translate: ```{request.session['content']}```"}
-            ]
-        )
-
-        context['content'] = response.choices[0].message.content.split('*')
+    if request.session['language'] == 'hindi':
+        context['content'] = request.session['hindi_content']
+    elif request.session['language'] == 'mandarin':
+        context['content'] = request.session['mandarin_content']
 
     return render(request, page, context)
 
@@ -1121,6 +1138,8 @@ def generate_wrap(request):
         image = request.session['image'],
         season = request.session['season'],
         content = request.session['content'],
+        hindi_content = request.session['hindi_content'],
+        mandarin_content = request.session['mandarin_content'],
         mood = request.session['mood'],
         songPath = request.session['songPath'],
         latest_time = request.session['latest_time'],
@@ -1595,6 +1614,28 @@ def wrap_id_to_session(request):
     print(type(content_without_brackets))
 
     request.session['content'] = content_without_brackets
+
+    content_without_brackets = wrap.hindi_content[1:-1]
+
+    content_without_brackets = content_without_brackets.split(', ')
+    content_without_brackets[0] = content_without_brackets[0][1:-1]
+    content_without_brackets[1] = content_without_brackets[1][1:-1]
+    content_without_brackets[2] = content_without_brackets[2][1:-1]
+    content_without_brackets[3] = content_without_brackets[3][1:-1]
+
+    request.session['hindi_content'] = content_without_brackets
+
+    content_without_brackets = wrap.mandarin_content[1:-1]
+
+    content_without_brackets = content_without_brackets.split(', ')
+    content_without_brackets[0] = content_without_brackets[0][1:-1]
+    content_without_brackets[1] = content_without_brackets[1][1:-1]
+    content_without_brackets[2] = content_without_brackets[2][1:-1]
+    content_without_brackets[3] = content_without_brackets[3][1:-1]
+
+    request.session['mandarin_content'] = content_without_brackets
+
+
     request.session['mood'] = wrap.mood
     request.session['songPath'] = wrap.songPath
     request.session['latest_time'] = wrap.latest_time

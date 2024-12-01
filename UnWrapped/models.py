@@ -40,6 +40,8 @@ class CustomWrap(models.Model): # there can only be one wrap per day
     image = models.TextField(default=None)
     season = models.CharField(max_length = 20, default = "Seasonal")
     content = models.TextField(default=None)
+    hindi_content = models.TextField(default="Unknown", null=False)
+    mandarin_content = models.TextField(default="Unknown", null=False)
     mood = models.CharField(max_length=500, default="Unknown")
     songPath = models.TextField(default=None)
     latest_time = models.CharField(max_length=500, default="Unknown")
