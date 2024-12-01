@@ -167,6 +167,9 @@ def spotify_auth_url(request):
 
 @login_required
 def home(request):
+    for msg in messages.get_messages(request):
+        msg.deleted = True
+
     language = request.session.get('language', 'english')
     if 'spotify_access_token' not in request.session:
         return redirect(spotify_auth_url(request))
@@ -1747,5 +1750,12 @@ def summary(request):
         'latest_time': request.session['latest_time'],
         'language': request.session.get('language', 'english')
     }
-    return render(request, 'summary.html', context)
+
+    page = 'summary.html'
+    if request.session['holiday'] == 'halloween':
+        page = 'halloween_summary.html'
+    elif request.session['holiday'] == 'christmas':
+        page = 'christmas_summary.html'
+
+    return render(request, page, context)
 
