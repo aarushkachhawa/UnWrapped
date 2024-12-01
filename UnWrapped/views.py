@@ -1276,7 +1276,7 @@ def christmas_llm(request):
 
 @login_required
 def past_wraps(request):
-    month_to_word_dict = {
+    """month_to_word_dict = {
         1: "Jan",
         2: "Feb",
         3: "Mar",
@@ -1289,7 +1289,7 @@ def past_wraps(request):
         10: "Oct",
         11: "Nov",
         12: "Dec",
-    }
+    }"""
 
     wraps = CustomWrap.objects.filter(user=request.user)
     wrap_list = []
@@ -1297,7 +1297,7 @@ def past_wraps(request):
         newDate = wrap.wrapDate - timedelta(hours=5)
         date_string = ""
         date = newDate.date()
-        date_string += month_to_word_dict[date.month]
+        date_string += f"{date.month}/"
 
         hour = newDate.time().hour
         if hour == 0:
@@ -1308,7 +1308,7 @@ def past_wraps(request):
             format = "PM"
         else:
             format = "AM"
-        date_string += f" {date.day}, {date.year}<br>{hour}:{'0' if newDate.time().minute < 10 else ''}{newDate.time().minute} {format}"
+        date_string += f"{date.day}/{date.year}<br>{hour}:{'0' if newDate.time().minute < 10 else ''}{newDate.time().minute} {format}"
 
         wrap_list.append(
             {
