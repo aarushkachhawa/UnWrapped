@@ -1782,7 +1782,8 @@ def summary(request):
         'hindi_mood' : hindi_mood,
         'mandarin_mood' : mandarin_mood,
         'latest_time': request.session['latest_time'],
-        'language': request.session.get('language', 'english')
+        'language': request.session.get('language', 'english'),
+        'bigMenu' : True
     }
 
     page = 'summary.html'
