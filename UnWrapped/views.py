@@ -851,7 +851,7 @@ def calculate_llm_insights_page(request):
         messages=[
             {"role": "system", "content": "You are a translator."},
             {"role": "user",
-             "content": f"Take the following list of texts and translate it to the given language. Make sure to separate each translated string in the list with the '*' character. Make sure that all text returned is in the translated language. For example, return 'translated_text1*translated_text2*translated_text3' given '[text1, text2, text3]'. Language: Hindi, Text List to Translate: ```{request.session['content']}```"}
+             "content": f"Take the following list of texts and translate it to the given language. Make sure to separate each translated string in the list with the '*' character. Make sure that all text returned is in the translated language. For example, return 'translated_text1*translated_text2*translated_text3' given '[text1, text2, text3]'. MAKE SURE that every single text in the translated output is translated to the correct language. There should be no outputted text still in English. Language: Hindi, Text List to Translate: ```{request.session['content']}```"}
         ]
     )
 
@@ -862,7 +862,7 @@ def calculate_llm_insights_page(request):
         messages=[
             {"role": "system", "content": "You are a translator."},
             {"role": "user",
-             "content": f"Take the following list of texts and translate it to the given language. Make sure to separate each translated string in the list with the '*' character. Make sure that all text returned is in the translated language. For example, return 'translated_text1*translated_text2*translated_text3' given '[text1, text2, text3]'. Language: Mandarin, Text List to Translate: ```{request.session['content']}```"}
+             "content": f"Take the following list of texts and translate it to the given language. Make sure to separate each translated string in the list with the '*' character. Make sure that all text returned is in the translated language. For example, return 'translated_text1*translated_text2*translated_text3' given '[text1, text2, text3]'. MAKE SURE that every single text in the translated output is translated to the correct language. Language: Mandarin, Text List to Translate: ```{request.session['content']}```"}
         ]
     )
 
@@ -1172,12 +1172,12 @@ def generate_wrap(request):
         mood4=request.session['mood4'],
         mood5=request.session['mood5'],
         mood6=request.session['mood6'],
-        hindi_mood1=request.session['mood1'],
-        hindi_mood2=request.session['mood2'],
-        hindi_mood3=request.session['mood3'],
-        hindi_mood4=request.session['mood4'],
-        hindi_mood5=request.session['mood5'],
-        hindi_mood6=request.session['mood6'],
+        hindi_mood1=request.session['hindi_mood1'],
+        hindi_mood2=request.session['hindi_mood2'],
+        hindi_mood3=request.session['hindi_mood3'],
+        hindi_mood4=request.session['hindi_mood4'],
+        hindi_mood5=request.session['hindi_mood5'],
+        hindi_mood6=request.session['hindi_mood6'],
         mandarin_mood1=request.session['mandarin_mood1'],
         mandarin_mood2=request.session['mandarin_mood2'],
         mandarin_mood3=request.session['mandarin_mood3'],
