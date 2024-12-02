@@ -301,9 +301,6 @@
                 const rainbows = document.getElementsByClassName('rainbow');
                 const dark_mode = localStorage.getItem('dark_mode') === 'on';
                 if (dark_mode) {
-                    for (let i = 0; i < rainbows.length; i++) {
-                        rainbows[i].src = "{% static 'slide_2/dark_mode_rainbow.png' %}";
-                    }
 
                     artistRankings.options.scales.xAxes[0].ticks.fontColor = '#a8a6a6';
                     artistRankings.options.scales.xAxes[0].gridLines.color = '#a8a6a6';
@@ -311,9 +308,6 @@
                     artistRankings.options.scales.yAxes[0].gridLines.color = '#a8a6a6';
                     artistRankings.options.scales.yAxes[0].scaleLabel.fontColor = '#a8a6a6';
                 } else {
-                    for (let i = 0; i < rainbows.length; i++) {
-                        rainbows[i].src = "{% static 'slide_2/top_left_corner_rainbow.png' %}";
-                    }
 
                     artistRankings.options.scales.xAxes[0].ticks.fontColor = "#473924";
                     artistRankings.options.scales.xAxes[0].gridLines.color = "#473924";

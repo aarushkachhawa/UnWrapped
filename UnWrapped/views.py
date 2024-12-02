@@ -72,6 +72,16 @@ def profile(request):
         'top_songs': request.session.get('top_songs', ['Songs have yet to be discovered', '', '', '', '']),
         'top_artist': request.session['top_artist'][0] if 'top_artist' in request.session else "Generate a wrap to see today's data!",
     }
+
+    if request.session['language'] == 'hindi':
+        context['top_songs'] = request.session.get('top_songs', ['गाने अभी तक खोजे नहीं गए हैं', '', '', '', ''])
+        context['top_artist'] = request.session['top_artist'][0] if 'top_artist' in request.session else "आज का डेटा देखने के लिए एक रैप तैयार करें!"
+
+    elif request.session['language'] == 'mandarin':
+        context['top_songs'] = request.session.get('top_songs', ['歌曲尚未被发现', '', '', '', ''])
+        context['top_artist'] = request.session['top_artist'][0] if 'top_artist' in request.session else "生成一个换行来查看今天的数据！"
+
+
     return render(request, 'profile.html', context)
 
 def contactDevs(request):
@@ -851,7 +861,7 @@ def calculate_llm_insights_page(request):
         messages=[
             {"role": "system", "content": "You are a translator."},
             {"role": "user",
-             "content": f"Take the following list of texts and translate it to the given language. Make sure to separate each translated string in the list with the '*' character. Make sure that all text returned is in the translated language. For example, return 'translated_text1*translated_text2*translated_text3' given '[text1, text2, text3]'. Language: Hindi, Text List to Translate: ```{request.session['content']}```"}
+             "content": f"Take the following list of texts and translate it to the given language. Make sure to separate each translated string in the list with the '*' character. Make sure that all text returned is in the translated language. For example, return 'translated_text1*translated_text2*translated_text3' given '[text1, text2, text3]'. MAKE SURE that every single text in the translated output is translated to the correct language. There should be no outputted text still in English. Language: Hindi, Text List to Translate: ```{request.session['content']}```"}
         ]
     )
 
@@ -862,7 +872,7 @@ def calculate_llm_insights_page(request):
         messages=[
             {"role": "system", "content": "You are a translator."},
             {"role": "user",
-             "content": f"Take the following list of texts and translate it to the given language. Make sure to separate each translated string in the list with the '*' character. Make sure that all text returned is in the translated language. For example, return 'translated_text1*translated_text2*translated_text3' given '[text1, text2, text3]'. Language: Mandarin, Text List to Translate: ```{request.session['content']}```"}
+             "content": f"Take the following list of texts and translate it to the given language. Make sure to separate each translated string in the list with the '*' character. Make sure that all text returned is in the translated language. For example, return 'translated_text1*translated_text2*translated_text3' given '[text1, text2, text3]'. MAKE SURE that every single text in the translated output is translated to the correct language. Language: Mandarin, Text List to Translate: ```{request.session['content']}```"}
         ]
     )
 
@@ -1172,12 +1182,12 @@ def generate_wrap(request):
         mood4=request.session['mood4'],
         mood5=request.session['mood5'],
         mood6=request.session['mood6'],
-        hindi_mood1=request.session['mood1'],
-        hindi_mood2=request.session['mood2'],
-        hindi_mood3=request.session['mood3'],
-        hindi_mood4=request.session['mood4'],
-        hindi_mood5=request.session['mood5'],
-        hindi_mood6=request.session['mood6'],
+        hindi_mood1=request.session['hindi_mood1'],
+        hindi_mood2=request.session['hindi_mood2'],
+        hindi_mood3=request.session['hindi_mood3'],
+        hindi_mood4=request.session['hindi_mood4'],
+        hindi_mood5=request.session['hindi_mood5'],
+        hindi_mood6=request.session['hindi_mood6'],
         mandarin_mood1=request.session['mandarin_mood1'],
         mandarin_mood2=request.session['mandarin_mood2'],
         mandarin_mood3=request.session['mandarin_mood3'],
@@ -1276,7 +1286,7 @@ def christmas_llm(request):
 
 @login_required
 def past_wraps(request):
-    month_to_word_dict = {
+    """month_to_word_dict = {
         1: "Jan",
         2: "Feb",
         3: "Mar",
@@ -1289,7 +1299,7 @@ def past_wraps(request):
         10: "Oct",
         11: "Nov",
         12: "Dec",
-    }
+    }"""
 
     wraps = CustomWrap.objects.filter(user=request.user)
     wrap_list = []
@@ -1297,7 +1307,7 @@ def past_wraps(request):
         newDate = wrap.wrapDate - timedelta(hours=5)
         date_string = ""
         date = newDate.date()
-        date_string += month_to_word_dict[date.month]
+        date_string += f"{date.month}/"
 
         hour = newDate.time().hour
         if hour == 0:
@@ -1308,7 +1318,7 @@ def past_wraps(request):
             format = "PM"
         else:
             format = "AM"
-        date_string += f" {date.day}, {date.year}<br>{hour}:{'0' if newDate.time().minute < 10 else ''}{newDate.time().minute} {format}"
+        date_string += f"{date.day}/{date.year}<br>{hour}:{'0' if newDate.time().minute < 10 else ''}{newDate.time().minute} {format}"
 
         wrap_list.append(
             {
@@ -1748,6 +1758,22 @@ def fallback(request):
 
 @login_required
 def summary(request):
+
+    try:
+        hindi_mood = request.session['hindi_content'][0].split(':')[1]
+    except Exception:
+        hindi_mood = "आत्मविश्लेषी"
+    print(request.session['hindi_content'])
+    print(request.session['mandarin_content'])
+
+    try:
+        mandarin_mood = request.session['mandarin_content'][0].split('：')[1]
+    except Exception:
+        mandarin_mood = "内省的"
+
+    print(request.session['mood'])
+    print(hindi_mood)
+    print(mandarin_mood)
     context = {
         'top_artist': request.session['top_artist'],
         'top_songs': request.session['top_songs'],
@@ -1756,9 +1782,18 @@ def summary(request):
         'mood1': request.session['mood1'],
         'mood2': request.session['mood2'],
         'mood3': request.session['mood3'],
+        'hindi_mood1': request.session['hindi_mood1'],
+        'hindi_mood2': request.session['hindi_mood2'],
+        'hindi_mood3': request.session['hindi_mood3'],
+        'mandarin_mood1': request.session['mandarin_mood1'],
+        'mandarin_mood2': request.session['mandarin_mood2'],
+        'mandarin_mood3': request.session['mandarin_mood3'],
         'mood': request.session['mood'],
+        'hindi_mood' : hindi_mood,
+        'mandarin_mood' : mandarin_mood,
         'latest_time': request.session['latest_time'],
-        'language': request.session.get('language', 'english')
+        'language': request.session.get('language', 'english'),
+        'bigMenu' : True
     }
 
     page = 'summary.html'

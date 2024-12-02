@@ -216,7 +216,15 @@
             <h2 id="text1">{{wrap_list.0.words|safe}}</h2>
         </div>
     {% else %}
-        <h2 id="info">Generate a wrap to see it here!</h2>
+        <h2 id="info">
+            {% if language == 'english' %}
+                Generate a wrap to see it here!
+            {% elif language == 'hindi' %}
+                इसे यहां देखने के लिए एक रैप तैयार करें!
+            {% elif language == 'mandarin' %}
+                生成一个包装以在此处查看！
+            {% endif %}
+        </h2>
     {% endif %}
 
     {% if num_wraps > 1 %}

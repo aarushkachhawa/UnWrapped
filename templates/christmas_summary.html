@@ -395,7 +395,15 @@
               您的個性:
             {% endif %}
           </h2>
-          <h1 class="info2" id="mood">{{mood}}</h1>
+          <h1 class="info2" id="mood">
+              {% if language == "english" %}
+                {{mood}}
+              {% elif language == "hindi" %}
+                {{hindi_mood}}
+              {% elif language == "mandarin" %}
+                 {{mandarin_mood}}
+              {% endif %}
+          </h1>
         </div>
       </div>
 
@@ -428,7 +436,15 @@
           <img src="{% static 'topArtist/blue_record.png' %}" class="record">
            <div class="small-record-container small-record-container1">
               <div class="small-record-text">
-                  <div class="mood">{{mood1}}</div>
+                  <div class="mood">
+                      {% if language == "english" %}
+                        {{mood1}}
+                      {% elif language == "hindi" %}
+                        {{hindi_mood1}}
+                      {% elif language == "mandarin" %}
+                         {{mandarin_mood1}}
+                      {% endif %}
+                  </div>
               </div>
           </div>
         </div>
@@ -437,7 +453,15 @@
           <img src="{% static 'topArtist/red_record.png' %}" class="record">
            <div class="small-record-container small-record-container1">
               <div class="small-record-text">
-                  <div class="mood">{{mood2}}</div>
+                  <div class="mood">
+                      {% if language == "english" %}
+                        {{mood2}}
+                      {% elif language == "hindi" %}
+                        {{hindi_mood2}}
+                      {% elif language == "mandarin" %}
+                         {{mandarin_mood2}}
+                      {% endif %}
+                  </div>
               </div>
           </div>
         </div>
@@ -446,7 +470,15 @@
           <img src="{% static 'topArtist/yellow_record.png' %}" class="record">
            <div class="small-record-container small-record-container1">
               <div class="small-record-text">
-                  <div class="mood">{{mood3}}</div>
+                  <div class="mood">
+                      {% if language == "english" %}
+                        {{mood3}}
+                      {% elif language == "hindi" %}
+                        {{hindi_mood3}}
+                      {% elif language == "mandarin" %}
+                         {{mandarin_mood3}}
+                      {% endif %}
+                  </div>
               </div>
           </div>
         </div>
