@@ -1749,10 +1749,18 @@ def fallback(request):
 @login_required
 def summary(request):
 
-    hindi_mood = request.session['hindi_content'][0].split(':')[1]
+    try:
+        hindi_mood = request.session['hindi_content'][0].split(':')[1]
+    except Exception:
+        hindi_mood = "आत्मविश्लेषी"
     print(request.session['hindi_content'])
     print(request.session['mandarin_content'])
-    mandarin_mood = request.session['mandarin_content'][0].split('：')[1]
+
+    try:
+        mandarin_mood = request.session['mandarin_content'][0].split('：')[1]
+    except Exception:
+        mandarin_mood = "内省的"
+
     print(request.session['mood'])
     print(hindi_mood)
     print(mandarin_mood)
