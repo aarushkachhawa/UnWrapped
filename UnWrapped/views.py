@@ -72,6 +72,16 @@ def profile(request):
         'top_songs': request.session.get('top_songs', ['Songs have yet to be discovered', '', '', '', '']),
         'top_artist': request.session['top_artist'][0] if 'top_artist' in request.session else "Generate a wrap to see today's data!",
     }
+
+    if request.session['language'] == 'hindi':
+        context['top_songs'] = request.session.get('top_songs', ['गाने अभी तक खोजे नहीं गए हैं', '', '', '', ''])
+        context['top_artist'] = request.session['top_artist'][0] if 'top_artist' in request.session else "आज का डेटा देखने के लिए एक रैप तैयार करें!"
+
+    elif request.session['language'] == 'mandarin':
+        context['top_songs'] = request.session.get('top_songs', ['歌曲尚未被发现', '', '', '', ''])
+        context['top_artist'] = request.session['top_artist'][0] if 'top_artist' in request.session else "生成一个换行来查看今天的数据！"
+
+
     return render(request, 'profile.html', context)
 
 def contactDevs(request):
