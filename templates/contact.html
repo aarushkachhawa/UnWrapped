@@ -305,6 +305,24 @@
             border: 2px #c4b3ff solid;
         }
 
+        .styled-email {
+        border: 2px #ef8378 solid;
+        background-color: white; /* White background */
+        color: black;
+        padding: 10px;
+        border-radius: 10px;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-weight: normal;
+        width: 100%; /* Ensures it's responsive */
+    }
+
+body.dark-mode .styled-email {
+    border:  2px #c4b3ff solid;
+    background-color:  white;
+
+}
+
+
         .alignment {
             display: flex;
             flex-direction: column;
@@ -518,6 +536,7 @@
 
                     <br><br>
 
+
                     <label for="feedback">
                         {% if language == "english" %}
                             Submit your feedback about UnWrapped here:
@@ -528,7 +547,22 @@
                         {% endif %}
                     </label>
                     <br><br>
+
                     <textarea id="feedback" name="feedback" rows="4" cols="65" placeholder="{% if language == 'english' %}Write your feedback here{% elif language == 'hindi' %}अपनी प्रतिक्रिया यहां लिखें{% elif language == 'mandarin' %}在这里写下您的反馈{% endif %}"></textarea>
+                    <br><br>
+
+
+                    <label for="email">
+                        {% if language == "english" %}
+                            Please leave your email so we can reach out soon!
+                        {% elif language == "hindi" %}
+                            कृपया अपना ईमेल छोड़ें ताकि हम शीघ्र ही आपसे संपर्क कर सकें!
+                        {% elif language == "mandarin" %}
+                            请留下您的电子邮件，以便我们尽快与您联系!
+                        {% endif %}
+                    </label>
+                    <br><br>
+                    <input name="email" type="email" id="email" class="data-field email-field styled-email" placeholder="{% if language == 'english' %}Your Email{% elif language == 'hindi' %}आपका ईमेल{% elif language == 'mandarin' %}您的电子邮件{% endif %}">
 
                     <br><br>
 
