@@ -1,0 +1,3 @@
+CLIENT_ID = ""
+CLIENT_SECRET = ""
+OPENAI_API_KEY = ""
